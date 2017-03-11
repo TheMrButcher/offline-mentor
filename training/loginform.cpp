@@ -1,5 +1,7 @@
 #include "loginform.h"
 #include "ui_loginform.h"
+#include "settings.h"
+
 #include <QMessageBox>
 
 LoginForm::LoginForm(QWidget *parent) :
@@ -14,6 +16,11 @@ LoginForm::~LoginForm()
     delete ui;
 }
 
+void LoginForm::setUserName(QString name)
+{
+    ui->nameEdit->setText(name);
+}
+
 void LoginForm::on_enterButton_clicked()
 {
     QString name = ui->nameEdit->text();
@@ -21,4 +28,8 @@ void LoginForm::on_enterButton_clicked()
         QMessageBox::warning(this, "Пустое имя пользователя", "Пожалуйста, введите имя пользователя");
         return;
     }
+
+    auto& settings = Settings::instance();
+    settings.lastLogin = name;
+    settings.write();
 }

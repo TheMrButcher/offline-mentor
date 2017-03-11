@@ -17,6 +17,9 @@ public:
     explicit MainWindow(QWidget *parent = 0);
     ~MainWindow();
 
+private slots:
+    void loadSettings();
+
 private:
     Ui::MainWindow *ui;
     LoginForm* loginForm;

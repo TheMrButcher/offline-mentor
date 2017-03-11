@@ -15,6 +15,8 @@ public:
     explicit LoginForm(QWidget *parent = 0);
     ~LoginForm();
 
+    void setUserName(QString name);
+
 private slots:
     void on_enterButton_clicked();
 
