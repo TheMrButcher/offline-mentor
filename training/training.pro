@@ -15,15 +15,23 @@ TEMPLATE = app
 SOURCES += main.cpp\
         mainwindow.cpp \
     loginform.cpp \
-    settings.cpp
+    settings.cpp \
+    sectionsform.cpp \
+    sectionwidget.cpp \
+    section.cpp
 
 HEADERS  += mainwindow.h \
     version.h \
     loginform.h \
-    settings.h
+    settings.h \
+    sectionsform.h \
+    sectionwidget.h \
+    section.h
 
 FORMS    += mainwindow.ui \
-    loginform.ui
+    loginform.ui \
+    sectionsform.ui \
+    sectionwidget.ui
 
 RESOURCES += \
     resources.qrc

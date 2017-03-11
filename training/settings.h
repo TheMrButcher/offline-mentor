@@ -12,6 +12,7 @@ public:
     void write() const;
 
     QString lastLogin;
+    QString sectionsPath;
 
 private:
     Settings();

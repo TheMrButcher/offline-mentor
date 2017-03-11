@@ -27,6 +27,7 @@ bool Settings::read()
 
     auto rootObj = json.object();
     lastLogin = rootObj["lastLogin"].toString(lastLogin);
+    sectionsPath = rootObj["sectionsPath"].toString(sectionsPath);
     return true;
 }
 
@@ -38,6 +39,7 @@ void Settings::write() const
 
     QJsonObject rootObj;
     rootObj["lastLogin"] = lastLogin;
+    rootObj["sectionsPath"] = sectionsPath;
 
     QJsonDocument json(rootObj);
     settingsFile.write(json.toJson());

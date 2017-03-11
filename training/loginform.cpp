@@ -16,6 +16,11 @@ LoginForm::~LoginForm()
     delete ui;
 }
 
+QString LoginForm::userName() const
+{
+    return ui->nameEdit->text();
+}
+
 void LoginForm::setUserName(QString name)
 {
     ui->nameEdit->setText(name);
@@ -32,4 +37,6 @@ void LoginForm::on_enterButton_clicked()
     auto& settings = Settings::instance();
     settings.lastLogin = name;
     settings.write();
+
+    emit login();
 }

@@ -2,6 +2,7 @@
 #include "ui_mainwindow.h"
 #include "version.h"
 #include "loginform.h"
+#include "sectionsform.h"
 #include "settings.h"
 
 #include <QMessageBox>
@@ -16,7 +17,13 @@ MainWindow::MainWindow(QWidget *parent) :
 
     loginForm = new LoginForm(this);
     ui->stackedWidget->addWidget(loginForm);
-    ui->stackedWidget->setCurrentIndex(0);
+
+    sectionsForm = new SectionsForm(this);
+    ui->stackedWidget->addWidget(sectionsForm);
+
+    select(loginForm);
+
+    connect(loginForm, SIGNAL(login()), this, SLOT(onLogin()));
 
     QTimer::singleShot(0, this, SLOT(loadSettings()));
 }
@@ -35,4 +42,16 @@ void MainWindow::loadSettings()
                              "Возможно, приложение установлено не полностью. "
                              "Приложение может работать некорректно.");
     loginForm->setUserName(settings.lastLogin);
+    sectionsForm->setSections(Section::loadSections());
+}
+
+void MainWindow::onLogin()
+{
+    sectionsForm->setUserName(loginForm->userName());
+    select(sectionsForm);
+}
+
+void MainWindow::select(QWidget* widget)
+{
+    ui->stackedWidget->setCurrentIndex(ui->stackedWidget->indexOf(widget));
 }
