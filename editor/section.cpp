@@ -7,7 +7,26 @@
 Section::Section()
 {}
 
-bool Section::create()
+bool Section::open()
+{
+    QFile sectionFile(path);
+    if (!sectionFile.open(QIODevice::ReadOnly))
+        return false;
+    QJsonParseError errors;
+    QJsonDocument json = QJsonDocument::fromJson(sectionFile.readAll(), &errors);
+    if (errors.error != QJsonParseError::NoError)
+        return false;
+    if (!json.isObject())
+        return false;
+
+    auto rootObj = json.object();
+    name = rootObj["name"].toString("");
+    if (name.isEmpty())
+        return false;
+    return true;
+}
+
+bool Section::save()
 {
     QFile sectionFile(path);
     if (!sectionFile.open(QIODevice::WriteOnly))

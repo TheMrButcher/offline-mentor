@@ -8,7 +8,8 @@ class Section
 public:
     Section();
 
-    bool create();
+    bool open();
+    bool save();
 
     QString name;
     QString path;

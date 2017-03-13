@@ -1,5 +1,6 @@
 #include "createsectiondialog.h"
 #include "section.h"
+#include "settings.h"
 #include "ui_createsectiondialog.h"
 
 #include <QMessageBox>
@@ -30,7 +31,13 @@ void CreateSectionDialog::accept()
 
     section.name = ui->nameEdit->text();
     section.path = path;
-    if (!section.create()) {
+
+    if (section.name.isEmpty()) {
+        QMessageBox::warning(this, "Ошибка", "Имя раздела не указано.");
+        return;
+    }
+
+    if (!section.save()) {
         QMessageBox::warning(this, "Ошибка", "Не удалось создать раздел. "
                                              "Проверьте правильность написания пути.");
         return;
@@ -41,7 +48,9 @@ void CreateSectionDialog::accept()
 void CreateSectionDialog::on_choosePathButton_clicked()
 {
     QString path = QFileDialog::getSaveFileName(
-                this, "Путь к файлу раздела", "", "Файл раздела (*.oms)");
+                this, "Путь к файлу раздела",
+                Settings::instance().safeLastDirectoryPath(),
+                "Файл раздела (*.oms)");
     if (!path.isEmpty()) {
         ui->pathEdit->setText(path);
     }

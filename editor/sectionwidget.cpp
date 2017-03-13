@@ -22,7 +22,7 @@ void SectionWidget::setSection(const Section& section)
 {
     this->section = section;
     ui->pathLabel->setText(section.path);
-    ui->groupBox->setTitle("Секция \"" + section.name + "\"");
+    ui->groupBox->setTitle("Раздел \"" + section.name + "\"");
 
     int width = std::max(
                 ui->groupBox->sizeHint().width(),

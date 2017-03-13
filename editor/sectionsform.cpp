@@ -1,8 +1,10 @@
 #include "sectionsform.h"
 #include "sectionwidget.h"
 #include "createsectiondialog.h"
+#include "settings.h"
 #include "ui_sectionsform.h"
 #include <QVBoxLayout>
+#include <QFileInfo>
 
 SectionsForm::SectionsForm(QWidget *parent) :
     QWidget(parent),
@@ -29,7 +31,14 @@ void SectionsForm::setSections(QList<Section> sections)
 
 void SectionsForm::onSectionCreated()
 {
-    sections.prepend(createSectionDialog->result());
+    Section section = createSectionDialog->result();
+
+    auto& settings = Settings::instance();
+    settings.lastDirectoryPath = QFileInfo(section.path).absolutePath();
+    settings.knownSections.prepend(section.path);
+    settings.write();
+
+    sections.prepend(section);
     updateView();
 }
 

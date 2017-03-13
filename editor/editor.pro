@@ -17,14 +17,16 @@ SOURCES += main.cpp\
     sectionsform.cpp \
     sectionwidget.cpp \
     section.cpp \
-    createsectiondialog.cpp
+    createsectiondialog.cpp \
+    settings.cpp
 
 HEADERS  += mainwindow.h \
     version.h \
     sectionsform.h \
     sectionwidget.h \
     section.h \
-    createsectiondialog.h
+    createsectiondialog.h \
+    settings.h
 
 FORMS    += mainwindow.ui \
     sectionsform.ui \
