@@ -8,8 +8,10 @@ class Section
 public:
     Section();
 
+    bool create();
+
     QString name;
-    QString directoryPath;
+    QString path;
 };
 
 #endif // SECTION_H

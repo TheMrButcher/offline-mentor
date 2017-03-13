@@ -10,6 +10,8 @@ namespace Ui {
 class SectionsForm;
 }
 
+class CreateSectionDialog;
+
 class SectionsForm : public QWidget
 {
     Q_OBJECT
@@ -21,8 +23,17 @@ public:
 public slots:
     void setSections(QList<Section> sections);
 
+private slots:
+    void onSectionCreated();
+    void on_createSectionButton_clicked();
+
 private:
+    void updateView();
+
     Ui::SectionsForm *ui;
+
+    CreateSectionDialog* createSectionDialog;
+    QList<Section> sections;
 };
 
 #endif // SECTIONSFORM_H

@@ -15,13 +15,13 @@ SectionWidget::~SectionWidget()
 
 QString SectionWidget::key() const
 {
-    return section.directoryPath;
+    return section.path;
 }
 
 void SectionWidget::setSection(const Section& section)
 {
     this->section = section;
-    ui->directoryPathLabel->setText(section.directoryPath);
+    ui->pathLabel->setText(section.path);
     ui->groupBox->setTitle("Секция \"" + section.name + "\"");
 
     int width = std::max(

@@ -16,17 +16,20 @@ SOURCES += main.cpp\
         mainwindow.cpp \
     sectionsform.cpp \
     sectionwidget.cpp \
-    section.cpp
+    section.cpp \
+    createsectiondialog.cpp
 
 HEADERS  += mainwindow.h \
     version.h \
     sectionsform.h \
     sectionwidget.h \
-    section.h
+    section.h \
+    createsectiondialog.h
 
 FORMS    += mainwindow.ui \
     sectionsform.ui \
-    sectionwidget.ui
+    sectionwidget.ui \
+    createsectiondialog.ui
 
 RESOURCES += \
     resources.qrc

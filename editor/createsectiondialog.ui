@@ -1,0 +1,134 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>CreateSectionDialog</class>
+ <widget class="QDialog" name="CreateSectionDialog">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>400</width>
+    <height>100</height>
+   </rect>
+  </property>
+  <property name="sizePolicy">
+   <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+    <horstretch>0</horstretch>
+    <verstretch>0</verstretch>
+   </sizepolicy>
+  </property>
+  <property name="minimumSize">
+   <size>
+    <width>400</width>
+    <height>100</height>
+   </size>
+  </property>
+  <property name="maximumSize">
+   <size>
+    <width>400</width>
+    <height>100</height>
+   </size>
+  </property>
+  <property name="windowTitle">
+   <string>Создание раздела...</string>
+  </property>
+  <layout class="QVBoxLayout" name="verticalLayout">
+   <property name="sizeConstraint">
+    <enum>QLayout::SetDefaultConstraint</enum>
+   </property>
+   <item>
+    <layout class="QHBoxLayout" name="horizontalLayout">
+     <item>
+      <widget class="QLabel" name="label">
+       <property name="text">
+        <string>Название раздела:</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QLineEdit" name="nameEdit"/>
+     </item>
+    </layout>
+   </item>
+   <item>
+    <layout class="QHBoxLayout" name="horizontalLayout_2">
+     <item>
+      <widget class="QLabel" name="label_2">
+       <property name="text">
+        <string>Путь:</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QLineEdit" name="pathEdit"/>
+     </item>
+     <item>
+      <widget class="QToolButton" name="choosePathButton">
+       <property name="text">
+        <string/>
+       </property>
+       <property name="icon">
+        <iconset resource="resources.qrc">
+         <normaloff>:/icons/folder.png</normaloff>:/icons/folder.png</iconset>
+       </property>
+      </widget>
+     </item>
+    </layout>
+   </item>
+   <item>
+    <widget class="QDialogButtonBox" name="buttonBox">
+     <property name="font">
+      <font>
+       <pointsize>8</pointsize>
+      </font>
+     </property>
+     <property name="orientation">
+      <enum>Qt::Horizontal</enum>
+     </property>
+     <property name="standardButtons">
+      <set>QDialogButtonBox::Cancel|QDialogButtonBox::Ok</set>
+     </property>
+     <property name="centerButtons">
+      <bool>true</bool>
+     </property>
+    </widget>
+   </item>
+  </layout>
+ </widget>
+ <resources>
+  <include location="resources.qrc"/>
+ </resources>
+ <connections>
+  <connection>
+   <sender>buttonBox</sender>
+   <signal>accepted()</signal>
+   <receiver>CreateSectionDialog</receiver>
+   <slot>accept()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>227</x>
+     <y>81</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>157</x>
+     <y>98</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>buttonBox</sender>
+   <signal>rejected()</signal>
+   <receiver>CreateSectionDialog</receiver>
+   <slot>reject()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>295</x>
+     <y>87</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>286</x>
+     <y>98</y>
+    </hint>
+   </hints>
+  </connection>
+ </connections>
+</ui>

@@ -25,7 +25,7 @@
         <x>0</x>
         <y>0</y>
         <width>380</width>
-        <height>280</height>
+        <height>247</height>
        </rect>
       </property>
       <layout class="QVBoxLayout" name="verticalLayout_2">
@@ -37,6 +37,18 @@
        </property>
       </layout>
      </widget>
+    </widget>
+   </item>
+   <item>
+    <widget class="QPushButton" name="createSectionButton">
+     <property name="font">
+      <font>
+       <pointsize>12</pointsize>
+      </font>
+     </property>
+     <property name="text">
+      <string>Создать раздел</string>
+     </property>
     </widget>
    </item>
   </layout>

@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>518</width>
-    <height>164</height>
+    <height>128</height>
    </rect>
   </property>
   <property name="sizePolicy">
@@ -36,7 +36,7 @@
      </property>
      <property name="font">
       <font>
-       <pointsize>14</pointsize>
+       <pointsize>12</pointsize>
       </font>
      </property>
      <property name="title">
@@ -44,7 +44,7 @@
      </property>
      <layout class="QVBoxLayout" name="verticalLayout_2">
       <property name="spacing">
-       <number>16</number>
+       <number>8</number>
       </property>
       <item>
        <layout class="QHBoxLayout" name="horizontalLayout_2">
@@ -58,7 +58,7 @@
           </property>
           <property name="font">
            <font>
-            <pointsize>12</pointsize>
+            <pointsize>8</pointsize>
            </font>
           </property>
           <property name="text">
@@ -67,7 +67,7 @@
          </widget>
         </item>
         <item>
-         <widget class="QLabel" name="directoryPathLabel">
+         <widget class="QLabel" name="pathLabel">
           <property name="sizePolicy">
            <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
             <horstretch>0</horstretch>
@@ -76,7 +76,7 @@
           </property>
           <property name="font">
            <font>
-            <pointsize>12</pointsize>
+            <pointsize>8</pointsize>
            </font>
           </property>
           <property name="text">
@@ -98,7 +98,7 @@
           </property>
           <property name="font">
            <font>
-            <pointsize>12</pointsize>
+            <pointsize>8</pointsize>
            </font>
           </property>
           <property name="text">
@@ -116,7 +116,7 @@
           </property>
           <property name="font">
            <font>
-            <pointsize>12</pointsize>
+            <pointsize>8</pointsize>
            </font>
           </property>
           <property name="text">
@@ -154,19 +154,19 @@
           </property>
           <property name="minimumSize">
            <size>
-            <width>200</width>
+            <width>120</width>
             <height>0</height>
            </size>
           </property>
           <property name="maximumSize">
            <size>
-            <width>200</width>
+            <width>120</width>
             <height>16777215</height>
            </size>
           </property>
           <property name="font">
            <font>
-            <pointsize>12</pointsize>
+            <pointsize>8</pointsize>
            </font>
           </property>
           <property name="text">

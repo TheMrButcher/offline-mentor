@@ -14,19 +14,6 @@ MainWindow::MainWindow(QWidget *parent) :
     sectionsForm = new SectionsForm(this);
     ui->stackedWidget->addWidget(sectionsForm);
     select(sectionsForm);
-
-    Section section;
-    QList<Section> sections;
-
-    section.directoryPath = "путь/к/секции";
-    section.name = "Имя секции";
-    sections.append(section);
-
-    section.directoryPath = "очень/очень/очень/очень/очень/очень/очень/очень/очень/очень/очень/очень/очень/очень/очень/очень/очень/очень/очень/очень/очень/очень/очень/очень/очень/очень/очень/очень/очень/очень/очень/очень/очень/очень/очень/очень/очень/очень/очень/очень/очень/очень/очень/очень/длинный/путь";
-    section.name = "Имя секции 2";
-    sections.append(section);
-
-    sectionsForm->setSections(sections);
 }
 
 MainWindow::~MainWindow()
