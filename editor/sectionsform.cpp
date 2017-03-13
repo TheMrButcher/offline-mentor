@@ -57,6 +57,7 @@ void SectionsForm::updateView()
         SectionWidget* sectionWidget = new SectionWidget;
         sectionWidget->setSection(section);
         layout->addWidget(sectionWidget);
+        connect(sectionWidget, SIGNAL(requestedOpen(Section)), this, SIGNAL(requestedOpen(Section)));
     }
     ui->sectionsList->setLayout(layout);
 }

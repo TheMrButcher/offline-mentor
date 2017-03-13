@@ -1,6 +1,7 @@
 #include "mainwindow.h"
 #include "version.h"
 #include "sectionsform.h"
+#include "sectioneditform.h"
 #include "settings.h"
 #include "ui_mainwindow.h"
 
@@ -16,7 +17,13 @@ MainWindow::MainWindow(QWidget *parent) :
 
     sectionsForm = new SectionsForm(this);
     ui->stackedWidget->addWidget(sectionsForm);
+
+    sectionEditForm = new SectionEditForm(this);
+    ui->stackedWidget->addWidget(sectionEditForm);
+
     select(sectionsForm);
+
+    connect(sectionsForm, SIGNAL(requestedOpen(Section)), this, SLOT(openSection(Section)));
 
     QTimer::singleShot(0, this, SLOT(loadSettings()));
 }
@@ -48,7 +55,19 @@ void MainWindow::loadSettings()
     settings.write();
 }
 
+void MainWindow::openSection(const Section& section)
+{
+    sectionEditForm->setSection(section);
+    select(sectionEditForm);
+    ui->saveAction->setEnabled(true);
+}
+
 void MainWindow::select(QWidget* widget)
 {
     ui->stackedWidget->setCurrentIndex(ui->stackedWidget->indexOf(widget));
+}
+
+void MainWindow::on_saveAction_triggered()
+{
+    sectionEditForm->section().save();
 }

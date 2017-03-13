@@ -20,6 +20,12 @@ public:
     QString key() const;
     void setSection(const Section& section);
 
+signals:
+    void requestedOpen(Section);
+
+private slots:
+    void on_openButton_clicked();
+
 private:
     Ui::SectionWidget *ui;
     Section section;

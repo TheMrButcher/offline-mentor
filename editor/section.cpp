@@ -23,6 +23,7 @@ bool Section::open()
     name = rootObj["name"].toString("");
     if (name.isEmpty())
         return false;
+    description = rootObj["description"].toString("");
     return true;
 }
 
@@ -34,6 +35,7 @@ bool Section::save()
 
     QJsonObject rootObj;
     rootObj["name"] = name;
+    rootObj["description"] = description;
 
     QJsonDocument json(rootObj);
     sectionFile.write(json.toJson());

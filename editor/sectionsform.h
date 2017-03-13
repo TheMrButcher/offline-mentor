@@ -20,6 +20,9 @@ public:
     explicit SectionsForm(QWidget *parent = 0);
     ~SectionsForm();
 
+signals:
+    void requestedOpen(Section);
+
 public slots:
     void setSections(QList<Section> sections);
 

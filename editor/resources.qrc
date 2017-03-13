@@ -2,5 +2,8 @@
     <qresource prefix="/">
         <file>VERSION.txt</file>
         <file>icons/folder.png</file>
+        <file>icons/question.png</file>
+        <file>icons/section.png</file>
+        <file>icons/save.png</file>
     </qresource>
 </RCC>

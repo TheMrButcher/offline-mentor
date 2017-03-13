@@ -1,6 +1,8 @@
 #ifndef MAINWINDOW_H
 #define MAINWINDOW_H
 
+#include "section.h"
+
 #include <QMainWindow>
 
 namespace Ui {
@@ -8,6 +10,7 @@ class MainWindow;
 }
 
 class SectionsForm;
+class SectionEditForm;
 
 class MainWindow : public QMainWindow
 {
@@ -19,6 +22,9 @@ public:
 
 private slots:
     void loadSettings();
+    void openSection(const Section& section);
+
+    void on_saveAction_triggered();
 
 private:
     void select(QWidget* widget);
@@ -26,6 +32,7 @@ private:
     Ui::MainWindow *ui;
 
     SectionsForm* sectionsForm;
+    SectionEditForm* sectionEditForm;
 };
 
 #endif // MAINWINDOW_H

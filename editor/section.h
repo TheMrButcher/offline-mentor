@@ -12,6 +12,7 @@ public:
     bool save();
 
     QString name;
+    QString description;
     QString path;
 };
 
