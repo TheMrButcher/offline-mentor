@@ -22,7 +22,7 @@ private slots:
     void loadSettings();
     void onLogin();
 
-private:\
+private:
     void select(QWidget* widget);
 
     Ui::MainWindow *ui;

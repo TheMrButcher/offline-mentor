@@ -13,12 +13,20 @@ TEMPLATE = app
 
 
 SOURCES += main.cpp\
-        mainwindow.cpp
+        mainwindow.cpp \
+    sectionsform.cpp \
+    sectionwidget.cpp \
+    section.cpp
 
 HEADERS  += mainwindow.h \
-    version.h
+    version.h \
+    sectionsform.h \
+    sectionwidget.h \
+    section.h
 
-FORMS    += mainwindow.ui
+FORMS    += mainwindow.ui \
+    sectionsform.ui \
+    sectionwidget.ui
 
 RESOURCES += \
     resources.qrc

@@ -7,6 +7,8 @@ namespace Ui {
 class MainWindow;
 }
 
+class SectionsForm;
+
 class MainWindow : public QMainWindow
 {
     Q_OBJECT
@@ -16,7 +18,11 @@ public:
     ~MainWindow();
 
 private:
+    void select(QWidget* widget);
+
     Ui::MainWindow *ui;
+
+    SectionsForm* sectionsForm;
 };
 
 #endif // MAINWINDOW_H

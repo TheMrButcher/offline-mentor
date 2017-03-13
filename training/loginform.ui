@@ -74,7 +74,13 @@
       </widget>
      </item>
      <item>
-      <widget class="QLineEdit" name="nameEdit"/>
+      <widget class="QLineEdit" name="nameEdit">
+       <property name="font">
+        <font>
+         <pointsize>12</pointsize>
+        </font>
+       </property>
+      </widget>
      </item>
     </layout>
    </item>
