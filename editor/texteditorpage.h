@@ -20,6 +20,7 @@ public:
     void setFilePath(QDir dir, QString fileName);
     QString fileName() const;
     bool save();
+    bool load();
 
 private:
     Ui::TextEditorPage *ui;

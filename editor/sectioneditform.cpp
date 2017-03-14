@@ -51,11 +51,27 @@ void SectionEditForm::setSection(const Section& section)
     ui->nameEdit->setText(originalSection.name);
     ui->descriptionEdit->setPlainText(originalSection.description);
 
+    QStringList badFiles;
     for (int i = 0; i < originalSection.cases.size(); ++i) {
         auto& caseValue = originalSection.cases[i];
-        if (caseValue.missingData())
+        if (caseValue.missingData()) {
             generateFileNames(caseValue);
-        addCase(caseValue);
+            addCase(caseValue);
+        } else {
+            addCase(caseValue);
+            auto caseRootItem = rootItem->child(i);
+            auto pages = nodes[caseRootItem].pages;
+            if (!pages.questionPage->load())
+                badFiles.append(caseValue.name + "/Вопрос");
+            if (!pages.answerPage->load())
+                badFiles.append(caseValue.name + "/Ответ");
+        }
+    }
+
+    if (!badFiles.isEmpty()) {
+        QMessageBox::warning(this, "Ошибка при загрузке",
+                             "Не удалось загрузить некоторые файлы кейсов: " + badFiles.join("; "));
+        return;
     }
 }
 
