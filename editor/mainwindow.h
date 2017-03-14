@@ -24,8 +24,6 @@ private slots:
     void loadSettings();
     void openSection(const Section& section);
 
-    void on_saveAction_triggered();
-
 private:
     void select(QWidget* widget);
 

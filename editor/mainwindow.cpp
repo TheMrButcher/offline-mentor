@@ -26,6 +26,8 @@ MainWindow::MainWindow(QWidget *parent) :
 
     connect(sectionsForm, SIGNAL(requestedOpen(Section)), this, SLOT(openSection(Section)));
 
+    connect(ui->saveAction, SIGNAL(triggered()), sectionEditForm, SLOT(save()));
+
     QTimer::singleShot(0, this, SLOT(loadSettings()));
 }
 
@@ -66,9 +68,4 @@ void MainWindow::openSection(const Section& section)
 void MainWindow::select(QWidget* widget)
 {
     ui->stackedWidget->setCurrentIndex(ui->stackedWidget->indexOf(widget));
-}
-
-void MainWindow::on_saveAction_triggered()
-{
-    sectionEditForm->section().save();
 }

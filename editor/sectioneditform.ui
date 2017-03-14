@@ -44,6 +44,12 @@
       <layout class="QVBoxLayout" name="verticalLayout_2">
        <item>
         <widget class="QTreeWidget" name="treeWidget">
+         <property name="dragEnabled">
+          <bool>true</bool>
+         </property>
+         <property name="dragDropMode">
+          <enum>QAbstractItemView::InternalMove</enum>
+         </property>
          <column>
           <property name="text">
            <string>Содержимое</string>
@@ -58,7 +64,7 @@
             <normaloff>:/icons/section.png</normaloff>:/icons/section.png</iconset>
           </property>
           <property name="flags">
-           <set>ItemIsSelectable|ItemIsUserCheckable|ItemIsEnabled</set>
+           <set>ItemIsSelectable|ItemIsDropEnabled|ItemIsEnabled</set>
           </property>
          </item>
         </widget>

@@ -25,6 +25,9 @@ public:
     Section section() const;
     void setSection(const Section& section);
 
+public slots:
+    void save();
+
 private slots:
     void on_addCaseButton_clicked();
 
@@ -35,6 +38,7 @@ private slots:
 private:
     void setSectionName(QString name);
     void addCase(const Case& caseValue);
+    void generateFileNames(Case& c);
     Section sectionFromUI() const;
     void select(QWidget* widget);
 

@@ -1,6 +1,7 @@
 #include "section.h"
 
 #include <QFile>
+#include <QFileInfo>
 #include <QJsonDocument>
 #include <QJsonObject>
 #include <QJsonArray>
@@ -25,6 +26,7 @@ bool Section::open()
     if (name.isEmpty())
         return false;
     description = rootObj["description"].toString("");
+    nextIndex = rootObj["nextIndex"].toInt(1);
 
     QJsonArray casesArray = rootObj["cases"].toArray();
     cases.clear();
@@ -43,6 +45,7 @@ bool Section::save()
     QJsonObject rootObj;
     rootObj["name"] = name;
     rootObj["description"] = description;
+    rootObj["nextIndex"] = nextIndex;
 
     QJsonArray casesArray;
     foreach (auto c, cases)
@@ -52,4 +55,23 @@ bool Section::save()
     QJsonDocument json(rootObj);
     sectionFile.write(json.toJson());
     return true;
+}
+
+QString Section::nextCaseFilePrefix()
+{
+    QFileInfo fileInfo(path);
+    QString baseName = fileInfo.baseName();
+    QDir sectionDir = dir();
+    for (int i = 0; i < 100; ++i) {
+        QString caseFilePrefix = baseName + " Кейс" + QString::number(nextIndex++);
+        if (!sectionDir.exists(Case::makeQuestionFileName(caseFilePrefix))
+            && !sectionDir.exists(Case::makeAnswerFileName(caseFilePrefix)))
+            return caseFilePrefix;
+    }
+    return QString();
+}
+
+QDir Section::dir()
+{
+    return QFileInfo(path).dir();
 }

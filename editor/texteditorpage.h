@@ -2,6 +2,7 @@
 #define TEXTEDITORPAGE_H
 
 #include <QWidget>
+#include <QDir>
 
 namespace Ui {
 class TextEditorPage;
@@ -16,9 +17,14 @@ public:
     ~TextEditorPage();
 
     void setTitle(QString title);
+    void setFilePath(QDir dir, QString fileName);
+    QString fileName() const;
+    bool save();
 
 private:
     Ui::TextEditorPage *ui;
+    QDir dir;
+    QString myFileName;
 };
 
 #endif // TEXTEDITORPAGE_H
