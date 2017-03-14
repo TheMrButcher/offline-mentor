@@ -46,6 +46,7 @@ private:
     struct CasePages {
         CasePage* mainPage;
         TextEditorPage* questionPage;
+        TextEditorPage* answerPage;
     };
 
     struct NodeDescriptor {

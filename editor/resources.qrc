@@ -6,5 +6,6 @@
         <file>icons/section.png</file>
         <file>icons/save.png</file>
         <file>icons/case.png</file>
+        <file>icons/answer.png</file>
     </qresource>
 </RCC>

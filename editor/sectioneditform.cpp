@@ -28,6 +28,7 @@ Section SectionEditForm::section() const
 
 void SectionEditForm::setSection(const Section& section)
 {
+    ui->treeWidget->setCurrentItem(rootItem);
     select(ui->sectionPage);
     this->originalSection = section;
     setSectionName(section.name);
@@ -37,6 +38,7 @@ void SectionEditForm::setSection(const Section& section)
         auto pages = nodes[caseRootItem].pages;
         delete pages.mainPage;
         delete pages.questionPage;
+        delete pages.answerPage;
         delete caseRootItem;
     }
     nodes.clear();
@@ -111,10 +113,20 @@ void SectionEditForm::addCase(const Case& caseValue)
     questionPage->setTitle("Текст вопроса");
     int questionPageId = ui->stackedWidget->addWidget(questionPage);
 
-    CasePages pages{ casePage, questionPage };
+    QTreeWidgetItem* answerItem = new QTreeWidgetItem();
+    answerItem->setIcon(0, QIcon(":/icons/answer.png"));
+    answerItem->setText(0, "Ответ наставника");
+    caseRootItem->addChild(answerItem);
+
+    TextEditorPage* answerPage = new TextEditorPage;
+    answerPage->setTitle("Текст ответа наставника");
+    int answerPageId = ui->stackedWidget->addWidget(answerPage);
+
+    CasePages pages{ casePage, questionPage, answerPage };
 
     nodes[caseRootItem] = NodeDescriptor{ casePageId, pages };
     nodes[questionItem] = NodeDescriptor{ questionPageId, pages };
+    nodes[answerItem] = NodeDescriptor{ answerPageId, pages };
 }
 
 void SectionEditForm::select(QWidget* widget)
