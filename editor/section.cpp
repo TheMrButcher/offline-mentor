@@ -3,6 +3,7 @@
 #include <QFile>
 #include <QJsonDocument>
 #include <QJsonObject>
+#include <QJsonArray>
 
 Section::Section()
 {}
@@ -24,6 +25,12 @@ bool Section::open()
     if (name.isEmpty())
         return false;
     description = rootObj["description"].toString("");
+
+    QJsonArray casesArray = rootObj["cases"].toArray();
+    cases.clear();
+    foreach (auto caseValue, casesArray)
+        cases.append(Case::fromJson(caseValue.toObject()));
+
     return true;
 }
 
@@ -36,6 +43,11 @@ bool Section::save()
     QJsonObject rootObj;
     rootObj["name"] = name;
     rootObj["description"] = description;
+
+    QJsonArray casesArray;
+    foreach (auto c, cases)
+        casesArray.append(c.toJson());
+    rootObj["cases"] = casesArray;
 
     QJsonDocument json(rootObj);
     sectionFile.write(json.toJson());

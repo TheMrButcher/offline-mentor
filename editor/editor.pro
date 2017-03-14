@@ -19,7 +19,8 @@ SOURCES += main.cpp\
     section.cpp \
     createsectiondialog.cpp \
     settings.cpp \
-    sectioneditform.cpp
+    sectioneditform.cpp \
+    case.cpp
 
 HEADERS  += mainwindow.h \
     version.h \
@@ -28,7 +29,8 @@ HEADERS  += mainwindow.h \
     section.h \
     createsectiondialog.h \
     settings.h \
-    sectioneditform.h
+    sectioneditform.h \
+    case.h
 
 FORMS    += mainwindow.ui \
     sectionsform.ui \
