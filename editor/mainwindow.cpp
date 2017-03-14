@@ -14,6 +14,7 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->setupUi(this);
 
     setWindowTitle("Offline-наставник. Редактор v." + getVersion());
+    showMaximized();
 
     sectionsForm = new SectionsForm(this);
     ui->stackedWidget->addWidget(sectionsForm);

@@ -1,4 +1,6 @@
 #include "sectioneditform.h"
+#include "casepage.h"
+#include "texteditorpage.h"
 #include "ui_sectioneditform.h"
 
 SectionEditForm::SectionEditForm(QWidget *parent) :
@@ -7,6 +9,9 @@ SectionEditForm::SectionEditForm(QWidget *parent) :
 {
     ui->setupUi(this);
     rootItem = ui->treeWidget->topLevelItem(0);
+
+    ui->splitter->setStretchFactor(0, 1);
+    ui->splitter->setStretchFactor(1, 4);
 }
 
 SectionEditForm::~SectionEditForm()
@@ -23,12 +28,15 @@ Section SectionEditForm::section() const
 
 void SectionEditForm::setSection(const Section& section)
 {
+    select(ui->sectionPage);
     this->originalSection = section;
+    setSectionName(section.name);
 
     for (int i = 0; i < rootItem->childCount(); ++i) {
         auto caseRootItem = rootItem->child(i);
-        nodes[caseRootItem].data->disconnect();
-        rootItem->removeChild(caseRootItem);
+        auto pages = nodes[caseRootItem].pages;
+        delete pages.mainPage;
+        delete pages.questionPage;
         delete caseRootItem;
     }
     nodes.clear();
@@ -48,7 +56,9 @@ Section SectionEditForm::sectionFromUI() const
 
     for (int i = 0; i < rootItem->childCount(); ++i) {
         auto caseRootItem = rootItem->child(i);
-        section.cases.append(nodes[caseRootItem].data->value);
+        auto pages = nodes[caseRootItem].pages;
+        Case caseValue = pages.mainPage->getCase();
+        section.cases.append(caseValue);
     }
 
     return section;
@@ -57,59 +67,57 @@ Section SectionEditForm::sectionFromUI() const
 void SectionEditForm::on_addCaseButton_clicked()
 {
     Case caseValue;
-    caseValue.name = "Новый кейс";
+    caseValue.name = "Новый";
     addCase(caseValue);
 }
 
-void SectionEditForm::on_treeWidget_currentItemChanged(
-        QTreeWidgetItem* current, QTreeWidgetItem* previous)
+void SectionEditForm::on_treeWidget_currentItemChanged(QTreeWidgetItem* current, QTreeWidgetItem*)
 {
-    if (nodes.contains(previous)) {
-        nodes[previous].data->disconnect();
-    }
-
     if (current == rootItem) {
         select(ui->sectionPage);
     } else {
-        const auto& node = nodes[current];
-        auto& caseValue = node.data->value;
-        ui->caseNameEdit->setText(caseValue.name);
-        auto caseRootItem = node.data->rootItem;
-        node.data->connections.append(
-                    connect(ui->caseNameEdit, &QLineEdit::textEdited,
-                    [&caseValue, caseRootItem](QString name) {
-                        caseValue.name = name;
-                        caseRootItem->setText(0, name);
-                    }));
-        select(ui->casePage);
+        ui->stackedWidget->setCurrentIndex(nodes[current].pageId);
     }
+}
+
+void SectionEditForm::on_nameEdit_textEdited(const QString &arg)
+{
+    setSectionName(arg);
+}
+
+void SectionEditForm::setSectionName(QString name)
+{
+    rootItem->setText(0, "Раздел \"" + name + "\"");
 }
 
 void SectionEditForm::addCase(const Case& caseValue)
 {
     QTreeWidgetItem* caseRootItem = new QTreeWidgetItem();
     caseRootItem->setIcon(0, QIcon(":/icons/case.png"));
-    caseRootItem->setText(0, caseValue.name);
-
-    QSharedPointer<CaseData> caseData(new CaseData);
-    caseData->value = caseValue;
-
-    caseData->items.append(caseRootItem);
-    caseData->rootItem = caseRootItem;
+    caseRootItem->setText(0, "Кейс \"" + caseValue.name + "\"");
     rootItem->addChild(caseRootItem);
 
-    nodes[caseRootItem].set(NodeType::CaseRoot, caseData);
+    CasePage* casePage = new CasePage;
+    int casePageId = ui->stackedWidget->addWidget(casePage);
+    casePage->setCase(caseValue);
+    casePage->connectWith(caseRootItem);
+
+    QTreeWidgetItem* questionItem = new QTreeWidgetItem();
+    questionItem->setIcon(0, QIcon(":/icons/question.png"));
+    questionItem->setText(0, "Вопрос");
+    caseRootItem->addChild(questionItem);
+
+    TextEditorPage* questionPage = new TextEditorPage;
+    questionPage->setTitle("Текст вопроса");
+    int questionPageId = ui->stackedWidget->addWidget(questionPage);
+
+    CasePages pages{ casePage, questionPage };
+
+    nodes[caseRootItem] = NodeDescriptor{ casePageId, pages };
+    nodes[questionItem] = NodeDescriptor{ questionPageId, pages };
 }
 
 void SectionEditForm::select(QWidget* widget)
 {
     ui->stackedWidget->setCurrentIndex(ui->stackedWidget->indexOf(widget));
-}
-
-void SectionEditForm::CaseData::disconnect()
-{
-    foreach (const auto& connection, connections) {
-        QObject::disconnect(connection);
-    }
-    connections.clear();
 }

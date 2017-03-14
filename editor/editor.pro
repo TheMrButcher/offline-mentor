@@ -20,7 +20,9 @@ SOURCES += main.cpp\
     createsectiondialog.cpp \
     settings.cpp \
     sectioneditform.cpp \
-    case.cpp
+    case.cpp \
+    casepage.cpp \
+    texteditorpage.cpp
 
 HEADERS  += mainwindow.h \
     version.h \
@@ -30,13 +32,17 @@ HEADERS  += mainwindow.h \
     createsectiondialog.h \
     settings.h \
     sectioneditform.h \
-    case.h
+    case.h \
+    casepage.h \
+    texteditorpage.h
 
 FORMS    += mainwindow.ui \
     sectionsform.ui \
     sectionwidget.ui \
     createsectiondialog.ui \
-    sectioneditform.ui
+    sectioneditform.ui \
+    casepage.ui \
+    texteditorpage.ui
 
 RESOURCES += \
     resources.qrc

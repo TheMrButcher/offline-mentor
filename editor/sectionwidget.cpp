@@ -24,6 +24,7 @@ void SectionWidget::setSection(const Section& section)
     ui->pathLabel->setText(section.path);
     ui->descriptionLabel->setText(!section.description.isEmpty()
                                   ? section.description : "отсутствует");
+    ui->questionsNumLabel->setText(QString::number(section.cases.size()));
     ui->groupBox->setTitle("Раздел \"" + section.name + "\"");
 
     int width = std::max(

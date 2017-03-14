@@ -11,6 +11,8 @@ class SectionEditForm;
 }
 
 class QTreeWidgetItem;
+class CasePage;
+class TextEditorPage;
 
 class SectionEditForm : public QWidget
 {
@@ -28,7 +30,10 @@ private slots:
 
     void on_treeWidget_currentItemChanged(QTreeWidgetItem *current, QTreeWidgetItem* previous);
 
+    void on_nameEdit_textEdited(const QString &arg1);
+
 private:
+    void setSectionName(QString name);
     void addCase(const Case& caseValue);
     Section sectionFromUI() const;
     void select(QWidget* widget);
@@ -38,28 +43,14 @@ private:
     Section originalSection;
     QTreeWidgetItem* rootItem;
 
-    enum class NodeType {
-        CaseRoot
-    };
-
-    struct CaseData {
-        Case value;
-        QList<QMetaObject::Connection> connections;
-        QList<QTreeWidgetItem*> items;
-        QTreeWidgetItem* rootItem;
-
-        void disconnect();
+    struct CasePages {
+        CasePage* mainPage;
+        TextEditorPage* questionPage;
     };
 
     struct NodeDescriptor {
-        NodeType type;
-        QSharedPointer<CaseData> data;
-
-        void set(NodeType type, QSharedPointer<CaseData> data)
-        {
-            this->type = type;
-            this->data = data;
-        }
+        int pageId;
+        CasePages pages;
     };
 
     QHash<QTreeWidgetItem*, NodeDescriptor> nodes;
