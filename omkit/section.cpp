@@ -1,27 +1,22 @@
 #include "section.h"
-
-#include <QFile>
+#include "json_utils.h"
 #include <QFileInfo>
-#include <QJsonDocument>
-#include <QJsonObject>
 #include <QJsonArray>
 
 Section::Section()
 {}
 
+QList<Section> Section::findAll(QString /*path*/)
+{
+    QList<Section> result;
+    return result;
+}
+
 bool Section::open()
 {
-    QFile sectionFile(path);
-    if (!sectionFile.open(QIODevice::ReadOnly))
+    QJsonObject rootObj;
+    if (!readJSON(path, rootObj))
         return false;
-    QJsonParseError errors;
-    QJsonDocument json = QJsonDocument::fromJson(sectionFile.readAll(), &errors);
-    if (errors.error != QJsonParseError::NoError)
-        return false;
-    if (!json.isObject())
-        return false;
-
-    auto rootObj = json.object();
     name = rootObj["name"].toString("");
     if (name.isEmpty())
         return false;
@@ -38,10 +33,6 @@ bool Section::open()
 
 bool Section::save()
 {
-    QFile sectionFile(path);
-    if (!sectionFile.open(QIODevice::WriteOnly))
-        return false;
-
     QJsonObject rootObj;
     rootObj["name"] = name;
     rootObj["description"] = description;
@@ -52,9 +43,7 @@ bool Section::save()
         casesArray.append(c.toJson());
     rootObj["cases"] = casesArray;
 
-    QJsonDocument json(rootObj);
-    sectionFile.write(json.toJson());
-    return true;
+    return writeJSON(path, rootObj);
 }
 
 QString Section::nextCaseFilePrefix()

@@ -1,7 +1,7 @@
 #ifndef SECTIONWIDGET_H
 #define SECTIONWIDGET_H
 
-#include "section.h"
+#include <omkit/section.h>
 
 #include <QWidget>
 

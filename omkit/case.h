@@ -1,10 +1,12 @@
 #ifndef CASE_H
 #define CASE_H
 
+#include "omkit_global.h"
+
 #include <QJsonObject>
 #include <QString>
 
-class Case
+class OMKITSHARED_EXPORT Case
 {
 public:
     Case();

@@ -1,7 +1,7 @@
 #ifndef SECTIONSFORM_H
 #define SECTIONSFORM_H
 
-#include "section.h"
+#include <omkit/section.h>
 
 #include <QList>
 #include <QWidget>

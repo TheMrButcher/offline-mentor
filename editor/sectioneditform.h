@@ -1,7 +1,7 @@
 #ifndef SECTIONEDITFORM_H
 #define SECTIONEDITFORM_H
 
-#include "section.h"
+#include <omkit/section.h>
 
 #include <QWidget>
 #include <memory>

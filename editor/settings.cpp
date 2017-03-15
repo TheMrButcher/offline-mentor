@@ -1,10 +1,10 @@
 #include "settings.h"
-#include "section.h"
+
+#include <omkit/json_utils.h>
+#include <omkit/section.h>
+
 #include <QDir>
-#include <QFile>
 #include <QFileInfo>
-#include <QJsonDocument>
-#include <QJsonObject>
 #include <QJsonArray>
 
 namespace {
@@ -19,17 +19,10 @@ Settings& Settings::instance()
 
 void Settings::read()
 {
-    QFile settingsFile(SETTINGS_FILE_NAME);
-    if (!settingsFile.open(QIODevice::ReadOnly))
-        return;
-    QJsonParseError errors;
-    QJsonDocument json = QJsonDocument::fromJson(settingsFile.readAll(), &errors);
-    if (errors.error != QJsonParseError::NoError)
-        return;
-    if (!json.isObject())
+    QJsonObject rootObj;
+    if (!readJSON(SETTINGS_FILE_NAME, rootObj))
         return;
 
-    auto rootObj = json.object();
     lastDirectoryPath = rootObj["lastDirectoryPath"].toString(lastDirectoryPath);
 
     QJsonArray knownSectionsArray = rootObj["knownSections"].toArray();
@@ -41,10 +34,6 @@ void Settings::read()
 
 void Settings::write()
 {
-    QFile settingsFile(SETTINGS_FILE_NAME);
-    if (!settingsFile.open(QIODevice::WriteOnly))
-        return;
-
     QJsonObject rootObj;
     rootObj["lastDirectoryPath"] = lastDirectoryPath;
 
@@ -53,8 +42,7 @@ void Settings::write()
         knownSectionsArray.append(knownSection);
     rootObj["knownSections"] = knownSectionsArray;
 
-    QJsonDocument json(rootObj);
-    settingsFile.write(json.toJson());
+    writeJSON(SETTINGS_FILE_NAME, rootObj);
 }
 
 QString Settings::safeLastDirectoryPath()

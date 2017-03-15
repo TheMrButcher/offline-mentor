@@ -1,7 +1,7 @@
 #ifndef MAINWINDOW_H
 #define MAINWINDOW_H
 
-#include "section.h"
+#include <omkit/section.h>
 
 #include <QMainWindow>
 

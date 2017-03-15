@@ -1,16 +1,19 @@
 #ifndef SECTION_H
 #define SECTION_H
 
+#include "omkit_global.h"
 #include "case.h"
 
 #include <QString>
 #include <QList>
 #include <QDir>
 
-class Section
+class OMKITSHARED_EXPORT Section
 {
 public:
     Section();
+
+    static QList<Section> findAll(QString path);
 
     bool open();
     bool save();

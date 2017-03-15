@@ -15,22 +15,18 @@ SOURCES += main.cpp\
         mainwindow.cpp \
     sectionsform.cpp \
     sectionwidget.cpp \
-    section.cpp \
     createsectiondialog.cpp \
     settings.cpp \
     sectioneditform.cpp \
-    case.cpp \
     casepage.cpp \
     texteditorpage.cpp
 
 HEADERS  += mainwindow.h \
     sectionsform.h \
     sectionwidget.h \
-    section.h \
     createsectiondialog.h \
     settings.h \
     sectioneditform.h \
-    case.h \
     casepage.h \
     texteditorpage.h
 

@@ -47,7 +47,7 @@ void MainWindow::loadSettings()
                              "Возможно, приложение установлено не полностью. "
                              "Приложение может работать некорректно.");
     loginForm->setUserName(settings.lastLogin);
-    sectionsForm->setSections(Section::loadSections());
+    sectionsForm->setSections(Section::findAll(settings.sectionsPath));
 }
 
 void MainWindow::onLogin()

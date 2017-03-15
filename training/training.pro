@@ -17,15 +17,13 @@ SOURCES += main.cpp\
     loginform.cpp \
     settings.cpp \
     sectionsform.cpp \
-    sectionwidget.cpp \
-    section.cpp
+    sectionwidget.cpp
 
 HEADERS  += mainwindow.h \
     loginform.h \
     settings.h \
     sectionsform.h \
-    sectionwidget.h \
-    section.h
+    sectionwidget.h
 
 FORMS    += mainwindow.ui \
     loginform.ui \

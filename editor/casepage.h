@@ -1,7 +1,7 @@
 #ifndef CASEPAGE_H
 #define CASEPAGE_H
 
-#include "case.h"
+#include <omkit/case.h>
 
 #include <QWidget>
 

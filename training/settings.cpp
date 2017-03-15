@@ -1,7 +1,5 @@
 #include "settings.h"
-#include <QFile>
-#include <QJsonDocument>
-#include <QJsonObject>
+#include <omkit/json_utils.h>
 
 namespace {
 const QString SETTINGS_FILE_NAME = "Settings.json";
@@ -15,17 +13,9 @@ Settings&Settings::instance()
 
 bool Settings::read()
 {
-    QFile settingsFile(SETTINGS_FILE_NAME);
-    if (!settingsFile.open(QIODevice::ReadOnly))
+    QJsonObject rootObj;
+    if (!readJSON(SETTINGS_FILE_NAME, rootObj))
         return false;
-    QJsonParseError errors;
-    QJsonDocument json = QJsonDocument::fromJson(settingsFile.readAll(), &errors);
-    if (errors.error != QJsonParseError::NoError)
-        return false;
-    if (!json.isObject())
-        return false;
-
-    auto rootObj = json.object();
     lastLogin = rootObj["lastLogin"].toString(lastLogin);
     sectionsPath = rootObj["sectionsPath"].toString(sectionsPath);
     return true;
@@ -33,16 +23,10 @@ bool Settings::read()
 
 void Settings::write() const
 {
-    QFile settingsFile(SETTINGS_FILE_NAME);
-    if (!settingsFile.open(QIODevice::WriteOnly))
-        return;
-
     QJsonObject rootObj;
     rootObj["lastLogin"] = lastLogin;
     rootObj["sectionsPath"] = sectionsPath;
-
-    QJsonDocument json(rootObj);
-    settingsFile.write(json.toJson());
+    writeJSON(SETTINGS_FILE_NAME, rootObj);
 }
 
 Settings::Settings()

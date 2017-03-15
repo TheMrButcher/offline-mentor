@@ -12,11 +12,17 @@ TEMPLATE = lib
 DEFINES += OMKIT_LIBRARY
 
 SOURCES += omkit.cpp \
-    utils.cpp
+    utils.cpp \
+    case.cpp \
+    section.cpp \
+    json_utils.cpp
 
 HEADERS += omkit.h\
         omkit_global.h \
-    utils.h
+    utils.h \
+    case.h \
+    section.h \
+    json_utils.h
 
 unix {
     target.path = /usr/lib

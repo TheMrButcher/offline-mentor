@@ -1,7 +1,8 @@
 #include "createsectiondialog.h"
-#include "section.h"
 #include "settings.h"
 #include "ui_createsectiondialog.h"
+
+#include <omkit/section.h>
 
 #include <QMessageBox>
 #include <QFileDialog>

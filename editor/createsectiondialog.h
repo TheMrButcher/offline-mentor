@@ -1,7 +1,7 @@
 #ifndef CREATESECTIONDIALOG_H
 #define CREATESECTIONDIALOG_H
 
-#include "section.h"
+#include <omkit/section.h>
 
 #include <QDialog>
 
