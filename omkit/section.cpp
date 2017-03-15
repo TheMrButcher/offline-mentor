@@ -2,13 +2,31 @@
 #include "json_utils.h"
 #include <QFileInfo>
 #include <QJsonArray>
+#include <QDir>
+
+namespace {
+void findAll(QString path, QList<Section>& dst)
+{
+    QDir dir(path);
+    foreach (const auto& entry, dir.entryList(QStringList("*.oms"), QDir::Files)) {
+        Section section;
+        section.path = dir.absoluteFilePath(entry);
+        if (section.open())
+            dst.append(section);
+    }
+    foreach (const auto& entry, dir.entryList(QDir::Dirs | QDir::NoDotAndDotDot))
+        findAll(dir.absoluteFilePath(entry), dst);
+}
+} // namespace
 
 Section::Section()
 {}
 
-QList<Section> Section::findAll(QString /*path*/)
+QList<Section> Section::findAll(QString path)
 {
     QList<Section> result;
+    if (QFileInfo(path).isDir())
+        ::findAll(path, result);
     return result;
 }
 

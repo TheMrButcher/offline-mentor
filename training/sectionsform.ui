@@ -33,7 +33,7 @@
       <widget class="QLabel" name="greetingsLabel">
        <property name="font">
         <font>
-         <pointsize>18</pointsize>
+         <pointsize>12</pointsize>
         </font>
        </property>
        <property name="text">
@@ -61,13 +61,16 @@
      <property name="widgetResizable">
       <bool>true</bool>
      </property>
+     <property name="alignment">
+      <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignTop</set>
+     </property>
      <widget class="QWidget" name="sectionsList">
       <property name="geometry">
        <rect>
         <x>0</x>
         <y>0</y>
         <width>380</width>
-        <height>243</height>
+        <height>252</height>
        </rect>
       </property>
       <layout class="QVBoxLayout" name="verticalLayout_2">

@@ -15,5 +15,13 @@ SectionWidget::~SectionWidget()
 
 void SectionWidget::setSection(const Section& section)
 {
-    ui->groupBox->setTitle("Секция \"" + section.name + "\"");
+    ui->descriptionLabel->setText(!section.description.isEmpty()
+                                  ? section.description : "отсутствует");
+    ui->questionsNumLabel->setText(QString::number(section.cases.size()));
+    ui->groupBox->setTitle("Раздел \"" + section.name + "\"");
+
+    int width = std::max(
+                ui->groupBox->sizeHint().width(),
+                ui->groupBox->minimumWidth());
+    ui->groupBox->setFixedWidth(width);
 }
