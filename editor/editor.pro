@@ -11,7 +11,6 @@ greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 TARGET = editor
 TEMPLATE = app
 
-
 SOURCES += main.cpp\
         mainwindow.cpp \
     sectionsform.cpp \
@@ -25,7 +24,6 @@ SOURCES += main.cpp\
     texteditorpage.cpp
 
 HEADERS  += mainwindow.h \
-    version.h \
     sectionsform.h \
     sectionwidget.h \
     section.h \
@@ -46,3 +44,9 @@ FORMS    += mainwindow.ui \
 
 RESOURCES += \
     resources.qrc
+
+win32:CONFIG(release, debug|release): LIBS += -L$$PWD/../omkit-output/release/ -lomkit
+else:win32:CONFIG(debug, debug|release): LIBS += -L$$PWD/../omkit-output/debug/ -lomkit
+
+INCLUDEPATH += $$PWD/../
+DEPENDPATH += $$PWD/../omkit/

@@ -1,11 +1,14 @@
 #include "mainwindow.h"
-#include "version.h"
 #include "sectionsform.h"
 #include "sectioneditform.h"
 #include "settings.h"
 #include "ui_mainwindow.h"
 
+#include <omkit/utils.h>
+#include <omkit/omkit.h>
+
 #include <QTimer>
+#include <QDebug>
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
@@ -15,6 +18,8 @@ MainWindow::MainWindow(QWidget *parent) :
 
     setWindowTitle("Offline-наставник. Редактор v." + getVersion());
     showMaximized();
+
+    qDebug() << "OMKit: v." << OMKit::instance().getVersion();
 
     sectionsForm = new SectionsForm(this);
     ui->stackedWidget->addWidget(sectionsForm);

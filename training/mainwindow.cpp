@@ -1,12 +1,15 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
-#include "version.h"
 #include "loginform.h"
 #include "sectionsform.h"
 #include "settings.h"
 
+#include <omkit/utils.h>
+#include <omkit/omkit.h>
+
 #include <QMessageBox>
 #include <QTimer>
+#include <QDebug>
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
@@ -14,6 +17,8 @@ MainWindow::MainWindow(QWidget *parent) :
 {
     ui->setupUi(this);
     setWindowTitle("Offline-наставник. Тренажер v." + getVersion());
+
+    qDebug() << "OMKit: v." << OMKit::instance().getVersion();
 
     loginForm = new LoginForm(this);
     ui->stackedWidget->addWidget(loginForm);

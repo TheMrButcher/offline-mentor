@@ -1,7 +1,5 @@
-#ifndef VERSION_H
-#define VERSION_H
+#include "utils.h"
 
-#include <QString>
 #include <QFile>
 
 QString getVersion()
@@ -10,5 +8,3 @@ QString getVersion()
     versionFile.open(QIODevice::ReadOnly);
     return QString(versionFile.readAll());
 }
-
-#endif // VERSION_H

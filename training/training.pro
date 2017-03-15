@@ -21,7 +21,6 @@ SOURCES += main.cpp\
     section.cpp
 
 HEADERS  += mainwindow.h \
-    version.h \
     loginform.h \
     settings.h \
     sectionsform.h \
@@ -35,3 +34,9 @@ FORMS    += mainwindow.ui \
 
 RESOURCES += \
     resources.qrc
+
+win32:CONFIG(release, debug|release): LIBS += -L$$PWD/../omkit-output/release/ -lomkit
+else:win32:CONFIG(debug, debug|release): LIBS += -L$$PWD/../omkit-output/debug/ -lomkit
+
+INCLUDEPATH += $$PWD/../
+DEPENDPATH += $$PWD/../omkit/
