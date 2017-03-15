@@ -25,5 +25,6 @@ void SectionsForm::setSections(QList<Section> sections)
         SectionWidget* widget = new SectionWidget(this);
         widget->setSection(section);
         ui->sectionsList->layout()->addWidget(widget);
+        connect(widget, SIGNAL(requestedOpen(Section)), this, SIGNAL(requestedOpen(Section)));
     }
 }

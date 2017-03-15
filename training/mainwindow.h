@@ -1,6 +1,8 @@
 #ifndef MAINWINDOW_H
 #define MAINWINDOW_H
 
+#include <omkit/section.h>
+
 #include <QMainWindow>
 
 namespace Ui {
@@ -9,6 +11,7 @@ class MainWindow;
 
 class LoginForm;
 class SectionsForm;
+class TrainingForm;
 
 class MainWindow : public QMainWindow
 {
@@ -21,6 +24,7 @@ public:
 private slots:
     void loadSettings();
     void onLogin();
+    void openSection(const Section& section);
 
 private:
     void select(QWidget* widget);
@@ -28,6 +32,7 @@ private:
     Ui::MainWindow *ui;
     LoginForm* loginForm;
     SectionsForm* sectionsForm;
+    TrainingForm* trainingForm;
 };
 
 #endif // MAINWINDOW_H

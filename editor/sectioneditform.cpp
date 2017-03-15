@@ -38,7 +38,7 @@ void SectionEditForm::setSection(const Section& section)
     this->originalSection = section;
     setSectionName(originalSection.name);
 
-    for (int i = 0; i < rootItem->childCount(); ++i) {
+    for (int i = rootItem->childCount() - 1; i >= 0; --i) {
         auto caseRootItem = rootItem->child(i);
         auto pages = nodes[caseRootItem].pages;
         delete pages.mainPage;

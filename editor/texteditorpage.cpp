@@ -1,7 +1,6 @@
 #include "texteditorpage.h"
 #include "ui_texteditorpage.h"
-#include <QTextDocumentWriter>
-#include <QTextCodec>
+#include <omkit/html_utils.h>
 
 TextEditorPage::TextEditorPage(QWidget *parent) :
     QWidget(parent),
@@ -36,22 +35,15 @@ bool TextEditorPage::save()
     if (myFileName.isEmpty())
         return false;
     QString path = dir.absoluteFilePath(myFileName);
-    QTextDocumentWriter writer(path);
-    return writer.write(ui->textEdit->document());
+    return writeHTML(path, ui->textEdit->document());
 }
 
 bool TextEditorPage::load()
 {
     QString path = dir.absoluteFilePath(myFileName);
-    QFile file(path);
-    if (!file.open(QFile::ReadOnly))
+    QString html = readHTML(path);
+    if (html.isEmpty())
         return false;
-
-    QByteArray data = file.readAll();
-    QTextCodec *codec = Qt::codecForHtml(data);
-    QString str = codec->toUnicode(data);
-    if (!Qt::mightBeRichText(str))
-        return false;
-    ui->textEdit->setHtml(str);
+    ui->textEdit->setHtml(html);
     return true;
 }

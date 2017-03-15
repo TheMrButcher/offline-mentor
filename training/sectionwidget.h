@@ -19,8 +19,16 @@ public:
 
     void setSection(const Section& section);
 
+signals:
+    void requestedOpen(Section);
+
+private slots:
+    void on_enterButton_clicked();
+
 private:
     Ui::SectionWidget *ui;
+
+    Section section;
 };
 
 #endif // SECTIONWIDGET_H

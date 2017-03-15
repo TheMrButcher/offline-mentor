@@ -4,7 +4,7 @@
 #
 #-------------------------------------------------
 
-QT       -= gui
+QT       += core gui
 
 TARGET = omkit
 TEMPLATE = lib
@@ -15,14 +15,16 @@ SOURCES += omkit.cpp \
     utils.cpp \
     case.cpp \
     section.cpp \
-    json_utils.cpp
+    json_utils.cpp \
+    html_utils.cpp
 
 HEADERS += omkit.h\
         omkit_global.h \
     utils.h \
     case.h \
     section.h \
-    json_utils.h
+    json_utils.h \
+    html_utils.h
 
 unix {
     target.path = /usr/lib

@@ -17,18 +17,24 @@ SOURCES += main.cpp\
     loginform.cpp \
     settings.cpp \
     sectionsform.cpp \
-    sectionwidget.cpp
+    sectionwidget.cpp \
+    trainingform.cpp \
+    questionpage.cpp
 
 HEADERS  += mainwindow.h \
     loginform.h \
     settings.h \
     sectionsform.h \
-    sectionwidget.h
+    sectionwidget.h \
+    trainingform.h \
+    questionpage.h
 
 FORMS    += mainwindow.ui \
     loginform.ui \
     sectionsform.ui \
-    sectionwidget.ui
+    sectionwidget.ui \
+    trainingform.ui \
+    questionpage.ui
 
 RESOURCES += \
     resources.qrc

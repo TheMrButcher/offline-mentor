@@ -20,6 +20,9 @@ public:
 
     void setUserName(QString name);
 
+signals:
+    void requestedOpen(Section);
+
 public slots:
     void setSections(QList<Section> sections);
 

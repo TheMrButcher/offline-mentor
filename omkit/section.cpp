@@ -78,7 +78,7 @@ QString Section::nextCaseFilePrefix()
     return QString();
 }
 
-QDir Section::dir()
+QDir Section::dir() const
 {
     return QFileInfo(path).dir();
 }

@@ -2,6 +2,7 @@
 #include "ui_mainwindow.h"
 #include "loginform.h"
 #include "sectionsform.h"
+#include "trainingform.h"
 #include "settings.h"
 
 #include <omkit/utils.h>
@@ -16,6 +17,8 @@ MainWindow::MainWindow(QWidget *parent) :
     ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
+
+    showMaximized();
     setWindowTitle("Offline-наставник. Тренажер v." + getVersion());
 
     qDebug() << "OMKit: v." << OMKit::instance().getVersion();
@@ -26,9 +29,13 @@ MainWindow::MainWindow(QWidget *parent) :
     sectionsForm = new SectionsForm(this);
     ui->stackedWidget->addWidget(sectionsForm);
 
+    trainingForm = new TrainingForm(this);
+    ui->stackedWidget->addWidget(trainingForm);
+
     select(loginForm);
 
     connect(loginForm, SIGNAL(login()), this, SLOT(onLogin()));
+    connect(sectionsForm, SIGNAL(requestedOpen(Section)), this, SLOT(openSection(Section)));
 
     QTimer::singleShot(0, this, SLOT(loadSettings()));
 }
@@ -54,6 +61,12 @@ void MainWindow::onLogin()
 {
     sectionsForm->setUserName(loginForm->userName());
     select(sectionsForm);
+}
+
+void MainWindow::openSection(const Section& section)
+{
+    trainingForm->setSection(section);
+    select(trainingForm);
 }
 
 void MainWindow::select(QWidget* widget)

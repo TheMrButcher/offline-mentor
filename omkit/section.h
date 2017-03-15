@@ -18,7 +18,7 @@ public:
     bool open();
     bool save();
     QString nextCaseFilePrefix();
-    QDir dir();
+    QDir dir() const;
 
     QString name;
     QString description;
