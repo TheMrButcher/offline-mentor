@@ -24,11 +24,14 @@ public:
 
 signals:
     void enteredAnswer(QListWidgetItem* item);
+    void requestedMentorAnswer(QListWidgetItem* item);
 
 private slots:
     void on_answerEdit_textChanged();
 
     void on_enterButton_clicked();
+
+    void on_toMentorAnswerButton_clicked();
 
 private:
     Ui::QuestionPage *ui;

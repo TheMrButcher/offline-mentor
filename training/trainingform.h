@@ -25,12 +25,16 @@ public:
 private slots:
     void on_listWidget_itemSelectionChanged();
     void onAnswerEntered(QListWidgetItem* caseItem);
+    void toMentorAnswer(QListWidgetItem* caseItem);
+    void backToQuestion(QListWidgetItem* caseItem);
+    void next(QListWidgetItem* caseItem);
 
 private:
     Ui::TrainingForm *ui;
 
     struct NodeDescriptor {
         int questionPageId;
+        int mentorAnswerPageId;
         QListWidgetItem* nextItem;
     };
 

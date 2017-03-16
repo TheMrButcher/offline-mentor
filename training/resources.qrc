@@ -3,5 +3,8 @@
         <file>VERSION.txt</file>
         <file>icons/question.png</file>
         <file>icons/answered.png</file>
+        <file>icons/back.png</file>
+        <file>icons/forward.png</file>
+        <file>icons/ok.png</file>
     </qresource>
 </RCC>

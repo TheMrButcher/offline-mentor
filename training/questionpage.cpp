@@ -26,6 +26,7 @@ bool QuestionPage::loadCase(const Section& section, const Case& caseValue)
     this->section = section;
     this->caseValue = caseValue;
     ui->enterButton->setEnabled(false);
+    ui->toMentorAnswerButton->hide();
     return true;
 }
 
@@ -41,5 +42,13 @@ void QuestionPage::on_answerEdit_textChanged()
 
 void QuestionPage::on_enterButton_clicked()
 {
+    ui->answerEdit->setReadOnly(true);
+    ui->enterButton->hide();
+    ui->toMentorAnswerButton->show();
     emit enteredAnswer(item);
+}
+
+void QuestionPage::on_toMentorAnswerButton_clicked()
+{
+    emit requestedMentorAnswer(item);
 }

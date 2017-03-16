@@ -1,5 +1,6 @@
 #include "trainingform.h"
 #include "questionpage.h"
+#include "mentoranswerpage.h"
 #include "ui_trainingform.h"
 #include <QMessageBox>
 
@@ -44,17 +45,35 @@ void TrainingForm::setSection(const Section& section)
             badFiles.append(caseValue.name + "/Вопрос");
             continue;
         }
+
+        MentorAnswerPage* mentorAnswerPage = new MentorAnswerPage;
+        if (!mentorAnswerPage->loadCase(section, caseValue)) {
+            delete questionPage;
+            delete mentorAnswerPage;
+            badFiles.append(caseValue.name + "/Ответ");
+            continue;
+        }
+
         int questionPageId = ui->stackedWidget->addWidget(questionPage);
+        int mentorAnswerPageId = ui->stackedWidget->addWidget(mentorAnswerPage);
         QListWidgetItem* item = new QListWidgetItem(ui->listWidget);
         item->setText(QString("%1. Кейс \"%2\"").arg(nextCaseIndex).arg(caseValue.name));
         item->setIcon(QIcon(":/icons/question.png"));
-        nodes[item] = NodeDescriptor{ questionPageId, nullptr };\
+        nodes[item] = NodeDescriptor{ questionPageId, mentorAnswerPageId, nullptr };
         if (prevItem)
             nodes[prevItem].nextItem = item;
 
         questionPage->connectWith(item);
         connect(questionPage, SIGNAL(enteredAnswer(QListWidgetItem*)),
                 this, SLOT(onAnswerEntered(QListWidgetItem*)));
+        connect(questionPage, SIGNAL(requestedMentorAnswer(QListWidgetItem*)),
+                this, SLOT(toMentorAnswer(QListWidgetItem*)));
+
+        mentorAnswerPage->connectWith(item);
+        connect(mentorAnswerPage, SIGNAL(requestedBack(QListWidgetItem*)),
+                this, SLOT(backToQuestion(QListWidgetItem*)));
+        connect(mentorAnswerPage, SIGNAL(requestedNext(QListWidgetItem*)),
+                this, SLOT(next(QListWidgetItem*)));
 
         if (!itemToSelect) {
             itemToSelect = item;
@@ -91,8 +110,29 @@ void TrainingForm::onAnswerEntered(QListWidgetItem* caseItem)
 {
     if (!nodes.contains(caseItem))
         return;
-    const auto& node = nodes[caseItem];
     caseItem->setIcon(QIcon(":/icons/answered.png"));
+    ui->stackedWidget->setCurrentIndex(nodes[caseItem].mentorAnswerPageId);
+}
+
+void TrainingForm::toMentorAnswer(QListWidgetItem* caseItem)
+{
+    if (!nodes.contains(caseItem))
+        return;
+    ui->stackedWidget->setCurrentIndex(nodes[caseItem].mentorAnswerPageId);
+}
+
+void TrainingForm::backToQuestion(QListWidgetItem* caseItem)
+{
+    if (!nodes.contains(caseItem))
+        return;
+    ui->stackedWidget->setCurrentIndex(nodes[caseItem].questionPageId);
+}
+
+void TrainingForm::next(QListWidgetItem* caseItem)
+{
+    if (!nodes.contains(caseItem))
+        return;
+    const auto& node = nodes[caseItem];
     if (node.nextItem) {
         ui->listWidget->setCurrentItem(node.nextItem);
         ui->stackedWidget->setCurrentIndex(nodes[node.nextItem].questionPageId);
