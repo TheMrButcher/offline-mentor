@@ -26,8 +26,7 @@ SectionEditForm::~SectionEditForm()
 Section SectionEditForm::section() const
 {
     Section result = sectionFromUI();
-    result.path = originalSection.path;
-    result.nextIndex = originalSection.nextIndex;
+    result.copyHidden(originalSection);
     return result;
 }
 
@@ -124,7 +123,7 @@ Section SectionEditForm::sectionFromUI() const
 
 void SectionEditForm::on_addCaseButton_clicked()
 {
-    Case caseValue;
+    Case caseValue = Case::createCase();
     caseValue.name = "Новый";
     generateFileNames(caseValue);
     addCase(caseValue);

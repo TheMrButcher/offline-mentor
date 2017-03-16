@@ -30,8 +30,8 @@ void CreateSectionDialog::accept()
     if (!path.endsWith(".oms", Qt::CaseInsensitive))
         path.append(".oms");
 
+    section = Section::createSection(path);
     section.name = ui->nameEdit->text();
-    section.path = path;
 
     if (section.name.isEmpty()) {
         QMessageBox::warning(this, "Ошибка", "Имя раздела не указано.");
@@ -48,9 +48,24 @@ void CreateSectionDialog::accept()
 
 void CreateSectionDialog::on_choosePathButton_clicked()
 {
+    QString prevPath = ui->pathEdit->text();
+    QString startPath;
+    if (!prevPath.isEmpty()) {
+        QFileInfo fileInfo(prevPath);
+        if (fileInfo.isDir()) {
+            startPath = prevPath;
+        } else {
+            QString prevParentPath = fileInfo.absolutePath();
+            if (QFileInfo(prevParentPath).isDir())
+                startPath = prevParentPath;
+        }
+    }
+    if (startPath.isEmpty())
+        startPath = Settings::instance().safeLastDirectoryPath();
+
     QString path = QFileDialog::getSaveFileName(
                 this, "Путь к файлу раздела",
-                Settings::instance().safeLastDirectoryPath(),
+                startPath,
                 "Файл раздела (*.oms)");
     if (!path.isEmpty()) {
         ui->pathEdit->setText(path);

@@ -22,6 +22,15 @@ void findAll(QString path, QList<Section>& dst)
 Section::Section()
 {}
 
+Section Section::createSection(QString path)
+{
+    Section section;
+    section.path = path;
+    section.nextIndex = 1;
+    section.id = QUuid::createUuid();
+    return section;
+}
+
 QList<Section> Section::findAll(QString path)
 {
     QList<Section> result;
@@ -34,6 +43,9 @@ bool Section::open()
 {
     QJsonObject rootObj;
     if (!readJSON(path, rootObj))
+        return false;
+    id = QUuid(rootObj["id"].toString(""));
+    if (id.isNull())
         return false;
     name = rootObj["name"].toString("");
     if (name.isEmpty())
@@ -52,6 +64,7 @@ bool Section::open()
 bool Section::save()
 {
     QJsonObject rootObj;
+    rootObj["id"] = id.toString();
     rootObj["name"] = name;
     rootObj["description"] = description;
     rootObj["nextIndex"] = nextIndex;
@@ -81,4 +94,11 @@ QString Section::nextCaseFilePrefix()
 QDir Section::dir() const
 {
     return QFileInfo(path).dir();
+}
+
+void Section::copyHidden(const Section& section)
+{
+    path = section.path;
+    nextIndex = section.nextIndex;
+    id = section.id;
 }
