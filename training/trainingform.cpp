@@ -34,6 +34,7 @@ void TrainingForm::setSection(const Section& section)
     int nextCaseIndex = 1;
     QStringList badFiles;
 
+    QListWidgetItem* prevItem = nullptr;
     QListWidgetItem* itemToSelect = nullptr;
     int pageToShowId = 0;
     foreach (const auto& caseValue, section.cases) {
@@ -47,7 +48,13 @@ void TrainingForm::setSection(const Section& section)
         QListWidgetItem* item = new QListWidgetItem(ui->listWidget);
         item->setText(QString("%1. Кейс \"%2\"").arg(nextCaseIndex).arg(caseValue.name));
         item->setIcon(QIcon(":/icons/question.png"));
-        nodes[item] = NodeDescriptor{ questionPageId };
+        nodes[item] = NodeDescriptor{ questionPageId, nullptr };\
+        if (prevItem)
+            nodes[prevItem].nextItem = item;
+
+        questionPage->connectWith(item);
+        connect(questionPage, SIGNAL(enteredAnswer(QListWidgetItem*)),
+                this, SLOT(onAnswerEntered(QListWidgetItem*)));
 
         if (!itemToSelect) {
             itemToSelect = item;
@@ -55,6 +62,7 @@ void TrainingForm::setSection(const Section& section)
         }
 
         ++nextCaseIndex;
+        prevItem = item;
     }
 
     if (itemToSelect) {
@@ -77,4 +85,16 @@ void TrainingForm::on_listWidget_itemSelectionChanged()
     auto item = selectedItems.front();
     const auto& node = nodes[item];
     ui->stackedWidget->setCurrentIndex(node.questionPageId);
+}
+
+void TrainingForm::onAnswerEntered(QListWidgetItem* caseItem)
+{
+    if (!nodes.contains(caseItem))
+        return;
+    const auto& node = nodes[caseItem];
+    caseItem->setIcon(QIcon(":/icons/answered.png"));
+    if (node.nextItem) {
+        ui->listWidget->setCurrentItem(node.nextItem);
+        ui->stackedWidget->setCurrentIndex(nodes[node.nextItem].questionPageId);
+    }
 }

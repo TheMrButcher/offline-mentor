@@ -25,5 +25,21 @@ bool QuestionPage::loadCase(const Section& section, const Case& caseValue)
     ui->titleLabel->setText("Кейс \"" + caseValue.name + "\"");
     this->section = section;
     this->caseValue = caseValue;
+    ui->enterButton->setEnabled(false);
     return true;
+}
+
+void QuestionPage::connectWith(QListWidgetItem* item)
+{
+    this->item = item;
+}
+
+void QuestionPage::on_answerEdit_textChanged()
+{
+    ui->enterButton->setEnabled(!ui->answerEdit->document()->isEmpty());
+}
+
+void QuestionPage::on_enterButton_clicked()
+{
+    emit enteredAnswer(item);
 }

@@ -24,12 +24,14 @@ public:
 
 private slots:
     void on_listWidget_itemSelectionChanged();
+    void onAnswerEntered(QListWidgetItem* caseItem);
 
 private:
     Ui::TrainingForm *ui;
 
     struct NodeDescriptor {
         int questionPageId;
+        QListWidgetItem* nextItem;
     };
 
     Section section;

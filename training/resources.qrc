@@ -2,5 +2,6 @@
     <qresource prefix="/">
         <file>VERSION.txt</file>
         <file>icons/question.png</file>
+        <file>icons/answered.png</file>
     </qresource>
 </RCC>

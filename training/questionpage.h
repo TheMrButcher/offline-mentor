@@ -9,6 +9,8 @@ namespace Ui {
 class QuestionPage;
 }
 
+class QListWidgetItem;
+
 class QuestionPage : public QWidget
 {
     Q_OBJECT
@@ -18,12 +20,22 @@ public:
     ~QuestionPage();
 
     bool loadCase(const Section& section, const Case& caseValue);
+    void connectWith(QListWidgetItem* item);
+
+signals:
+    void enteredAnswer(QListWidgetItem* item);
+
+private slots:
+    void on_answerEdit_textChanged();
+
+    void on_enterButton_clicked();
 
 private:
     Ui::QuestionPage *ui;
 
     Section section;
     Case caseValue;
+    QListWidgetItem* item = nullptr;
 };
 
 #endif // QUESTIONPAGE_H
