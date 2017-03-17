@@ -4,12 +4,14 @@
 #include <omkit/section.h>
 
 #include <QWidget>
+#include <QDir>
 
 namespace Ui {
 class QuestionPage;
 }
 
 class QListWidgetItem;
+class Solution;
 
 class QuestionPage : public QWidget
 {
@@ -20,7 +22,12 @@ public:
     ~QuestionPage();
 
     bool loadCase(const Section& section, const Case& caseValue);
+    bool saveAnswer(Solution& solution);
     void connectWith(QListWidgetItem* item);
+    bool isAnswered() const;
+
+public slots:
+    void onPageOpened();
 
 signals:
     void enteredAnswer(QListWidgetItem* item);
@@ -34,11 +41,14 @@ private slots:
     void on_toMentorAnswerButton_clicked();
 
 private:
+    void updateButtons();
+
     Ui::QuestionPage *ui;
 
     Section section;
     Case caseValue;
     QListWidgetItem* item = nullptr;
+    bool hasFinalAnswer = false;
 };
 
 #endif // QUESTIONPAGE_H

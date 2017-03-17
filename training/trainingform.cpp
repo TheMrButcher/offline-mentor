@@ -1,6 +1,7 @@
 #include "trainingform.h"
 #include "questionpage.h"
 #include "mentoranswerpage.h"
+#include "solution_utils.h"
 #include "ui_trainingform.h"
 #include <QMessageBox>
 
@@ -58,7 +59,11 @@ void TrainingForm::setSection(const Section& section)
         int mentorAnswerPageId = ui->stackedWidget->addWidget(mentorAnswerPage);
         QListWidgetItem* item = new QListWidgetItem(ui->listWidget);
         item->setText(QString("%1. Кейс \"%2\"").arg(nextCaseIndex).arg(caseValue.name));
-        item->setIcon(QIcon(":/icons/question.png"));
+        if (questionPage->isAnswered()) {
+            item->setIcon(QIcon(":/icons/answered.png"));
+        } else {
+            item->setIcon(QIcon(":/icons/question.png"));
+        }
         nodes[item] = NodeDescriptor{ questionPageId, mentorAnswerPageId, nullptr };
         if (prevItem)
             nodes[prevItem].nextItem = item;
@@ -102,16 +107,26 @@ void TrainingForm::on_listWidget_itemSelectionChanged()
     if (selectedItems.isEmpty())
         return;
     auto item = selectedItems.front();
-    const auto& node = nodes[item];
-    ui->stackedWidget->setCurrentIndex(node.questionPageId);
+    openQuestionPage(nodes[item].questionPageId);
 }
 
 void TrainingForm::onAnswerEntered(QListWidgetItem* caseItem)
 {
     if (!nodes.contains(caseItem))
         return;
-    caseItem->setIcon(QIcon(":/icons/answered.png"));
-    ui->stackedWidget->setCurrentIndex(nodes[caseItem].mentorAnswerPageId);
+    const auto& node = nodes[caseItem];
+    auto questionPage = (QuestionPage*)ui->stackedWidget->widget(node.questionPageId);
+    Solution solution = getSolution(SolutionPathType::Local, section);
+    if (solution.isValid()
+        && questionPage->saveAnswer(solution)
+        && saveSolution(SolutionPathType::Local, solution)) {
+        caseItem->setIcon(QIcon(":/icons/answered.png"));
+    } else {
+        QMessageBox::warning(this, "Ошибка при сохранении",
+                             "Не удалось сохранить ответ локально. "
+                             "Возможно, приложение настроено неверно.");
+    }
+    ui->stackedWidget->setCurrentIndex(node.mentorAnswerPageId);
 }
 
 void TrainingForm::toMentorAnswer(QListWidgetItem* caseItem)
@@ -125,7 +140,7 @@ void TrainingForm::backToQuestion(QListWidgetItem* caseItem)
 {
     if (!nodes.contains(caseItem))
         return;
-    ui->stackedWidget->setCurrentIndex(nodes[caseItem].questionPageId);
+    openQuestionPage(nodes[caseItem].questionPageId);
 }
 
 void TrainingForm::next(QListWidgetItem* caseItem)
@@ -135,6 +150,13 @@ void TrainingForm::next(QListWidgetItem* caseItem)
     const auto& node = nodes[caseItem];
     if (node.nextItem) {
         ui->listWidget->setCurrentItem(node.nextItem);
-        ui->stackedWidget->setCurrentIndex(nodes[node.nextItem].questionPageId);
+        openQuestionPage(nodes[node.nextItem].questionPageId);
     }
+}
+
+void TrainingForm::openQuestionPage(int pageId)
+{
+    QuestionPage* page = (QuestionPage*)ui->stackedWidget->widget(pageId);
+    page->onPageOpened();
+    ui->stackedWidget->setCurrentIndex(pageId);
 }

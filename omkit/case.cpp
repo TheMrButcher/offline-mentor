@@ -18,7 +18,7 @@ bool Case::missingData() const
 Case Case::fromJson(const QJsonObject& jsonObject)
 {
     Case c;
-    c.id = jsonObject["id"].toString("");
+    c.id = QUuid(jsonObject["id"].toString(""));
     c.name = jsonObject["name"].toString("");
     c.questionFileName = jsonObject["questionFileName"].toString("");
     c.answerFileName = jsonObject["answerFileName"].toString("");

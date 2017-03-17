@@ -10,9 +10,11 @@ public:
 
     bool read();
     void write() const;
+    QString localDataPath() const;
 
     QString lastLogin;
     QString sectionsPath;
+    QString solutionsPath;
 
 private:
     Settings();

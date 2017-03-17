@@ -70,7 +70,7 @@ bool Section::save()
     rootObj["nextIndex"] = nextIndex;
 
     QJsonArray casesArray;
-    foreach (auto c, cases)
+    foreach (const auto& c, cases)
         casesArray.append(c.toJson());
     rootObj["cases"] = casesArray;
 

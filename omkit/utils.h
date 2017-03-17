@@ -7,4 +7,6 @@
 
 OMKITSHARED_EXPORT QString getVersion();
 
+OMKITSHARED_EXPORT QString getNewDir(QString path, QString dirNamePrefix);
+
 #endif // UTILS_H

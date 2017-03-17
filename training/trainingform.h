@@ -2,6 +2,7 @@
 #define TRAININGFORM_H
 
 #include <omkit/section.h>
+#include <omkit/solution.h>
 
 #include <QWidget>
 #include <QHash>
@@ -30,6 +31,8 @@ private slots:
     void next(QListWidgetItem* caseItem);
 
 private:
+    void openQuestionPage(int pageId);
+
     Ui::TrainingForm *ui;
 
     struct NodeDescriptor {
@@ -39,6 +42,7 @@ private:
     };
 
     Section section;
+    Solution localSolution;
     QHash<QListWidgetItem*, NodeDescriptor> nodes;
 };
 

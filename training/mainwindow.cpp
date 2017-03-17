@@ -3,6 +3,8 @@
 #include "loginform.h"
 #include "sectionsform.h"
 #include "trainingform.h"
+#include "user_utils.h"
+#include "solution_utils.h"
 #include "settings.h"
 
 #include <omkit/utils.h>
@@ -60,6 +62,8 @@ void MainWindow::loadSettings()
 void MainWindow::onLogin()
 {
     sectionsForm->setUserName(loginForm->userName());
+    setUserName(loginForm->userName());
+    loadSolutions();
     select(sectionsForm);
 }
 

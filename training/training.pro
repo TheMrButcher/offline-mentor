@@ -20,7 +20,9 @@ SOURCES += main.cpp\
     sectionwidget.cpp \
     trainingform.cpp \
     questionpage.cpp \
-    mentoranswerpage.cpp
+    mentoranswerpage.cpp \
+    user_utils.cpp \
+    solution_utils.cpp
 
 HEADERS  += mainwindow.h \
     loginform.h \
@@ -29,7 +31,9 @@ HEADERS  += mainwindow.h \
     sectionwidget.h \
     trainingform.h \
     questionpage.h \
-    mentoranswerpage.h
+    mentoranswerpage.h \
+    user_utils.h \
+    solution_utils.h
 
 FORMS    += mainwindow.ui \
     loginform.ui \

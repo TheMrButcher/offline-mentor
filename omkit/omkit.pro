@@ -16,7 +16,9 @@ SOURCES += omkit.cpp \
     case.cpp \
     section.cpp \
     json_utils.cpp \
-    html_utils.cpp
+    html_utils.cpp \
+    answer.cpp \
+    solution.cpp
 
 HEADERS += omkit.h\
         omkit_global.h \
@@ -24,7 +26,9 @@ HEADERS += omkit.h\
     case.h \
     section.h \
     json_utils.h \
-    html_utils.h
+    html_utils.h \
+    answer.h \
+    solution.h
 
 unix {
     target.path = /usr/lib
