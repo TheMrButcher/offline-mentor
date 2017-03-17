@@ -12,6 +12,7 @@ enum class SolutionPathType {
 
 void loadSolutions();
 
+bool hasSolution(SolutionPathType type, const Section& section);
 Solution getSolution(SolutionPathType type, const Section& section);
 bool saveSolution(SolutionPathType type, Solution& solution);
 

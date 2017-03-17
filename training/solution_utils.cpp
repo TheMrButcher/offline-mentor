@@ -74,6 +74,11 @@ void loadSolutions()
     loadSolutionsFrom(SolutionPathType::Local);
 }
 
+bool hasSolution(SolutionPathType type, const Section& section)
+{
+    return solutions.contains(SolutionKey{ type, section.id.toString() });
+}
+
 Solution getSolution(SolutionPathType type, const Section& section)
 {
     SolutionKey key{ type, section.id.toString() };

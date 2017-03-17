@@ -61,9 +61,10 @@ void MainWindow::loadSettings()
 
 void MainWindow::onLogin()
 {
-    sectionsForm->setUserName(loginForm->userName());
     setUserName(loginForm->userName());
     loadSolutions();
+    sectionsForm->setUserName(loginForm->userName());
+    sectionsForm->updateProgress();
     select(sectionsForm);
 }
 

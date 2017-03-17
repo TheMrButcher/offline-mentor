@@ -10,6 +10,8 @@ namespace Ui {
 class SectionsForm;
 }
 
+class SectionWidget;
+
 class SectionsForm : public QWidget
 {
     Q_OBJECT
@@ -25,9 +27,11 @@ signals:
 
 public slots:
     void setSections(QList<Section> sections);
+    void updateProgress();
 
 private:
     Ui::SectionsForm *ui;
+    QList<SectionWidget*> sectionWidgets;
 };
 
 #endif // SECTIONSFORM_H

@@ -19,6 +19,9 @@ public:
 
     void setSection(const Section& section);
 
+public slots:
+    void updateProgress();
+
 signals:
     void requestedOpen(Section);
 
