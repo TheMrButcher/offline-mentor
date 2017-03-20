@@ -2,6 +2,7 @@
 #include "questionpage.h"
 #include "mentoranswerpage.h"
 #include "solution_utils.h"
+#include "settings.h"
 #include "ui_trainingform.h"
 #include <QMessageBox>
 
@@ -117,15 +118,30 @@ void TrainingForm::onAnswerEntered(QListWidgetItem* caseItem)
     const auto& node = nodes[caseItem];
     auto questionPage = (QuestionPage*)ui->stackedWidget->widget(node.questionPageId);
     Solution solution = getSolution(SolutionPathType::Local, section);
+    bool isSavedLocally = false;
     if (solution.isValid()
         && questionPage->saveAnswer(solution)
         && saveSolution(SolutionPathType::Local, solution)) {
         caseItem->setIcon(QIcon(":/icons/answered.png"));
+        isSavedLocally = true;
     } else {
         QMessageBox::warning(this, "Ошибка при сохранении",
                              "Не удалось сохранить ответ локально. "
                              "Возможно, приложение настроено неверно.");
     }
+
+    if (Settings::instance().hasRemoteSolutionsDir) {
+        solution = getSolution(SolutionPathType::Remote, section);
+        if (!solution.isValid()
+            || !questionPage->saveAnswer(solution)
+            || !saveSolution(SolutionPathType::Remote, solution)) {
+            QMessageBox::warning(this, "Ошибка при сохранении",
+                                 "Не удалось сохранить ответ на сервере. "
+                                 "Нет доступа к папке для ответов."
+                                 + (isSavedLocally ? QString(" Ответ был сохранен локально.") : ""));
+        }
+    }
+
     ui->stackedWidget->setCurrentIndex(node.mentorAnswerPageId);
 }
 

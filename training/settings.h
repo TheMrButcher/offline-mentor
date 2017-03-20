@@ -15,6 +15,7 @@ public:
     QString lastLogin;
     QString sectionsPath;
     QString solutionsPath;
+    bool hasRemoteSolutionsDir;
 
 private:
     Settings();

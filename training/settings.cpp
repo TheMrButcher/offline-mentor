@@ -20,6 +20,8 @@ bool Settings::read()
     lastLogin = rootObj["lastLogin"].toString(lastLogin);
     sectionsPath = rootObj["sectionsPath"].toString(sectionsPath);
     solutionsPath = rootObj["solutionsPath"].toString(solutionsPath);
+    hasRemoteSolutionsDir =
+            !solutionsPath.isEmpty() && QFileInfo(solutionsPath).isDir();
     return true;
 }
 

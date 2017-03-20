@@ -7,7 +7,8 @@
 #include <QString>
 
 enum class SolutionPathType {
-    Local
+    Local,
+    Remote
 };
 
 void loadSolutions();

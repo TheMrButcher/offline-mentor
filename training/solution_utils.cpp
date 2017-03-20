@@ -26,6 +26,10 @@ QString pathByType(SolutionPathType type)
     const auto& settings = Settings::instance();
     switch (type) {
     case SolutionPathType::Local: return settings.localDataPath();
+    case SolutionPathType::Remote:
+        if (QFileInfo(settings.solutionsPath).isDir())
+            return settings.solutionsPath;
+        return QString();
     }
     return QString();
 }
@@ -72,6 +76,7 @@ bool setSolutionDir(SolutionPathType type, Solution& solution)
 void loadSolutions()
 {
     loadSolutionsFrom(SolutionPathType::Local);
+    loadSolutionsFrom(SolutionPathType::Remote);
 }
 
 bool hasSolution(SolutionPathType type, const Section& section)
