@@ -23,7 +23,10 @@ public:
     bool save();
     QDir dir() const;
     bool isValid() const;
+    bool isEqual(const Solution& other) const;
+    bool merge(const Solution& other);
     Answer answer(const Case& caseValue);
+    Solution cloneHeader(QString newDirPath) const;
 
     QUuid sectionId;
     QString fileName;

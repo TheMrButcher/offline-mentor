@@ -3,5 +3,8 @@
         <file>VERSION.txt</file>
         <file>icons/folder.png</file>
         <file>icons/settings.png</file>
+        <file>icons/answered.png</file>
+        <file>icons/in_progress.png</file>
+        <file>icons/refresh.png</file>
     </qresource>
 </RCC>

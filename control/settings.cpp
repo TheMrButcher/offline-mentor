@@ -39,5 +39,17 @@ QString Settings::localDataPath() const
     return dir.absoluteFilePath("localData");
 }
 
+QString Settings::localSolutionsPath() const
+{
+    QString path = localDataPath();
+    if (path.isEmpty())
+        return QString();
+    QDir dir(path);
+    if (!dir.exists("solutions"))
+        if (!dir.mkdir("solutions"))
+            return QString();
+    return dir.absoluteFilePath("solutions");
+}
+
 Settings::Settings()
 {}

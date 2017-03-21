@@ -90,10 +90,58 @@ bool Solution::isValid() const
     return !sectionId.isNull() && !userName.isEmpty();
 }
 
+bool Solution::isEqual(const Solution& other) const
+{
+    if (answers.size() != other.answers.size())
+        return false;
+    for (int i = 0; i < other.answers.size(); ++i)
+        if (answers[i].caseId != other.answers[i].caseId)
+            return false;
+    return true;
+}
+
+bool Solution::merge(const Solution& other)
+{
+    int firstDifference = 0;
+    auto thisDir = dir();
+    auto otherDir = other.dir();
+    for (int i = 0; i < other.answers.size(); ++i) {
+        const auto& answer = other.answers[i];
+        const auto& id = answer.caseId;
+        if (i < answers.size() && answers[i].caseId == id) {
+            if (firstDifference == i)
+                ++firstDifference;
+            continue;
+        }
+        int j = firstDifference;
+        for (; j < answers.size(); ++j) {
+            if (answers[j].caseId == id)
+                break;
+        }
+        if (j == answers.size()) {
+            if (!QFile::copy(otherDir.absoluteFilePath(answer.fileName),
+                             thisDir.absoluteFilePath(answer.fileName)))
+                return false;
+            answers.append(other.answers[i]);
+        }
+    }
+    return save();
+}
+
 Answer Solution::answer(const Case& caseValue)
 {
     foreach (const auto& answer, answers)
         if (answer.caseId == caseValue.id)
             return answer;
     return Answer();
+}
+
+Solution Solution::cloneHeader(QString newDirPath) const
+{
+    Solution result;
+    result.sectionId = sectionId;
+    result.fileName = fileName;
+    result.userName = userName;
+    result.dirPath = newDirPath;
+    return result;
 }

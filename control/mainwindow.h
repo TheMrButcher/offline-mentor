@@ -8,6 +8,7 @@ class MainWindow;
 }
 
 class SettingsDialog;
+class SolutionsForm;
 
 class MainWindow : public QMainWindow
 {
@@ -25,6 +26,7 @@ private:
     Ui::MainWindow *ui;
 
     SettingsDialog* settingsDialog;
+    SolutionsForm* solutionsForm;
 };
 
 #endif // MAINWINDOW_H

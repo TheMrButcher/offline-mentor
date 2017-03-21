@@ -11,6 +11,7 @@ public:
     bool read();
     bool write() const;
     QString localDataPath() const;
+    QString localSolutionsPath() const;
 
     QString sectionsPath;
     QString solutionsPath;

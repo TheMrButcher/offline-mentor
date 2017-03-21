@@ -1,6 +1,8 @@
 #include "mainwindow.h"
 #include "settingsdialog.h"
+#include "solutionsform.h"
 #include "settings.h"
+#include "section_utils.h"
 #include "ui_mainwindow.h"
 #include <omkit/utils.h>
 #include <QMessageBox>
@@ -18,6 +20,9 @@ MainWindow::MainWindow(QWidget *parent) :
     settingsDialog = new SettingsDialog(this);
     settingsDialog->hide();
 
+    solutionsForm = new SolutionsForm(this);
+    ui->tabWidget->addTab(solutionsForm, "Сводная таблица");
+
     QTimer::singleShot(0, this, SLOT(loadSettings()));
 }
 
@@ -34,6 +39,8 @@ void MainWindow::loadSettings()
                              "Не удалось прочесть файл с настройками. "
                              "Возможно, приложение установлено не полностью. "
                              "Приложение может работать некорректно.");
+    loadSections();
+    solutionsForm->reload();
 }
 
 void MainWindow::on_settingsAction_triggered()
