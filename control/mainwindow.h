@@ -7,6 +7,8 @@ namespace Ui {
 class MainWindow;
 }
 
+class SettingsDialog;
+
 class MainWindow : public QMainWindow
 {
     Q_OBJECT
@@ -15,10 +17,14 @@ public:
     explicit MainWindow(QWidget *parent = 0);
     ~MainWindow();
 
-private:
-    void select(QWidget* widget);
+private slots:
+    void loadSettings();
+    void on_settingsAction_triggered();
 
+private:
     Ui::MainWindow *ui;
+
+    SettingsDialog* settingsDialog;
 };
 
 #endif // MAINWINDOW_H

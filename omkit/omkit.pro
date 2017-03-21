@@ -6,6 +6,8 @@
 
 QT       += core gui
 
+greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
+
 TARGET = omkit
 TEMPLATE = lib
 
@@ -18,7 +20,8 @@ SOURCES += omkit.cpp \
     json_utils.cpp \
     html_utils.cpp \
     answer.cpp \
-    solution.cpp
+    solution.cpp \
+    ui_utils.cpp
 
 HEADERS += omkit.h\
         omkit_global.h \
@@ -28,7 +31,8 @@ HEADERS += omkit.h\
     json_utils.h \
     html_utils.h \
     answer.h \
-    solution.h
+    solution.h \
+    ui_utils.h
 
 unix {
     target.path = /usr/lib

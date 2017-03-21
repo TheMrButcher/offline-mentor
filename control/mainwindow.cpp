@@ -1,6 +1,10 @@
 #include "mainwindow.h"
+#include "settingsdialog.h"
+#include "settings.h"
 #include "ui_mainwindow.h"
 #include <omkit/utils.h>
+#include <QMessageBox>
+#include <QTimer>
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
@@ -10,6 +14,11 @@ MainWindow::MainWindow(QWidget *parent) :
 
     showMaximized();
     setWindowTitle("Offline-наставник. Система контроля v." + getVersion());
+
+    settingsDialog = new SettingsDialog(this);
+    settingsDialog->hide();
+
+    QTimer::singleShot(0, this, SLOT(loadSettings()));
 }
 
 MainWindow::~MainWindow()
@@ -17,7 +26,18 @@ MainWindow::~MainWindow()
     delete ui;
 }
 
-void MainWindow::select(QWidget* widget)
+void MainWindow::loadSettings()
 {
-    ui->stackedWidget->setCurrentIndex(ui->stackedWidget->indexOf(widget));
+    auto& settings = Settings::instance();
+    if (!settings.read())
+        QMessageBox::warning(this, "Отсутствует файл с настройками",
+                             "Не удалось прочесть файл с настройками. "
+                             "Возможно, приложение установлено не полностью. "
+                             "Приложение может работать некорректно.");
+}
+
+void MainWindow::on_settingsAction_triggered()
+{
+    settingsDialog->initUI();
+    settingsDialog->exec();
 }
