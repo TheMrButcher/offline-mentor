@@ -13,6 +13,9 @@ QString makeStatistics(const Section& section, const Solution& solution)
             : 100;
     return QString("%1 из %2 (%3\%)").arg(answersNum).arg(casesNum).arg(percent);
 }
+
+const QString NO_FILTER_TEXT = "* Не фильтровать *";
+const int NO_FILTER_INDEX = 0;
 }
 
 SolutionsForm::SolutionsForm(QWidget *parent) :
@@ -27,6 +30,9 @@ SolutionsForm::SolutionsForm(QWidget *parent) :
     ui->tableWidget->setColumnWidth(3, 100);
 
     connect(ui->updateButton, SIGNAL(clicked()), this, SLOT(reload()));
+    connect(ui->applyFilterButton, SIGNAL(clicked()), this, SLOT(applyFilter()));
+    connect(ui->tableWidget->selectionModel(), SIGNAL(selectionChanged(QItemSelection,QItemSelection)),
+            this, SLOT(onSelectionChanged(QItemSelection,QItemSelection)));
 }
 
 SolutionsForm::~SolutionsForm()
@@ -38,10 +44,69 @@ void SolutionsForm::reload()
 {
     while (ui->tableWidget->rowCount() > 0)
         ui->tableWidget->removeRow(ui->tableWidget->rowCount() - 1);
+    loadSections();
     loadSolutions();
 
+    updateComboBox(ui->sectionNameComboBox, getSectionNames());
+    updateComboBox(ui->userNameComboBox, getUserNames());
+
+    applyFilter();
+}
+
+void SolutionsForm::applyFilter()
+{
+    const auto& allSolutions = getSolutions();
+    int sectionIndex = ui->sectionNameComboBox->currentIndex();
+    int userIndex = ui->userNameComboBox->currentIndex();
+    if (sectionIndex == NO_FILTER_INDEX && userIndex == NO_FILTER_INDEX)
+        fillTable(allSolutions);
+
     const auto& sections = getSections();
-    const auto& solutions = getSolutions();
+    QString sectionName = ui->sectionNameComboBox->currentText();
+    QString userName = ui->userNameComboBox->currentText();
+    QList<Solution> filteredSolutions;
+    filteredSolutions.reserve(allSolutions.size());
+    foreach (const auto& solution, allSolutions) {
+        if (sectionIndex != NO_FILTER_INDEX
+            && sectionName != sections[solution.sectionId].name)
+            continue;
+        if (userIndex != NO_FILTER_INDEX
+            && userName != solution.userName)
+            continue;
+        filteredSolutions.append(solution);
+    }
+    fillTable(filteredSolutions);
+}
+
+void SolutionsForm::onSelectionChanged(const QItemSelection&, const QItemSelection&)
+{
+    updateButtons();
+}
+
+void SolutionsForm::on_resetFilterButton_clicked()
+{
+    ui->sectionNameComboBox->setCurrentIndex(NO_FILTER_INDEX);
+    ui->userNameComboBox->setCurrentIndex(NO_FILTER_INDEX);
+    applyFilter();
+}
+
+void SolutionsForm::on_selectSectionButton_clicked()
+{
+    int row = ui->tableWidget->selectionModel()->selectedRows()[0].row();
+    ui->sectionNameComboBox->setCurrentText(ui->tableWidget->item(row, 1)->text());
+    applyFilter();
+}
+
+void SolutionsForm::on_selectUserButton_clicked()
+{
+    int row = ui->tableWidget->selectionModel()->selectedRows()[0].row();
+    ui->userNameComboBox->setCurrentText(ui->tableWidget->item(row, 2)->text());
+    applyFilter();
+}
+
+void SolutionsForm::fillTable(const QList<Solution>& solutions)
+{
+    const auto& sections = getSections();
     ui->tableWidget->setRowCount(solutions.size());
 
     for (int i = 0; i < solutions.size(); ++i) {
@@ -71,4 +136,35 @@ void SolutionsForm::reload()
         statisticsItem->setTextAlignment(Qt::AlignHCenter | Qt::AlignVCenter);
         ui->tableWidget->setItem(i, 3, statisticsItem);
     }
+    ui->tableWidget->selectionModel()->clearSelection();
+}
+
+void SolutionsForm::updateComboBox(QComboBox* comboBox, const QStringList& variants)
+{
+    int currentIndex = comboBox->currentIndex();
+    QString currentText = comboBox->currentText();
+    comboBox->clear();
+    comboBox->addItem(NO_FILTER_TEXT);
+    comboBox->addItems(variants);
+
+    if (currentIndex <= NO_FILTER_INDEX) {
+        comboBox->setCurrentIndex(NO_FILTER_INDEX);
+    } else {
+        int i = 0;
+        for (; i < variants.size(); ++i)
+            if (currentText == variants[i])
+                break;
+        if (i == variants.size()) {
+            comboBox->setCurrentIndex(NO_FILTER_INDEX);
+        } else {
+            comboBox->setCurrentIndex(i + 1);
+        }
+    }
+}
+
+void SolutionsForm::updateButtons()
+{
+    bool isRowSelected = ui->tableWidget->selectionModel()->selectedRows().size() == 1;
+    ui->selectSectionButton->setEnabled(isRowSelected);
+    ui->selectUserButton->setEnabled(isRowSelected);
 }

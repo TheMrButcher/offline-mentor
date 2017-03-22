@@ -4,6 +4,7 @@
 #include <omkit/utils.h>
 #include <QHash>
 #include <QFileInfo>
+#include <QSet>
 
 namespace {
 struct SolutionKey {
@@ -23,6 +24,7 @@ uint qHash(const SolutionKey& key, uint seed)
 
 QList<Solution> solutions;
 QHash<SolutionKey, Solution> localSolutions;
+QStringList userNames;
 
 QString getUserPath(QString path, QString userName)
 {
@@ -53,6 +55,7 @@ QString makePath(QString rootPath, const Solution& solution)
 void loadSolutions()
 {
     solutions.clear();
+    userNames.clear();
 
     const auto& settings = Settings::instance();
     QString localSolutionsPath = settings.localSolutionsPath();
@@ -93,15 +96,26 @@ void loadSolutions()
     }
 
     const auto& sections = getSections();
+    QSet<QString> userNameSet;
     for (auto it = localSolutions.cbegin(); it != localSolutions.cend(); ++it) {
         const auto& solution = *it;
         if (!sections.contains(solution.sectionId))
             continue;
         solutions.append(solution);
+        userNameSet.insert(solution.userName);
     }
+
+    foreach (const auto& userName, userNameSet)
+        userNames.append(userName);
+    qSort(userNames);
 }
 
 const QList<Solution>& getSolutions()
 {
     return solutions;
+}
+
+const QStringList& getUserNames()
+{
+    return userNames;
 }

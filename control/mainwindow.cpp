@@ -2,7 +2,6 @@
 #include "settingsdialog.h"
 #include "solutionsform.h"
 #include "settings.h"
-#include "section_utils.h"
 #include "ui_mainwindow.h"
 #include <omkit/utils.h>
 #include <QMessageBox>
@@ -39,7 +38,6 @@ void MainWindow::loadSettings()
                              "Не удалось прочесть файл с настройками. "
                              "Возможно, приложение установлено не полностью. "
                              "Приложение может работать некорректно.");
-    loadSections();
     solutionsForm->reload();
 }
 
