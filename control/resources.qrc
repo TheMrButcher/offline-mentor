@@ -8,5 +8,10 @@
         <file>icons/refresh.png</file>
         <file>icons/section.png</file>
         <file>icons/user.png</file>
+        <file>icons/back.png</file>
+        <file>icons/forward.png</file>
+        <file>icons/open.png</file>
+        <file>icons/danger.png</file>
+        <file>icons/question.png</file>
     </qresource>
 </RCC>

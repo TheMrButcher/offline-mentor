@@ -19,6 +19,9 @@ public:
     explicit SolutionsForm(QWidget *parent = 0);
     ~SolutionsForm();
 
+signals:
+    void requestedOpen(const Solution& solution);
+
 public slots:
     void reload();
 
@@ -26,10 +29,9 @@ private slots:
     void applyFilter();
     void onSelectionChanged(const QItemSelection &, const QItemSelection &);
     void on_resetFilterButton_clicked();
-
     void on_selectSectionButton_clicked();
-
     void on_selectUserButton_clicked();
+    void on_openButton_clicked();
 
 private:
     void fillTable(const QList<Solution>& solutions);

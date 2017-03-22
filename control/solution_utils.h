@@ -7,6 +7,7 @@
 
 void loadSolutions();
 const QList<Solution>& getSolutions();
+const Solution& getSolution(QString userName, const QUuid& sectionId);
 const QStringList& getUserNames();
 
 #endif // SOLUTION_UTILS_H

@@ -2,6 +2,7 @@
 #include "solution_utils.h"
 #include "section_utils.h"
 #include "ui_solutionsform.h"
+#include <QMessageBox>
 
 namespace {
 QString makeStatistics(const Section& section, const Solution& solution)
@@ -104,6 +105,20 @@ void SolutionsForm::on_selectUserButton_clicked()
     applyFilter();
 }
 
+void SolutionsForm::on_openButton_clicked()
+{
+    int row = ui->tableWidget->selectionModel()->selectedRows()[0].row();
+    auto userName = ui->tableWidget->item(row, 2)->text();
+    auto sectionId = ui->tableWidget->item(row, 1)->data(Qt::UserRole).toUuid();
+    const auto& solution = getSolution(userName, sectionId);
+    if (!solution.isValid()) {
+        QMessageBox::warning(this, "Ошибка при открытии",
+                             "Невозможно открыть выбранное решение.");
+        return;
+    }
+    emit requestedOpen(getSolution(userName, sectionId));
+}
+
 void SolutionsForm::fillTable(const QList<Solution>& solutions)
 {
     const auto& sections = getSections();
@@ -125,6 +140,7 @@ void SolutionsForm::fillTable(const QList<Solution>& solutions)
 
         QTableWidgetItem* sectionNameItem = new QTableWidgetItem();
         sectionNameItem->setText(section.name);
+        sectionNameItem->setData(Qt::UserRole, section.id);
         ui->tableWidget->setItem(i, 1, sectionNameItem);
 
         QTableWidgetItem* userNameItem = new QTableWidgetItem();
@@ -167,4 +183,5 @@ void SolutionsForm::updateButtons()
     bool isRowSelected = ui->tableWidget->selectionModel()->selectedRows().size() == 1;
     ui->selectSectionButton->setEnabled(isRowSelected);
     ui->selectUserButton->setEnabled(isRowSelected);
+    ui->openButton->setEnabled(isRowSelected);
 }

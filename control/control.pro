@@ -18,18 +18,27 @@ SOURCES += main.cpp\
     settingsdialog.cpp \
     solutionsform.cpp \
     section_utils.cpp \
-    solution_utils.cpp
+    solution_utils.cpp \
+    solutionexplorer.cpp \
+    answerpage.cpp \
+    textexplorer.cpp
 
 HEADERS  += mainwindow.h \
     settings.h \
     settingsdialog.h \
     solutionsform.h \
     section_utils.h \
-    solution_utils.h
+    solution_utils.h \
+    solutionexplorer.h \
+    answerpage.h \
+    textexplorer.h
 
 FORMS    += mainwindow.ui \
     settingsdialog.ui \
-    solutionsform.ui
+    solutionsform.ui \
+    solutionexplorer.ui \
+    answerpage.ui \
+    textexplorer.ui
 
 RESOURCES += \
     resources.qrc

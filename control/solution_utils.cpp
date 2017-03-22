@@ -115,6 +115,15 @@ const QList<Solution>& getSolutions()
     return solutions;
 }
 
+const Solution& getSolution(QString userName, const QUuid& sectionId)
+{
+    static const Solution INVALID_SOLUTION;
+    SolutionKey key{ userName, sectionId };
+    if (localSolutions.contains(key))
+        return localSolutions[key];
+    return INVALID_SOLUTION;
+}
+
 const QStringList& getUserNames()
 {
     return userNames;

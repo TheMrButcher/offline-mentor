@@ -25,7 +25,7 @@ public:
     bool isValid() const;
     bool isEqual(const Solution& other) const;
     bool merge(const Solution& other);
-    Answer answer(const Case& caseValue);
+    Answer answer(const Case& caseValue) const;
     Solution cloneHeader(QString newDirPath) const;
 
     QUuid sectionId;

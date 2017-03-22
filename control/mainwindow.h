@@ -7,6 +7,7 @@ namespace Ui {
 class MainWindow;
 }
 
+class Solution;
 class SettingsDialog;
 class SolutionsForm;
 
@@ -20,7 +21,10 @@ public:
 
 private slots:
     void loadSettings();
+    void openSolution(const Solution& solution);
     void on_settingsAction_triggered();
+
+    void on_tabWidget_tabCloseRequested(int index);
 
 private:
     Ui::MainWindow *ui;

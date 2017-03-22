@@ -128,7 +128,7 @@ bool Solution::merge(const Solution& other)
     return save();
 }
 
-Answer Solution::answer(const Case& caseValue)
+Answer Solution::answer(const Case& caseValue) const
 {
     foreach (const auto& answer, answers)
         if (answer.caseId == caseValue.id)
