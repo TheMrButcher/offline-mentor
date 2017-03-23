@@ -13,5 +13,6 @@
         <file>icons/open.png</file>
         <file>icons/danger.png</file>
         <file>icons/question.png</file>
+        <file>icons/wizard_new.png</file>
     </qresource>
 </RCC>

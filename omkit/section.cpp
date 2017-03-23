@@ -39,6 +39,11 @@ QList<Section> Section::findAll(QString path)
     return result;
 }
 
+bool Section::isValid() const
+{
+    return !id.isNull() && !name.isEmpty() && !path.isEmpty();
+}
+
 bool Section::open()
 {
     QJsonObject rootObj;
@@ -61,7 +66,7 @@ bool Section::open()
     return true;
 }
 
-bool Section::save()
+bool Section::save() const
 {
     QJsonObject rootObj;
     rootObj["id"] = id.toString();
@@ -75,6 +80,26 @@ bool Section::save()
     rootObj["cases"] = casesArray;
 
     return writeJSON(path, rootObj);
+}
+
+Section Section::saveAs(QString newPath) const
+{
+    Section newSection = *this;
+    newSection.path = newPath;
+    QDir srcDir = dir();
+    QDir dstDir = newSection.dir();
+    foreach (const auto& caseValue, cases) {
+        if (!QFile::copy(srcDir.absoluteFilePath(caseValue.questionFileName),
+                         dstDir.absoluteFilePath(caseValue.questionFileName)))
+            return Section();
+        if (!QFile::copy(srcDir.absoluteFilePath(caseValue.answerFileName),
+                         dstDir.absoluteFilePath(caseValue.answerFileName)))
+            return Section();
+    }
+
+    if (!newSection.save())
+        return Section();
+    return newSection;
 }
 
 QString Section::nextCaseFilePrefix()

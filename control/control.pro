@@ -21,7 +21,8 @@ SOURCES += main.cpp\
     solution_utils.cpp \
     solutionexplorer.cpp \
     answerpage.cpp \
-    textexplorer.cpp
+    textexplorer.cpp \
+    trainingcreationwizard.cpp
 
 HEADERS  += mainwindow.h \
     settings.h \
@@ -31,14 +32,16 @@ HEADERS  += mainwindow.h \
     solution_utils.h \
     solutionexplorer.h \
     answerpage.h \
-    textexplorer.h
+    textexplorer.h \
+    trainingcreationwizard.h
 
 FORMS    += mainwindow.ui \
     settingsdialog.ui \
     solutionsform.ui \
     solutionexplorer.ui \
     answerpage.ui \
-    textexplorer.ui
+    textexplorer.ui \
+    trainingcreationwizard.ui
 
 RESOURCES += \
     resources.qrc

@@ -27,3 +27,31 @@ QString getNewDir(QString path, QString dirNamePrefix)
     }
     return QString();
 }
+
+bool copyDir(QString srcPath, QString dstPath)
+{
+    QDir srcDir(srcPath);
+    QDir dstDir(dstPath);
+    return copyDir(srcDir, dstDir);
+}
+
+bool copyDir(QDir srcDir, QDir dstDir)
+{
+    if (!srcDir.exists() || !dstDir.exists())
+        return false;
+    auto entries = srcDir.entryInfoList(QDir::Files | QDir::Dirs | QDir::NoDotAndDotDot);
+    foreach (const auto& entry, entries) {
+        auto name = entry.fileName();
+        auto srcFilePath = srcDir.absoluteFilePath(name);
+        auto dstFilePath = dstDir.absoluteFilePath(name);
+        if (entry.isDir()) {
+            dstDir.mkdir(name);
+            if (!copyDir(srcFilePath, dstFilePath))
+                return false;
+        } else {
+            if (!QFile::copy(srcFilePath, dstFilePath))
+                return false;
+        }
+    }
+    return true;
+}

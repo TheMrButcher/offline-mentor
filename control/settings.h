@@ -12,9 +12,11 @@ public:
     bool write() const;
     QString localDataPath() const;
     QString localSolutionsPath() const;
+    void updateLastPath(QString newPath);
 
     QString sectionsPath;
     QString solutionsPath;
+    QString lastPath;
 
 private:
     Settings();

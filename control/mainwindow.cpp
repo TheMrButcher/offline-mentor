@@ -2,6 +2,7 @@
 #include "settingsdialog.h"
 #include "solutionsform.h"
 #include "solutionexplorer.h"
+#include "trainingcreationwizard.h"
 #include "section_utils.h"
 #include "settings.h"
 #include "ui_mainwindow.h"
@@ -46,6 +47,9 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(solutionsForm, SIGNAL(requestedOpen(Solution)),
             this, SLOT(openSolution(Solution)));
 
+    trainingCreationWizard = new TrainingCreationWizard(this);
+    trainingCreationWizard->hide();
+
     QTimer::singleShot(0, this, SLOT(loadSettings()));
 }
 
@@ -87,4 +91,10 @@ void MainWindow::on_tabWidget_tabCloseRequested(int index)
     QWidget* widget = ui->tabWidget->widget(index);
     if (widget != solutionsForm)
         delete widget;
+}
+
+void MainWindow::on_trainingCreationWizardAction_triggered()
+{
+    trainingCreationWizard->restart();
+    trainingCreationWizard->exec();
 }

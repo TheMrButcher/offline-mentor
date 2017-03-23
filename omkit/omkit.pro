@@ -21,7 +21,8 @@ SOURCES += omkit.cpp \
     html_utils.cpp \
     answer.cpp \
     solution.cpp \
-    ui_utils.cpp
+    ui_utils.cpp \
+    trainingsettings.cpp
 
 HEADERS += omkit.h\
         omkit_global.h \
@@ -32,7 +33,8 @@ HEADERS += omkit.h\
     html_utils.h \
     answer.h \
     solution.h \
-    ui_utils.h
+    ui_utils.h \
+    trainingsettings.h
 
 unix {
     target.path = /usr/lib

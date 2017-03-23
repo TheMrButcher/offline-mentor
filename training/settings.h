@@ -1,21 +1,12 @@
 #ifndef SETTINGS_H
 #define SETTINGS_H
 
-#include <QString>
+#include <omkit/trainingsettings.h>
 
-class Settings
+class Settings : public TrainingSettings
 {
 public:
     static Settings& instance();
-
-    bool read();
-    void write() const;
-    QString localDataPath() const;
-
-    QString lastLogin;
-    QString sectionsPath;
-    QString solutionsPath;
-    bool hasRemoteSolutionsDir;
 
 private:
     Settings();

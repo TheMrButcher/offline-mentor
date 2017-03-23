@@ -19,6 +19,7 @@ bool Settings::read()
         return false;
     sectionsPath = rootObj["sectionsPath"].toString(sectionsPath);
     solutionsPath = rootObj["solutionsPath"].toString(solutionsPath);
+    lastPath = rootObj["lastPath"].toString(lastPath);
     return true;
 }
 
@@ -27,6 +28,7 @@ bool Settings::write() const
     QJsonObject rootObj;
     rootObj["sectionsPath"] = sectionsPath;
     rootObj["solutionsPath"] = solutionsPath;
+    rootObj["lastPath"] = lastPath;
     return writeJSON(SETTINGS_FILE_NAME, rootObj);
 }
 
@@ -49,6 +51,12 @@ QString Settings::localSolutionsPath() const
         if (!dir.mkdir("solutions"))
             return QString();
     return dir.absoluteFilePath("solutions");
+}
+
+void Settings::updateLastPath(QString newPath)
+{
+    lastPath = newPath;
+    write();
 }
 
 Settings::Settings()

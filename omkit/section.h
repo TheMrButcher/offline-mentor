@@ -17,8 +17,10 @@ public:
     static Section createSection(QString path);
     static QList<Section> findAll(QString path);
 
+    bool isValid() const;
     bool open();
-    bool save();
+    bool save() const;
+    Section saveAs(QString newPath) const;
     QString nextCaseFilePrefix();
     QDir dir() const;
     void copyHidden(const Section& section);
