@@ -8,6 +8,7 @@ class OMKITSHARED_EXPORT OMKit
 public:
     static OMKit& instance();
 
+    void init();
     QString getVersion();
 
 private:

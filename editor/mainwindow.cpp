@@ -20,6 +20,7 @@ MainWindow::MainWindow(QWidget *parent) :
     showMaximized();
 
     qDebug() << "OMKit: v." << OMKit::instance().getVersion();
+    OMKit::instance().init();
 
     sectionsForm = new SectionsForm(this);
     ui->stackedWidget->addWidget(sectionsForm);

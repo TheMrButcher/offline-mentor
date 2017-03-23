@@ -6,6 +6,7 @@
 #include "section_utils.h"
 #include "settings.h"
 #include "ui_mainwindow.h"
+#include <omkit/omkit.h>
 #include <omkit/utils.h>
 #include <omkit/solution.h>
 #include <QMessageBox>
@@ -38,6 +39,8 @@ MainWindow::MainWindow(QWidget *parent) :
 
     showMaximized();
     setWindowTitle("Offline-наставник. Система контроля v." + getVersion());
+
+    OMKit::instance().init();
 
     settingsDialog = new SettingsDialog(this);
     settingsDialog->hide();

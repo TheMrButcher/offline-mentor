@@ -11,6 +11,11 @@ greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 TARGET = control
 TEMPLATE = app
 
+INCLUDEPATH += ../zlib
+LIBS += -L../zlib -lz
+
+INCLUDEPATH += ../quazip/quazip
+LIBS += -L../quazip/quazip/release -lquazip
 
 SOURCES += main.cpp\
         mainwindow.cpp \

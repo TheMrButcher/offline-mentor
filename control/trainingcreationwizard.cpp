@@ -4,10 +4,12 @@
 #include "ui_trainingcreationwizard.h"
 #include <omkit/utils.h>
 #include <omkit/trainingsettings.h>
+#include <omkit/zip_utils.h>
 #include <QMessageBox>
 #include <QFileDialog>
 #include <QDir>
 #include <QFileInfo>
+#include <QTemporaryDir>
 
 namespace {
 const QString TRAINING_SRC_DIR = "bin/training_files";
@@ -55,16 +57,20 @@ void TrainingCreationWizard::on_nextButton_clicked()
     if (ui->stackedWidget->currentWidget() == ui->usageSelectionPage) {
         if (ui->networkOption->isChecked())
             goTo(ui->saveTypeSelectionPage);
-        else
+        if (ui->homeOption->isChecked())
             goTo(ui->sectionsSelectionPage);
         return;
     }
 
     if (ui->stackedWidget->currentWidget() == ui->saveTypeSelectionPage) {
         if (ui->archiveOption->isChecked()) {
-            QMessageBox::warning(this, "Ошибка", "Сохранение в виде архива пока не реализовано");
-            return;
-        } else {
+            ui->fileSuggestionLabel->show();
+            ui->dirSuggestionLabel->hide();
+            if (QFileInfo(ui->pathEdit->text()).isDir())
+                ui->pathEdit->setText(ui->pathEdit->text() + "/Тренажер.zip");
+            goTo(ui->savePathSelectionPage);
+        }
+        if (ui->folderOption->isChecked()) {
             ui->fileSuggestionLabel->hide();
             ui->dirSuggestionLabel->show();
             goTo(ui->savePathSelectionPage);
@@ -90,18 +96,47 @@ void TrainingCreationWizard::on_nextButton_clicked()
     }
 
     if (ui->stackedWidget->currentWidget() == ui->savePathSelectionPage) {
+        if (ui->archiveOption->isChecked()) {
+            QString path = ui->pathEdit->text();
+            Settings::instance().updateLastPath(QFileInfo(path).absolutePath());
+            QTemporaryDir tempDir;
+            if (!tempDir.isValid()) {
+                QMessageBox::warning(this, "Ошибка при сохранении",
+                                     "Невозможно создать временную папку для формирования тренажера.");
+                return;
+            }
+            if (saveDirectory(tempDir.path())) {
+                if (compress(tempDir.path(), path)) {
+                    accept();
+                    return;
+                }
+                QMessageBox::warning(this, "Ошибка при сохранении",
+                                     "Не удалось создать архив с тренажером.");
+                return;
+            }
+        }
+
         if (ui->folderOption->isChecked()) {
             QString path = ui->pathEdit->text();
             Settings::instance().updateLastPath(path);
             if (saveDirectory(path))
                 accept();
+            return;
         }
-        return;
     }
 }
 
 void TrainingCreationWizard::on_choosePathButton_clicked()
 {
+    if (ui->archiveOption->isChecked()) {
+        QString path = QFileDialog::getSaveFileName(
+                    this, "Путь к архиву", ui->pathEdit->text(), "Архив (*.zip)");
+        if (!path.isEmpty()) {
+            ui->pathEdit->setText(path);
+            Settings::instance().updateLastPath(QFileInfo(path).absolutePath());
+        }
+    }
+
     if (ui->folderOption->isChecked()) {
         QString path = QFileDialog::getExistingDirectory(
                     this, "Путь к папке", ui->pathEdit->text());

@@ -23,6 +23,7 @@ MainWindow::MainWindow(QWidget *parent) :
     showMaximized();
     setWindowTitle("Offline-наставник. Тренажер v." + getVersion());
 
+    OMKit::instance().init();
     qDebug() << "OMKit: v." << OMKit::instance().getVersion();
 
     loginForm = new LoginForm(this);

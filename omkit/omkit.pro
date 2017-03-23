@@ -11,6 +11,12 @@ greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 TARGET = omkit
 TEMPLATE = lib
 
+INCLUDEPATH += ../zlib
+LIBS += -L../zlib -lz
+
+INCLUDEPATH += ../quazip/quazip
+LIBS += -L../quazip/quazip/release -lquazip
+
 DEFINES += OMKIT_LIBRARY
 
 SOURCES += omkit.cpp \
@@ -22,7 +28,8 @@ SOURCES += omkit.cpp \
     answer.cpp \
     solution.cpp \
     ui_utils.cpp \
-    trainingsettings.cpp
+    trainingsettings.cpp \
+    zip_utils.cpp
 
 HEADERS += omkit.h\
         omkit_global.h \
@@ -34,7 +41,8 @@ HEADERS += omkit.h\
     answer.h \
     solution.h \
     ui_utils.h \
-    trainingsettings.h
+    trainingsettings.h \
+    zip_utils.h
 
 unix {
     target.path = /usr/lib
