@@ -8,6 +8,7 @@
 #include "settings.h"
 
 #include <omkit/utils.h>
+#include <omkit/string_utils.h>
 #include <omkit/omkit.h>
 
 #include <QMessageBox>
@@ -30,12 +31,11 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->stackedWidget->addWidget(loginForm);
 
     sectionsForm = new SectionsForm(this);
-    ui->stackedWidget->addWidget(sectionsForm);
+    int tabIndex = ui->tabWidget->addTab(sectionsForm, "Список разделов");
+    ui->tabWidget->tabBar()->setTabButton(tabIndex, QTabBar::LeftSide, nullptr);
+    ui->tabWidget->tabBar()->setTabButton(tabIndex, QTabBar::RightSide, nullptr);
 
-    trainingForm = new TrainingForm(this);
-    ui->stackedWidget->addWidget(trainingForm);
-
-    select(loginForm);
+    ui->stackedWidget->setCurrentWidget(loginForm);
 
     connect(loginForm, SIGNAL(login()), this, SLOT(onLogin()));
     connect(sectionsForm, SIGNAL(requestedOpen(Section)), this, SLOT(openSection(Section)));
@@ -66,16 +66,29 @@ void MainWindow::onLogin()
     loadSolutions();
     sectionsForm->setUserName(loginForm->userName());
     sectionsForm->updateProgress();
-    select(sectionsForm);
+    ui->tabWidget->setCurrentWidget(sectionsForm);
+    ui->stackedWidget->setCurrentWidget(ui->mainPage);
 }
 
 void MainWindow::openSection(const Section& section)
 {
+    if (openedPages.contains(section.id)) {
+        ui->tabWidget->setCurrentWidget(openedPages[section.id]);
+        return;
+    }
+    TrainingForm* trainingForm = new TrainingForm(this);
     trainingForm->setSection(section);
-    select(trainingForm);
+    ui->tabWidget->addTab(trainingForm, trim(section.name, 16));
+    ui->tabWidget->setCurrentWidget(trainingForm);
+    openedPages[section.id] = trainingForm;
 }
 
-void MainWindow::select(QWidget* widget)
+void MainWindow::on_tabWidget_tabCloseRequested(int index)
 {
-    ui->stackedWidget->setCurrentIndex(ui->stackedWidget->indexOf(widget));
+    if (index == ui->tabWidget->indexOf(sectionsForm))
+        return;
+    auto widget = ui->tabWidget->widget(index);
+    auto id = ((TrainingForm*)widget)->sectionId();
+    openedPages.remove(id);
+    delete widget;
 }

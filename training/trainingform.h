@@ -22,6 +22,7 @@ public:
     ~TrainingForm();
 
     void setSection(const Section& section);
+    QUuid sectionId() const;
 
 private slots:
     void on_listWidget_itemSelectionChanged();

@@ -102,6 +102,11 @@ void TrainingForm::setSection(const Section& section)
     }
 }
 
+QUuid TrainingForm::sectionId() const
+{
+    return section.id;
+}
+
 void TrainingForm::on_listWidget_itemSelectionChanged()
 {
     auto selectedItems = ui->listWidget->selectedItems();

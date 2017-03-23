@@ -8,28 +8,11 @@
 #include "ui_mainwindow.h"
 #include <omkit/omkit.h>
 #include <omkit/utils.h>
+#include <omkit/string_utils.h>
 #include <omkit/solution.h>
 #include <QMessageBox>
 #include <QTimer>
 #include <QStringList>
-
-namespace {
-QString trim(QString str, int len)
-{
-    if (str.size() < len)
-        return str;
-    QStringList parts = str.split(' ', QString::SkipEmptyParts);
-    if (parts.isEmpty())
-        return QString();
-    str = parts.front();
-    int index = 1;
-    while (index < parts.size() && str.size() + parts[index].size() + 1 <= len)
-        str += " " + parts[index++];
-    if (str.size() > len)
-        str = str.left(len);
-    return str.left(len) + "...";
-}
-}
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
@@ -46,7 +29,9 @@ MainWindow::MainWindow(QWidget *parent) :
     settingsDialog->hide();
 
     solutionsForm = new SolutionsForm(this);
-    ui->tabWidget->addTab(solutionsForm, "Сводная таблица");
+    int tabIndex = ui->tabWidget->addTab(solutionsForm, "Сводная таблица");
+    ui->tabWidget->tabBar()->setTabButton(tabIndex, QTabBar::LeftSide, nullptr);
+    ui->tabWidget->tabBar()->setTabButton(tabIndex, QTabBar::RightSide, nullptr);
     connect(solutionsForm, SIGNAL(requestedOpen(Solution)),
             this, SLOT(openSolution(Solution)));
 

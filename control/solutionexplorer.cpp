@@ -10,6 +10,8 @@ SolutionExplorer::SolutionExplorer(QWidget *parent) :
     ui(new Ui::SolutionExplorer)
 {
     ui->setupUi(this);
+    ui->splitter->setStretchFactor(0, 1);
+    ui->splitter->setStretchFactor(1, 3);
 }
 
 SolutionExplorer::~SolutionExplorer()

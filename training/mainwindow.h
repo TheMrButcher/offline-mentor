@@ -11,7 +11,6 @@ class MainWindow;
 
 class LoginForm;
 class SectionsForm;
-class TrainingForm;
 
 class MainWindow : public QMainWindow
 {
@@ -26,13 +25,15 @@ private slots:
     void onLogin();
     void openSection(const Section& section);
 
+    void on_tabWidget_tabCloseRequested(int index);
+
 private:
     void select(QWidget* widget);
 
     Ui::MainWindow *ui;
     LoginForm* loginForm;
     SectionsForm* sectionsForm;
-    TrainingForm* trainingForm;
+    QHash<QUuid, QWidget*> openedPages;
 };
 
 #endif // MAINWINDOW_H
