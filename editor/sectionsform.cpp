@@ -29,6 +29,17 @@ void SectionsForm::setSections(QList<Section> sections)
     updateView();
 }
 
+void SectionsForm::updateSection(const Section& section)
+{
+    widgets[section.id]->setSection(section);
+    for (auto it = sections.begin(); it != sections.end(); ++it) {
+        if (it->id == section.id) {
+            *it = section;
+            break;
+        }
+    }
+}
+
 void SectionsForm::onSectionCreated()
 {
     Section section = createSectionDialog->result();
@@ -49,6 +60,7 @@ void SectionsForm::on_createSectionButton_clicked()
 
 void SectionsForm::updateView()
 {
+    widgets.clear();
     qDeleteAll(ui->sectionsList->children());
     QVBoxLayout* layout = new QVBoxLayout();
     layout->setSpacing(20);
@@ -57,6 +69,7 @@ void SectionsForm::updateView()
         SectionWidget* sectionWidget = new SectionWidget;
         sectionWidget->setSection(section);
         layout->addWidget(sectionWidget);
+        widgets[section.id] = sectionWidget;
         connect(sectionWidget, SIGNAL(requestedOpen(Section)), this, SIGNAL(requestedOpen(Section)));
     }
     ui->sectionsList->setLayout(layout);

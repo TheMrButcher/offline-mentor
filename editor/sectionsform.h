@@ -11,6 +11,7 @@ class SectionsForm;
 }
 
 class CreateSectionDialog;
+class SectionWidget;
 
 class SectionsForm : public QWidget
 {
@@ -25,6 +26,7 @@ signals:
 
 public slots:
     void setSections(QList<Section> sections);
+    void updateSection(const Section& section);
 
 private slots:
     void onSectionCreated();
@@ -37,6 +39,7 @@ private:
 
     CreateSectionDialog* createSectionDialog;
     QList<Section> sections;
+    QHash<QUuid, SectionWidget*> widgets;
 };
 
 #endif // SECTIONSFORM_H

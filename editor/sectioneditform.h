@@ -24,15 +24,17 @@ public:
 
     Section section() const;
     void setSection(const Section& section);
+    QUuid sectionId() const;
+
+signals:
+    void sectionSaved(const Section& section);
 
 public slots:
     void save();
 
 private slots:
     void on_addCaseButton_clicked();
-
     void on_treeWidget_currentItemChanged(QTreeWidgetItem *current, QTreeWidgetItem* previous);
-
     void on_nameEdit_textEdited(const QString &arg1);
 
 private:

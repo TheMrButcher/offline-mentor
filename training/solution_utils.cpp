@@ -8,7 +8,7 @@
 namespace {
 struct SolutionKey {
     SolutionPathType type;
-    QString sectionId;
+    QUuid sectionId;
 };
 
 bool operator==(const SolutionKey& key1, const SolutionKey& key2)
@@ -81,12 +81,12 @@ void loadSolutions()
 
 bool hasSolution(SolutionPathType type, const Section& section)
 {
-    return solutions.contains(SolutionKey{ type, section.id.toString() });
+    return solutions.contains(SolutionKey{ type, section.id });
 }
 
 Solution getSolution(SolutionPathType type, const Section& section)
 {
-    SolutionKey key{ type, section.id.toString() };
+    SolutionKey key{ type, section.id };
     if (!solutions.contains(key)) {
         Solution solution = Solution::createSolution(section);
         solution.userName = userName();
@@ -98,6 +98,11 @@ Solution getSolution(SolutionPathType type, const Section& section)
     return solutions[key];
 }
 
+const Solution& peekSolution(SolutionPathType type, const Section& section)
+{
+    return solutions[SolutionKey{ type, section.id }];
+}
+
 bool saveSolution(SolutionPathType type, Solution& solution)
 {
     if (solution.dirPath.isEmpty()) {
@@ -106,6 +111,6 @@ bool saveSolution(SolutionPathType type, Solution& solution)
     }
     if (!solution.save())
         return false;
-    solutions[SolutionKey{ type, solution.sectionId.toString() }] = solution;
+    solutions[SolutionKey{ type, solution.sectionId }] = solution;
     return true;
 }

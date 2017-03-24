@@ -47,6 +47,7 @@ void SectionEditForm::setSection(const Section& section)
     }
     nodes.clear();
 
+    ui->titleLabel->setText("Раздел \"" + originalSection.name + "\"");
     ui->nameEdit->setText(originalSection.name);
     ui->descriptionEdit->setPlainText(originalSection.description);
 
@@ -72,6 +73,11 @@ void SectionEditForm::setSection(const Section& section)
                              "Не удалось загрузить некоторые файлы кейсов: " + badFiles.join("; "));
         return;
     }
+}
+
+QUuid SectionEditForm::sectionId() const
+{
+    return originalSection.id;
 }
 
 void SectionEditForm::save()
@@ -100,6 +106,7 @@ void SectionEditForm::save()
                              "Не удалось сохранить некоторые файлы кейсов: " + badFiles.join("; "));
         return;
     }
+    emit sectionSaved(result);
 }
 
 Section SectionEditForm::sectionFromUI() const
@@ -145,7 +152,9 @@ void SectionEditForm::on_nameEdit_textEdited(const QString &arg)
 
 void SectionEditForm::setSectionName(QString name)
 {
-    rootItem->setText(0, "Раздел \"" + name + "\"");
+    QString title = "Раздел \"" + name + "\"";
+    ui->titleLabel->setText(title);
+    rootItem->setText(0, title);
 }
 
 void SectionEditForm::addCase(const Case& caseValue)

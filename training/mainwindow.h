@@ -11,6 +11,7 @@ class MainWindow;
 
 class LoginForm;
 class SectionsForm;
+class Solution;
 
 class MainWindow : public QMainWindow
 {
@@ -24,6 +25,7 @@ private slots:
     void loadSettings();
     void onLogin();
     void openSection(const Section& section);
+    void onSolutionSaved(const Solution& solution);
 
     void on_tabWidget_tabCloseRequested(int index);
 

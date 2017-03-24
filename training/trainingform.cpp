@@ -129,6 +129,7 @@ void TrainingForm::onAnswerEntered(QListWidgetItem* caseItem)
         && saveSolution(SolutionPathType::Local, solution)) {
         caseItem->setIcon(QIcon(":/icons/answered.png"));
         isSavedLocally = true;
+        emit savedSolution(solution);
     } else {
         QMessageBox::warning(this, "Ошибка при сохранении",
                              "Не удалось сохранить ответ локально. "

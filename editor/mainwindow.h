@@ -10,7 +10,6 @@ class MainWindow;
 }
 
 class SectionsForm;
-class SectionEditForm;
 
 class MainWindow : public QMainWindow
 {
@@ -21,16 +20,22 @@ public:
     ~MainWindow();
 
 private slots:
+    void save();
     void loadSettings();
     void openSection(const Section& section);
+    void onSectionSaved(const Section& section);
+
+    void on_tabWidget_tabCloseRequested(int index);
+
+    void on_tabWidget_currentChanged(int index);
 
 private:
-    void select(QWidget* widget);
+    bool isSectionsFormCurrent() const;
 
     Ui::MainWindow *ui;
 
     SectionsForm* sectionsForm;
-    SectionEditForm* sectionEditForm;
+    QHash<QUuid, QWidget*> openedPages;
 };
 
 #endif // MAINWINDOW_H

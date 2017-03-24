@@ -24,6 +24,9 @@ public:
     void setSection(const Section& section);
     QUuid sectionId() const;
 
+signals:
+    void savedSolution(const Solution& solution);
+
 private slots:
     void on_listWidget_itemSelectionChanged();
     void onAnswerEntered(QListWidgetItem* caseItem);
@@ -43,7 +46,6 @@ private:
     };
 
     Section section;
-    Solution localSolution;
     QHash<QListWidgetItem*, NodeDescriptor> nodes;
 };
 
