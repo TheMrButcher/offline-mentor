@@ -19,6 +19,11 @@ CreateSectionDialog::~CreateSectionDialog()
     delete ui;
 }
 
+void CreateSectionDialog::initUI()
+{
+    ui->pathEdit->setText(Settings::instance().safeLastDirectoryPath() + "/НовыйРаздел.oms");
+}
+
 Section CreateSectionDialog::result() const
 {
     return section;
@@ -33,14 +38,19 @@ void CreateSectionDialog::accept()
     section = Section::createSection(path);
     section.name = ui->nameEdit->text();
 
+    if (section.path.isEmpty()) {
+        QMessageBox::warning(this, "Неверные данные", "Путь к файлу не указан.");
+        return;
+    }
+
     if (section.name.isEmpty()) {
-        QMessageBox::warning(this, "Ошибка", "Имя раздела не указано.");
+        QMessageBox::warning(this, "Неверные данные", "Имя раздела не указано.");
         return;
     }
 
     if (!section.save()) {
-        QMessageBox::warning(this, "Ошибка", "Не удалось создать раздел. "
-                                             "Проверьте правильность написания пути.");
+        QMessageBox::warning(this, "Ошибка при сохранении",
+                             "Не удалось создать раздел. Проверьте правильность написания пути.");
         return;
     }
     QDialog::accept();

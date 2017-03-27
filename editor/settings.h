@@ -12,6 +12,7 @@ public:
     void read();
     void write();
     QString safeLastDirectoryPath();
+    void updateLastDirectoryPath(QString path);
 
     QString lastDirectoryPath;
     QList<QString> knownSections;

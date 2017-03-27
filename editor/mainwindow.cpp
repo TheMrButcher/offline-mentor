@@ -1,13 +1,17 @@
 #include "mainwindow.h"
 #include "sectionsform.h"
 #include "sectioneditform.h"
+#include "createsectiondialog.h"
 #include "settings.h"
+#include "section_utils.h"
 #include "ui_mainwindow.h"
 
 #include <omkit/utils.h>
 #include <omkit/string_utils.h>
 #include <omkit/omkit.h>
 
+#include <QFileDialog>
+#include <QMessageBox>
 #include <QTimer>
 #include <QDebug>
 
@@ -27,11 +31,17 @@ MainWindow::MainWindow(QWidget *parent) :
     int tabIndex = ui->tabWidget->addTab(sectionsForm, "Список разделов");
     ui->tabWidget->tabBar()->setTabButton(tabIndex, QTabBar::LeftSide, nullptr);
     ui->tabWidget->tabBar()->setTabButton(tabIndex, QTabBar::RightSide, nullptr);
-
     ui->tabWidget->setCurrentWidget(ui->tabWidget);
 
+    createSectionDialog = new CreateSectionDialog(this);
+    createSectionDialog->hide();
+    connect(createSectionDialog, SIGNAL(accepted()), this, SLOT(onSectionCreated()));
+
+    connect(sectionsForm, SIGNAL(requestedCreation()), this, SLOT(startCreation()));
     connect(sectionsForm, SIGNAL(requestedOpen(Section)), this, SLOT(openSection(Section)));
 
+    connect(ui->createAction, SIGNAL(triggered()), this, SLOT(startCreation()));
+    connect(ui->openAction, SIGNAL(triggered()), this, SLOT(open()));
     connect(ui->saveAction, SIGNAL(triggered()), this, SLOT(save()));
 
     QTimer::singleShot(0, this, SLOT(loadSettings()));
@@ -40,6 +50,36 @@ MainWindow::MainWindow(QWidget *parent) :
 MainWindow::~MainWindow()
 {
     delete ui;
+}
+
+void MainWindow::startCreation()
+{
+    createSectionDialog->show();
+}
+
+void MainWindow::open()
+{
+    QString path = QFileDialog::getOpenFileName(
+                this, "Открытие раздела", Settings::instance().safeLastDirectoryPath(),
+                "Файл раздела (*.oms)");
+    if (path.isEmpty())
+        return;
+
+    Section section;
+    if (isKnownSection(path)) {
+        section = getSection(path);
+    } else {
+        section.path = path;
+        if (!section.open()) {
+            QMessageBox::warning(this, "Не удалось открыть раздел",
+                                 "При открытии раздела произошла ошибка. Проверьте правильность "
+                                 "указанного пути.");
+            return;
+        }
+        sectionsForm->addSection(section);
+    }
+    Settings::instance().updateLastDirectoryPath(path);
+    openSection(section);
 }
 
 void MainWindow::save()
@@ -53,22 +93,16 @@ void MainWindow::loadSettings()
 {
     auto& settings = Settings::instance();
     settings.read();
+    createSectionDialog->initUI();
+    sectionsForm->load();
+}
 
-    QList<Section> sections;
-    sections.reserve(settings.knownSections.size());
-    foreach (const auto& path, settings.knownSections) {
-        Section section;
-        section.path = path;
-        if (section.open()) {
-            sections.append(section);
-        }
-    }
-    sectionsForm->setSections(sections);
-
-    settings.knownSections.clear();
-    foreach (const auto& section, sections)
-        settings.knownSections.append(section.path);
-    settings.write();
+void MainWindow::onSectionCreated()
+{
+    auto section = createSectionDialog->result();
+    Settings::instance().updateLastDirectoryPath(section.path);
+    sectionsForm->addSection(section);
+    openSection(section);
 }
 
 void MainWindow::openSection(const Section& section)

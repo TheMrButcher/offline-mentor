@@ -7,5 +7,8 @@
         <file>icons/save.png</file>
         <file>icons/case.png</file>
         <file>icons/answer.png</file>
+        <file>icons/new.png</file>
+        <file>icons/open.png</file>
+        <file>icons/add.png</file>
     </qresource>
 </RCC>

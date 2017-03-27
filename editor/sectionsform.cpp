@@ -2,6 +2,7 @@
 #include "sectionwidget.h"
 #include "createsectiondialog.h"
 #include "settings.h"
+#include "section_utils.h"
 #include "ui_sectionsform.h"
 #include <QVBoxLayout>
 #include <QFileInfo>
@@ -11,11 +12,6 @@ SectionsForm::SectionsForm(QWidget *parent) :
     ui(new Ui::SectionsForm)
 {
     ui->setupUi(this);
-
-    createSectionDialog = new CreateSectionDialog(this);
-    createSectionDialog->hide();
-
-    connect(createSectionDialog, SIGNAL(accepted()), this, SLOT(onSectionCreated()));
 }
 
 SectionsForm::~SectionsForm()
@@ -23,39 +19,27 @@ SectionsForm::~SectionsForm()
     delete ui;
 }
 
-void SectionsForm::setSections(QList<Section> sections)
+void SectionsForm::load()
 {
-    this->sections = sections;
+    loadSections();
+    updateView();
+}
+
+void SectionsForm::addSection(const Section& section)
+{
+    ::addSection(section);
     updateView();
 }
 
 void SectionsForm::updateSection(const Section& section)
 {
+    ::updateSection(section);
     widgets[section.id]->setSection(section);
-    for (auto it = sections.begin(); it != sections.end(); ++it) {
-        if (it->id == section.id) {
-            *it = section;
-            break;
-        }
-    }
-}
-
-void SectionsForm::onSectionCreated()
-{
-    Section section = createSectionDialog->result();
-
-    auto& settings = Settings::instance();
-    settings.lastDirectoryPath = QFileInfo(section.path).absolutePath();
-    settings.knownSections.prepend(section.path);
-    settings.write();
-
-    sections.prepend(section);
-    updateView();
 }
 
 void SectionsForm::on_createSectionButton_clicked()
 {
-    createSectionDialog->show();
+    emit requestedCreation();
 }
 
 void SectionsForm::updateView()
@@ -65,6 +49,7 @@ void SectionsForm::updateView()
     QVBoxLayout* layout = new QVBoxLayout();
     layout->setSpacing(20);
     layout->setSizeConstraint(QLayout::SetMaximumSize);
+    const auto& sections = getSections();
     foreach (const auto& section, sections) {
         SectionWidget* sectionWidget = new SectionWidget;
         sectionWidget->setSection(section);

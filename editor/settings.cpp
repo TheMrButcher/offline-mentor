@@ -52,6 +52,17 @@ QString Settings::safeLastDirectoryPath()
     return lastDirectoryPath;
 }
 
+void Settings::updateLastDirectoryPath(QString path)
+{
+    if (path.isEmpty())
+        return;
+    QFileInfo fileInfo(path);
+    if (fileInfo.isDir())
+        lastDirectoryPath = fileInfo.absoluteFilePath();
+    else
+        lastDirectoryPath = fileInfo.absolutePath();
+}
+
 Settings::Settings()
 {
     lastDirectoryPath = QDir::homePath();

@@ -17,6 +17,7 @@ public:
     explicit CreateSectionDialog(QWidget *parent = 0);
     ~CreateSectionDialog();
 
+    void initUI();
     Section result() const;
 
 public slots:

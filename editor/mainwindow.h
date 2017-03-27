@@ -10,6 +10,7 @@ class MainWindow;
 }
 
 class SectionsForm;
+class CreateSectionDialog;
 
 class MainWindow : public QMainWindow
 {
@@ -20,8 +21,11 @@ public:
     ~MainWindow();
 
 private slots:
+    void startCreation();
+    void open();
     void save();
     void loadSettings();
+    void onSectionCreated();
     void openSection(const Section& section);
     void onSectionSaved(const Section& section);
 
@@ -35,6 +39,7 @@ private:
     Ui::MainWindow *ui;
 
     SectionsForm* sectionsForm;
+    CreateSectionDialog* createSectionDialog;
     QHash<QUuid, QWidget*> openedPages;
 };
 

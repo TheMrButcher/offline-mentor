@@ -22,14 +22,15 @@ public:
     ~SectionsForm();
 
 signals:
+    void requestedCreation();
     void requestedOpen(Section);
 
 public slots:
-    void setSections(QList<Section> sections);
+    void load();
+    void addSection(const Section& section);
     void updateSection(const Section& section);
 
 private slots:
-    void onSectionCreated();
     void on_createSectionButton_clicked();
 
 private:
@@ -37,8 +38,6 @@ private:
 
     Ui::SectionsForm *ui;
 
-    CreateSectionDialog* createSectionDialog;
-    QList<Section> sections;
     QHash<QUuid, SectionWidget*> widgets;
 };
 

@@ -25,7 +25,8 @@ SOURCES += main.cpp\
     settings.cpp \
     sectioneditform.cpp \
     casepage.cpp \
-    texteditorpage.cpp
+    texteditorpage.cpp \
+    section_utils.cpp
 
 HEADERS  += mainwindow.h \
     sectionsform.h \
@@ -34,7 +35,8 @@ HEADERS  += mainwindow.h \
     settings.h \
     sectioneditform.h \
     casepage.h \
-    texteditorpage.h
+    texteditorpage.h \
+    section_utils.h
 
 FORMS    += mainwindow.ui \
     sectionsform.ui \
