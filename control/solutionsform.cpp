@@ -3,6 +3,7 @@
 #include "section_utils.h"
 #include "ui_solutionsform.h"
 #include <QMessageBox>
+#include <QDebug>
 
 namespace {
 QString makeStatistics(const Section& section, const Solution& solution)
@@ -121,12 +122,17 @@ void SolutionsForm::on_openButton_clicked()
 
 void SolutionsForm::fillTable(const QList<Solution>& solutions)
 {
+    ui->tableWidget->selectionModel()->clearSelection();
     const auto& sections = getSections();
     ui->tableWidget->setRowCount(solutions.size());
 
+    ui->tableWidget->setSortingEnabled(false);
     for (int i = 0; i < solutions.size(); ++i) {
         const auto& solution = solutions[i];
         const auto& section = sections[solution.sectionId];
+
+        qDebug() << "Section: " << section.name << ", user: " << solution.userName
+                 << ", answered: " << solution.answers.size() << " / " << section.cases.size();
 
         QTableWidgetItem* statusItem = new QTableWidgetItem();
         if (solution.answers.size() == section.cases.size()) {
@@ -152,7 +158,7 @@ void SolutionsForm::fillTable(const QList<Solution>& solutions)
         statisticsItem->setTextAlignment(Qt::AlignHCenter | Qt::AlignVCenter);
         ui->tableWidget->setItem(i, 3, statisticsItem);
     }
-    ui->tableWidget->selectionModel()->clearSelection();
+    ui->tableWidget->setSortingEnabled(true);
 }
 
 void SolutionsForm::updateComboBox(QComboBox* comboBox, const QStringList& variants)
