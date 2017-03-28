@@ -17,5 +17,7 @@ bool hasSolution(SolutionPathType type, const Section& section);
 Solution getSolution(SolutionPathType type, const Section& section);
 const Solution& peekSolution(SolutionPathType type, const Section& section);
 bool saveSolution(SolutionPathType type, Solution& solution);
+bool mergeSolution(const Solution& srcSolution,
+                   SolutionPathType dstType, Solution& dstSolution);
 
 #endif // SOLUTION_UTILS_H

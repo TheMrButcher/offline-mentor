@@ -35,16 +35,17 @@ QString pathByType(SolutionPathType type)
 }
 
 QHash<SolutionKey, Solution> solutions;
+bool isSynced = false;
 
-void loadSolutionsFrom(SolutionPathType type)
+bool loadSolutionsFrom(SolutionPathType type)
 {
     QString path = pathByType(type);
     if (path.isEmpty())
-        return;
+        return false;
 
     path = getUserPath(path);
     if (path.isEmpty())
-        return;
+        return false;
 
     auto newSolutions = Solution::findAll(path);
     foreach (const auto& solution, newSolutions) {
@@ -52,6 +53,7 @@ void loadSolutionsFrom(SolutionPathType type)
             continue;
         solutions[SolutionKey{ type, solution.sectionId.toString() }] = solution;
     }
+    return true;
 }
 
 bool setSolutionDir(SolutionPathType type, Solution& solution)
@@ -71,21 +73,31 @@ bool setSolutionDir(SolutionPathType type, Solution& solution)
     solution.dirPath = path;
     return true;
 }
+
+void syncWithRemote()
+{
+    isSynced = loadSolutionsFrom(SolutionPathType::Remote);
+}
 } // namespace
 
 void loadSolutions()
 {
     loadSolutionsFrom(SolutionPathType::Local);
-    loadSolutionsFrom(SolutionPathType::Remote);
+    syncWithRemote();
 }
 
 bool hasSolution(SolutionPathType type, const Section& section)
 {
+    if (type == SolutionPathType::Remote && !isSynced)
+        return false;
     return solutions.contains(SolutionKey{ type, section.id });
 }
 
 Solution getSolution(SolutionPathType type, const Section& section)
 {
+    if (type == SolutionPathType::Remote && !isSynced)
+        return Solution();
+
     SolutionKey key{ type, section.id };
     if (!solutions.contains(key)) {
         Solution solution = Solution::createSolution(section);
@@ -105,6 +117,8 @@ const Solution& peekSolution(SolutionPathType type, const Section& section)
 
 bool saveSolution(SolutionPathType type, Solution& solution)
 {
+    if (type == SolutionPathType::Remote && !isSynced)
+        return false;
     if (solution.dirPath.isEmpty()) {
         if (!setSolutionDir(type, solution))
             return false;
@@ -112,5 +126,20 @@ bool saveSolution(SolutionPathType type, Solution& solution)
     if (!solution.save())
         return false;
     solutions[SolutionKey{ type, solution.sectionId }] = solution;
+    return true;
+}
+
+bool mergeSolution(const Solution& srcSolution,
+                   SolutionPathType dstType, Solution& dstSolution)
+{
+    if (dstType == SolutionPathType::Remote && !isSynced)
+        return false;
+    if (dstSolution.dirPath.isEmpty()) {
+        if (!saveSolution(dstType, dstSolution))
+            return false;
+    }
+    if (!dstSolution.merge(srcSolution))
+        return false;
+    solutions[SolutionKey{ dstType, dstSolution.sectionId }] = dstSolution;
     return true;
 }

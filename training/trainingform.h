@@ -12,6 +12,7 @@ class TrainingForm;
 }
 
 class QListWidgetItem;
+class TotalPage;
 
 class TrainingForm : public QWidget
 {
@@ -21,7 +22,7 @@ public:
     explicit TrainingForm(QWidget *parent = 0);
     ~TrainingForm();
 
-    void setSection(const Section& section);
+    bool setSection(const Section& section);
     QUuid sectionId() const;
 
 signals:
@@ -33,9 +34,12 @@ private slots:
     void toMentorAnswer(QListWidgetItem* caseItem);
     void backToQuestion(QListWidgetItem* caseItem);
     void next(QListWidgetItem* caseItem);
+    void transferSolution();
 
 private:
     void openQuestionPage(int pageId);
+    bool isSectionCompleted() const;
+    void updateTotal();
 
     Ui::TrainingForm *ui;
 
@@ -47,6 +51,9 @@ private:
 
     Section section;
     QHash<QListWidgetItem*, NodeDescriptor> nodes;
+    QListWidgetItem* firstCaseItem = nullptr;
+    QListWidgetItem* totalItem = nullptr;
+    TotalPage* totalPage = nullptr;
 };
 
 #endif // TRAININGFORM_H

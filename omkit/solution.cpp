@@ -4,6 +4,7 @@
 #include <QDir>
 #include <QFileInfo>
 #include <QJsonArray>
+#include <QSet>
 
 namespace {
 void findAll(QString path, QList<Solution>& dst)
@@ -102,28 +103,21 @@ bool Solution::isEqual(const Solution& other) const
 
 bool Solution::merge(const Solution& other)
 {
-    int firstDifference = 0;
+    QSet<QUuid> answerIds;
+    foreach (const auto& answer, answers)
+        answerIds.insert(answer.caseId);
+
     auto thisDir = dir();
     auto otherDir = other.dir();
-    for (int i = 0; i < other.answers.size(); ++i) {
-        const auto& answer = other.answers[i];
+    foreach (const auto& answer, other.answers) {
         const auto& id = answer.caseId;
-        if (i < answers.size() && answers[i].caseId == id) {
-            if (firstDifference == i)
-                ++firstDifference;
+        if (answerIds.contains(id))
             continue;
-        }
-        int j = firstDifference;
-        for (; j < answers.size(); ++j) {
-            if (answers[j].caseId == id)
-                break;
-        }
-        if (j == answers.size()) {
-            if (!QFile::copy(otherDir.absoluteFilePath(answer.fileName),
-                             thisDir.absoluteFilePath(answer.fileName)))
-                return false;
-            answers.append(other.answers[i]);
-        }
+
+        if (!QFile::copy(otherDir.absoluteFilePath(answer.fileName),
+                         thisDir.absoluteFilePath(answer.fileName)))
+            return false;
+        answers.append(answer);
     }
     return save();
 }

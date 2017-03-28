@@ -3,7 +3,6 @@
 #include "section_utils.h"
 #include "ui_solutionsform.h"
 #include <QMessageBox>
-#include <QDebug>
 
 namespace {
 QString makeStatistics(const Section& section, const Solution& solution)
@@ -130,9 +129,6 @@ void SolutionsForm::fillTable(const QList<Solution>& solutions)
     for (int i = 0; i < solutions.size(); ++i) {
         const auto& solution = solutions[i];
         const auto& section = sections[solution.sectionId];
-
-        qDebug() << "Section: " << section.name << ", user: " << solution.userName
-                 << ", answered: " << solution.answers.size() << " / " << section.cases.size();
 
         QTableWidgetItem* statusItem = new QTableWidgetItem();
         if (solution.answers.size() == section.cases.size()) {

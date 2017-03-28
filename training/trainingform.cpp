@@ -1,6 +1,7 @@
 #include "trainingform.h"
 #include "questionpage.h"
 #include "mentoranswerpage.h"
+#include "totalpage.h"
 #include "solution_utils.h"
 #include "settings.h"
 #include "ui_trainingform.h"
@@ -21,8 +22,11 @@ TrainingForm::~TrainingForm()
     delete ui;
 }
 
-void TrainingForm::setSection(const Section& section)
+bool TrainingForm::setSection(const Section& section)
 {
+    if (!section.isValid())
+        return false;
+
     ui->listWidget->clear();
     for(int i = ui->stackedWidget->count() - 1; i >= 0; i--)
     {
@@ -38,8 +42,6 @@ void TrainingForm::setSection(const Section& section)
     QStringList badFiles;
 
     QListWidgetItem* prevItem = nullptr;
-    QListWidgetItem* itemToSelect = nullptr;
-    int pageToShowId = 0;
     foreach (const auto& caseValue, section.cases) {
         QuestionPage* questionPage = new QuestionPage;
         if (!questionPage->loadCase(section, caseValue)) {
@@ -81,18 +83,23 @@ void TrainingForm::setSection(const Section& section)
         connect(mentorAnswerPage, SIGNAL(requestedNext(QListWidgetItem*)),
                 this, SLOT(next(QListWidgetItem*)));
 
-        if (!itemToSelect) {
-            itemToSelect = item;
-            pageToShowId = questionPageId;
-        }
+        if (!firstCaseItem)
+            firstCaseItem = item;
 
         ++nextCaseIndex;
         prevItem = item;
     }
 
-    if (itemToSelect) {
-        ui->listWidget->setCurrentItem(itemToSelect);
-        ui->stackedWidget->setCurrentIndex(pageToShowId);
+    if (!firstCaseItem)
+        return false;
+
+    ui->listWidget->setCurrentItem(firstCaseItem);
+    openQuestionPage(nodes[firstCaseItem].questionPageId);
+
+    if (isSectionCompleted()) {
+        updateTotal();
+        ui->listWidget->setCurrentItem(totalItem);
+        ui->stackedWidget->setCurrentWidget(totalPage);
     }
 
     if (!badFiles.isEmpty()) {
@@ -100,6 +107,7 @@ void TrainingForm::setSection(const Section& section)
                              "Не удалось загрузить некоторые файлы кейсов: " + badFiles.join("; ")
                              + ". Они не будут показаны в списке кейсов.");
     }
+    return true;
 }
 
 QUuid TrainingForm::sectionId() const
@@ -113,6 +121,10 @@ void TrainingForm::on_listWidget_itemSelectionChanged()
     if (selectedItems.isEmpty())
         return;
     auto item = selectedItems.front();
+    if (totalItem && item == totalItem) {
+        ui->stackedWidget->setCurrentWidget(totalPage);
+        return;
+    }
     openQuestionPage(nodes[item].questionPageId);
 }
 
@@ -148,6 +160,10 @@ void TrainingForm::onAnswerEntered(QListWidgetItem* caseItem)
         }
     }
 
+    if (isSavedLocally) {
+        if (isSectionCompleted())
+            updateTotal();
+    }
     ui->stackedWidget->setCurrentIndex(node.mentorAnswerPageId);
 }
 
@@ -173,6 +189,28 @@ void TrainingForm::next(QListWidgetItem* caseItem)
     if (node.nextItem) {
         ui->listWidget->setCurrentItem(node.nextItem);
         openQuestionPage(nodes[node.nextItem].questionPageId);
+    } else {
+        if (isSectionCompleted()) {
+            ui->listWidget->setCurrentItem(totalItem);
+            ui->stackedWidget->setCurrentWidget(totalPage);
+        } else {
+            ui->listWidget->setCurrentItem(firstCaseItem);
+            openQuestionPage(nodes[firstCaseItem].questionPageId);
+        }
+    }
+}
+
+void TrainingForm::transferSolution()
+{
+    Solution localSolution = getSolution(SolutionPathType::Local, section);
+    Solution remoteSolution = getSolution(SolutionPathType::Remote, section);
+    if (remoteSolution.isValid()
+        && mergeSolution(localSolution, SolutionPathType::Remote, remoteSolution)) {
+        totalPage->setSuccess();
+    } else {
+        QMessageBox::warning(this, "Ошибка при сохранении",
+                             "Не удалось сохранить ответ на сервере. "
+                             "Нет доступа к папке для ответов.");
     }
 }
 
@@ -181,4 +219,46 @@ void TrainingForm::openQuestionPage(int pageId)
     QuestionPage* page = (QuestionPage*)ui->stackedWidget->widget(pageId);
     page->onPageOpened();
     ui->stackedWidget->setCurrentIndex(pageId);
+}
+
+bool TrainingForm::isSectionCompleted() const
+{
+    Solution solution = getSolution(SolutionPathType::Local, section);
+    if (!solution.isValid())
+        return false;
+    return solution.answers.size() == section.cases.size();
+}
+
+void TrainingForm::updateTotal()
+{
+    if (!totalPage) {
+        totalPage = new TotalPage;
+        totalPage->load(section);
+        ui->stackedWidget->addWidget(totalPage);
+        connect(totalPage, SIGNAL(requestedTransfer()), this, SLOT(transferSolution()));
+
+        totalItem = new QListWidgetItem(ui->listWidget);
+        totalItem->setText("Итоги раздела");
+        totalItem->setIcon(QIcon(":/icons/total.png"));
+    }
+
+    if (Settings::instance().hasRemoteSolutionsDir) {
+        Solution localSolution = getSolution(SolutionPathType::Local, section);
+        Solution remoteSolution = getSolution(SolutionPathType::Remote, section);
+        if (remoteSolution.isValid()) {
+            if (localSolution.answers.size() == remoteSolution.answers.size()) {
+                totalPage->setSuccess();
+            } else {
+                if (mergeSolution(localSolution, SolutionPathType::Remote, remoteSolution)) {
+                    totalPage->setSuccess();
+                } else {
+                    totalPage->setTransferError();
+                }
+            }
+        } else {
+            totalPage->setTransferError();
+        }
+    } else {
+        totalPage->setUnknownState();
+    }
 }

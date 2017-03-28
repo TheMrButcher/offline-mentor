@@ -27,7 +27,8 @@ SOURCES += main.cpp\
     questionpage.cpp \
     mentoranswerpage.cpp \
     user_utils.cpp \
-    solution_utils.cpp
+    solution_utils.cpp \
+    totalpage.cpp
 
 HEADERS  += mainwindow.h \
     loginform.h \
@@ -38,7 +39,8 @@ HEADERS  += mainwindow.h \
     questionpage.h \
     mentoranswerpage.h \
     user_utils.h \
-    solution_utils.h
+    solution_utils.h \
+    totalpage.h
 
 FORMS    += mainwindow.ui \
     loginform.ui \
@@ -46,7 +48,8 @@ FORMS    += mainwindow.ui \
     sectionwidget.ui \
     trainingform.ui \
     questionpage.ui \
-    mentoranswerpage.ui
+    mentoranswerpage.ui \
+    totalpage.ui
 
 RESOURCES += \
     resources.qrc

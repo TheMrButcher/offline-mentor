@@ -6,5 +6,7 @@
         <file>icons/back.png</file>
         <file>icons/forward.png</file>
         <file>icons/ok.png</file>
+        <file>icons/total.png</file>
+        <file>icons/warning.png</file>
     </qresource>
 </RCC>

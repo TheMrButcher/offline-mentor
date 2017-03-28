@@ -77,7 +77,12 @@ void MainWindow::openSection(const Section& section)
         return;
     }
     TrainingForm* trainingForm = new TrainingForm(this);
-    trainingForm->setSection(section);
+    if (!trainingForm->setSection(section)) {
+        QMessageBox::warning(this, "Ошибка при открытии",
+                             "Не удалось открыть раздел.");
+        delete trainingForm;
+        return;
+    }
     ui->tabWidget->addTab(trainingForm, trim(section.name, 16));
     ui->tabWidget->setCurrentWidget(trainingForm);
     openedPages[section.id] = trainingForm;
