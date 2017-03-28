@@ -11,11 +11,16 @@ SectionEditForm::SectionEditForm(QWidget *parent) :
 {
     ui->setupUi(this);
     rootItem = ui->treeWidget->topLevelItem(0);
+    totalItem = ui->treeWidget->topLevelItem(1);
 
     ui->splitter->setStretchFactor(0, 1);
     ui->splitter->setStretchFactor(1, 4);
     ui->treeWidget->invisibleRootItem()->setFlags(
                 ui->treeWidget->invisibleRootItem()->flags().setFlag(Qt::ItemIsDropEnabled, false));
+
+    totalEditorPage = new TextEditorPage;
+    totalEditorPage->setTitle("Итоги раздела");
+    ui->stackedWidget->addWidget(totalEditorPage);
 }
 
 SectionEditForm::~SectionEditForm()
@@ -68,6 +73,13 @@ void SectionEditForm::setSection(const Section& section)
         }
     }
 
+    bool hasTotal = !originalSection.totalFileName.isEmpty();
+    if (!hasTotal)
+        originalSection.totalFileName = originalSection.makeTotalFileName();
+    totalEditorPage->setFilePath(originalSection.dir(), originalSection.totalFileName);
+    if (hasTotal && !totalEditorPage->load())
+        badFiles.append("Итоги");
+
     if (!badFiles.isEmpty()) {
         QMessageBox::warning(this, "Ошибка при загрузке",
                              "Не удалось загрузить некоторые файлы кейсов: " + badFiles.join("; "));
@@ -100,6 +112,9 @@ void SectionEditForm::save()
         if (!pages.answerPage->save())
             badFiles.append(caseValue.name + "/Ответ");
     }
+
+    if (!totalEditorPage->save())
+        badFiles.append("Итоги");
 
     if (!badFiles.isEmpty()) {
         QMessageBox::warning(this, "Ошибка при сохранении",
@@ -140,6 +155,8 @@ void SectionEditForm::on_treeWidget_currentItemChanged(QTreeWidgetItem* current,
 {
     if (current == rootItem) {
         select(ui->sectionPage);
+    } else if (current == totalItem) {
+        select(totalEditorPage);
     } else {
         ui->stackedWidget->setCurrentIndex(nodes[current].pageId);
     }

@@ -57,6 +57,7 @@ bool Section::open()
         return false;
     description = rootObj["description"].toString("");
     nextIndex = rootObj["nextIndex"].toInt(1);
+    totalFileName = rootObj["totalFileName"].toString("");
 
     QJsonArray casesArray = rootObj["cases"].toArray();
     cases.clear();
@@ -73,6 +74,7 @@ bool Section::save() const
     rootObj["name"] = name;
     rootObj["description"] = description;
     rootObj["nextIndex"] = nextIndex;
+    rootObj["totalFileName"] = totalFileName;
 
     QJsonArray casesArray;
     foreach (const auto& c, cases)
@@ -94,6 +96,12 @@ Section Section::saveAs(QString newPath) const
             return Section();
         if (!QFile::copy(srcDir.absoluteFilePath(caseValue.answerFileName),
                          dstDir.absoluteFilePath(caseValue.answerFileName)))
+            return Section();
+    }
+
+    if (!totalFileName.isEmpty()) {
+        if (!QFile::copy(srcDir.absoluteFilePath(totalFileName),
+                         dstDir.absoluteFilePath(totalFileName)))
             return Section();
     }
 
@@ -126,4 +134,10 @@ void Section::copyHidden(const Section& section)
     path = section.path;
     nextIndex = section.nextIndex;
     id = section.id;
+    totalFileName = section.totalFileName;
+}
+
+QString Section::makeTotalFileName()
+{
+    return QFileInfo(path).baseName() + " Итоги.html";
 }

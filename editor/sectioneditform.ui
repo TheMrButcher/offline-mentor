@@ -85,6 +85,18 @@
            <set>ItemIsSelectable|ItemIsDropEnabled|ItemIsEnabled</set>
           </property>
          </item>
+         <item>
+          <property name="text">
+           <string>Итоги раздела</string>
+          </property>
+          <property name="icon">
+           <iconset resource="resources.qrc">
+            <normaloff>:/icons/total.png</normaloff>:/icons/total.png</iconset>
+          </property>
+          <property name="flags">
+           <set>ItemIsSelectable|ItemIsEnabled</set>
+          </property>
+         </item>
         </widget>
        </item>
        <item>

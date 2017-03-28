@@ -48,6 +48,8 @@ private:
 
     Section originalSection;
     QTreeWidgetItem* rootItem;
+    QTreeWidgetItem* totalItem;
+    TextEditorPage* totalEditorPage;
 
     struct CasePages {
         CasePage* mainPage;

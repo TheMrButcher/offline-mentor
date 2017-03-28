@@ -24,11 +24,13 @@ public:
     QString nextCaseFilePrefix();
     QDir dir() const;
     void copyHidden(const Section& section);
+    QString makeTotalFileName();
 
     QUuid id;
     QString name;
     QString description;
     QString path;
+    QString totalFileName;
     QList<Case> cases;
     int nextIndex;
 };
