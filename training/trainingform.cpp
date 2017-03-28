@@ -28,18 +28,27 @@ bool TrainingForm::setSection(const Section& section)
         return false;
 
     ui->listWidget->clear();
-    for(int i = ui->stackedWidget->count() - 1; i >= 0; i--)
+    for (int i = ui->stackedWidget->count() - 1; i >= 0; i--)
     {
         QWidget* widget = ui->stackedWidget->widget(i);
+        if (widget == ui->instructionPage)
+            continue;
         ui->stackedWidget->removeWidget(widget);
         widget->deleteLater();
     }
     nodes.clear();
+    totalItem = nullptr;
+    totalPage = nullptr;
 
     this->section = section;
     ui->titleLabel->setText("Раздел \"" + section.name + "\"");
     int nextCaseIndex = 1;
     QStringList badFiles;
+
+    instructionItem = new QListWidgetItem(ui->listWidget);
+    instructionItem->setIcon(QIcon(":/icons/info.png"));
+    instructionItem->setText("Инструкция");
+    ui->listWidget->setCurrentItem(instructionItem);
 
     QListWidgetItem* prevItem = nullptr;
     foreach (const auto& caseValue, section.cases) {
@@ -93,13 +102,9 @@ bool TrainingForm::setSection(const Section& section)
     if (!firstCaseItem)
         return false;
 
-    ui->listWidget->setCurrentItem(firstCaseItem);
-    openQuestionPage(nodes[firstCaseItem].questionPageId);
-
     if (isSectionCompleted()) {
         updateTotal();
         ui->listWidget->setCurrentItem(totalItem);
-        ui->stackedWidget->setCurrentWidget(totalPage);
     }
 
     if (!badFiles.isEmpty()) {
@@ -121,11 +126,20 @@ void TrainingForm::on_listWidget_itemSelectionChanged()
     if (selectedItems.isEmpty())
         return;
     auto item = selectedItems.front();
+    if (item == instructionItem) {
+        ui->stackedWidget->setCurrentWidget(ui->instructionPage);
+        return;
+    }
     if (totalItem && item == totalItem) {
         ui->stackedWidget->setCurrentWidget(totalPage);
         return;
     }
     openQuestionPage(nodes[item].questionPageId);
+}
+
+void TrainingForm::on_startButton_clicked()
+{
+    ui->listWidget->setCurrentItem(firstCaseItem);
 }
 
 void TrainingForm::onAnswerEntered(QListWidgetItem* caseItem)
@@ -188,14 +202,11 @@ void TrainingForm::next(QListWidgetItem* caseItem)
     const auto& node = nodes[caseItem];
     if (node.nextItem) {
         ui->listWidget->setCurrentItem(node.nextItem);
-        openQuestionPage(nodes[node.nextItem].questionPageId);
     } else {
         if (isSectionCompleted()) {
             ui->listWidget->setCurrentItem(totalItem);
-            ui->stackedWidget->setCurrentWidget(totalPage);
         } else {
             ui->listWidget->setCurrentItem(firstCaseItem);
-            openQuestionPage(nodes[firstCaseItem].questionPageId);
         }
     }
 }
@@ -236,7 +247,9 @@ void TrainingForm::updateTotal()
         totalPage->load(section);
         ui->stackedWidget->addWidget(totalPage);
         connect(totalPage, SIGNAL(requestedTransfer()), this, SLOT(transferSolution()));
+    }
 
+    if (!totalItem) {
         totalItem = new QListWidgetItem(ui->listWidget);
         totalItem->setText("Итоги раздела");
         totalItem->setIcon(QIcon(":/icons/total.png"));

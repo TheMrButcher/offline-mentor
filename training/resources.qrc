@@ -8,5 +8,6 @@
         <file>icons/ok.png</file>
         <file>icons/total.png</file>
         <file>icons/warning.png</file>
+        <file>icons/info.png</file>
     </qresource>
 </RCC>

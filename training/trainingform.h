@@ -30,6 +30,7 @@ signals:
 
 private slots:
     void on_listWidget_itemSelectionChanged();
+    void on_startButton_clicked();
     void onAnswerEntered(QListWidgetItem* caseItem);
     void toMentorAnswer(QListWidgetItem* caseItem);
     void backToQuestion(QListWidgetItem* caseItem);
@@ -51,6 +52,7 @@ private:
 
     Section section;
     QHash<QListWidgetItem*, NodeDescriptor> nodes;
+    QListWidgetItem* instructionItem = nullptr;
     QListWidgetItem* firstCaseItem = nullptr;
     QListWidgetItem* totalItem = nullptr;
     TotalPage* totalPage = nullptr;
