@@ -38,6 +38,33 @@
    <addaction name="openAction"/>
    <addaction name="saveAction"/>
   </widget>
+  <widget class="QMenuBar" name="menuBar">
+   <property name="geometry">
+    <rect>
+     <x>0</x>
+     <y>0</y>
+     <width>800</width>
+     <height>20</height>
+    </rect>
+   </property>
+   <widget class="QMenu" name="menu">
+    <property name="title">
+     <string>&amp;Файл</string>
+    </property>
+    <addaction name="createAction"/>
+    <addaction name="openAction"/>
+    <addaction name="saveAction"/>
+    <addaction name="exitAction"/>
+   </widget>
+   <widget class="QMenu" name="menu_2">
+    <property name="title">
+     <string>&amp;Справка</string>
+    </property>
+    <addaction name="aboutAction"/>
+   </widget>
+   <addaction name="menu"/>
+   <addaction name="menu_2"/>
+  </widget>
   <action name="saveAction">
    <property name="enabled">
     <bool>false</bool>
@@ -47,7 +74,7 @@
      <normaloff>:/icons/save.png</normaloff>:/icons/save.png</iconset>
    </property>
    <property name="text">
-    <string>Сохранить</string>
+    <string>&amp;Сохранить</string>
    </property>
    <property name="toolTip">
     <string>Сохранить</string>
@@ -62,6 +89,9 @@
      <normaloff>:/icons/new.png</normaloff>:/icons/new.png</iconset>
    </property>
    <property name="text">
+    <string>Созд&amp;ать раздел</string>
+   </property>
+   <property name="toolTip">
     <string>Создать раздел</string>
    </property>
    <property name="shortcut">
@@ -74,13 +104,32 @@
      <normaloff>:/icons/open.png</normaloff>:/icons/open.png</iconset>
    </property>
    <property name="text">
-    <string>Открыть</string>
+    <string>&amp;Открыть</string>
    </property>
    <property name="toolTip">
     <string>Открыть</string>
    </property>
    <property name="shortcut">
     <string>Ctrl+O</string>
+   </property>
+  </action>
+  <action name="exitAction">
+   <property name="text">
+    <string>В&amp;ыход</string>
+   </property>
+   <property name="toolTip">
+    <string>Выход</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+Q</string>
+   </property>
+  </action>
+  <action name="aboutAction">
+   <property name="text">
+    <string>&amp;О программе</string>
+   </property>
+   <property name="toolTip">
+    <string>О программе</string>
    </property>
   </action>
  </widget>

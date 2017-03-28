@@ -2,6 +2,7 @@
 #include "sectionsform.h"
 #include "sectioneditform.h"
 #include "createsectiondialog.h"
+#include "aboutdialog.h"
 #include "settings.h"
 #include "section_utils.h"
 #include "ui_mainwindow.h"
@@ -13,7 +14,6 @@
 #include <QFileDialog>
 #include <QMessageBox>
 #include <QTimer>
-#include <QDebug>
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
@@ -24,7 +24,6 @@ MainWindow::MainWindow(QWidget *parent) :
     setWindowTitle("Offline-наставник. Редактор v." + getVersion());
     showMaximized();
 
-    qDebug() << "OMKit: v." << OMKit::instance().getVersion();
     OMKit::instance().init();
 
     sectionsForm = new SectionsForm(this);
@@ -33,16 +32,14 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->tabWidget->tabBar()->setTabButton(tabIndex, QTabBar::RightSide, nullptr);
     ui->tabWidget->setCurrentWidget(ui->tabWidget);
 
-    createSectionDialog = new CreateSectionDialog(this);
-    createSectionDialog->hide();
-    connect(createSectionDialog, SIGNAL(accepted()), this, SLOT(onSectionCreated()));
-
-    connect(sectionsForm, SIGNAL(requestedCreation()), this, SLOT(startCreation()));
+    connect(sectionsForm, SIGNAL(requestedCreation()), this, SLOT(create()));
     connect(sectionsForm, SIGNAL(requestedOpen(Section)), this, SLOT(openSection(Section)));
 
-    connect(ui->createAction, SIGNAL(triggered()), this, SLOT(startCreation()));
+    connect(ui->createAction, SIGNAL(triggered()), this, SLOT(create()));
     connect(ui->openAction, SIGNAL(triggered()), this, SLOT(open()));
     connect(ui->saveAction, SIGNAL(triggered()), this, SLOT(save()));
+    connect(ui->exitAction, SIGNAL(triggered()), this, SLOT(close()));
+    connect(ui->aboutAction, SIGNAL(triggered()), this, SLOT(showAbout()));
 
     QTimer::singleShot(0, this, SLOT(loadSettings()));
 }
@@ -52,9 +49,18 @@ MainWindow::~MainWindow()
     delete ui;
 }
 
-void MainWindow::startCreation()
+void MainWindow::create()
 {
-    createSectionDialog->show();
+    if (!createSectionDialog) {
+        createSectionDialog = new CreateSectionDialog(this);
+    }
+    int result = createSectionDialog->exec();
+    if (result == QDialog::Accepted) {
+        auto section = createSectionDialog->result();
+        Settings::instance().updateLastDirectoryPath(section.path);
+        sectionsForm->addSection(section);
+        openSection(section);
+    }
 }
 
 void MainWindow::open()
@@ -89,20 +95,18 @@ void MainWindow::save()
     ((SectionEditForm*)ui->tabWidget->currentWidget())->save();
 }
 
+void MainWindow::showAbout()
+{
+    if (!aboutDialog)
+        aboutDialog = new AboutDialog(this);
+    aboutDialog->exec();
+}
+
 void MainWindow::loadSettings()
 {
     auto& settings = Settings::instance();
     settings.read();
-    createSectionDialog->initUI();
     sectionsForm->load();
-}
-
-void MainWindow::onSectionCreated()
-{
-    auto section = createSectionDialog->result();
-    Settings::instance().updateLastDirectoryPath(section.path);
-    sectionsForm->addSection(section);
-    openSection(section);
 }
 
 void MainWindow::openSection(const Section& section)

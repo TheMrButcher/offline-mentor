@@ -12,16 +12,12 @@ CreateSectionDialog::CreateSectionDialog(QWidget *parent) :
     ui(new Ui::CreateSectionDialog)
 {
     ui->setupUi(this);
+    ui->pathEdit->setText(Settings::instance().safeLastDirectoryPath() + "/НовыйРаздел.oms");
 }
 
 CreateSectionDialog::~CreateSectionDialog()
 {
     delete ui;
-}
-
-void CreateSectionDialog::initUI()
-{
-    ui->pathEdit->setText(Settings::instance().safeLastDirectoryPath() + "/НовыйРаздел.oms");
 }
 
 Section CreateSectionDialog::result() const
