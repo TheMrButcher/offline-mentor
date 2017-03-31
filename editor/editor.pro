@@ -27,7 +27,8 @@ SOURCES += main.cpp\
     casepage.cpp \
     texteditorpage.cpp \
     section_utils.cpp \
-    aboutdialog.cpp
+    aboutdialog.cpp \
+    richtextedit.cpp
 
 HEADERS  += mainwindow.h \
     sectionsform.h \
@@ -38,7 +39,8 @@ HEADERS  += mainwindow.h \
     casepage.h \
     texteditorpage.h \
     section_utils.h \
-    aboutdialog.h
+    aboutdialog.h \
+    richtextedit.h
 
 FORMS    += mainwindow.ui \
     sectionsform.ui \

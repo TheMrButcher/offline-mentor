@@ -8,6 +8,8 @@ namespace Ui {
 class TextEditorPage;
 }
 
+class RichTextEdit;
+
 class TextEditorPage : public QWidget
 {
     Q_OBJECT
@@ -24,6 +26,7 @@ public:
 
 private:
     Ui::TextEditorPage *ui;
+    RichTextEdit* textEdit;
     QDir dir;
     QString myFileName;
 };

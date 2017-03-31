@@ -1,5 +1,6 @@
 #include "texteditorpage.h"
 #include "ui_texteditorpage.h"
+#include "richtextedit.h"
 #include <omkit/html_utils.h>
 
 TextEditorPage::TextEditorPage(QWidget *parent) :
@@ -7,6 +8,9 @@ TextEditorPage::TextEditorPage(QWidget *parent) :
     ui(new Ui::TextEditorPage)
 {
     ui->setupUi(this);
+
+    textEdit = new RichTextEdit(this);
+    ui->verticalLayout->addWidget(textEdit);
 }
 
 TextEditorPage::~TextEditorPage()
@@ -35,7 +39,7 @@ bool TextEditorPage::save()
     if (myFileName.isEmpty())
         return false;
     QString path = dir.absoluteFilePath(myFileName);
-    return writeHTML(path, ui->textEdit->document());
+    return writeHTML(path, textEdit->document());
 }
 
 bool TextEditorPage::load()
@@ -44,6 +48,6 @@ bool TextEditorPage::load()
     QString html = readHTML(path);
     if (html.isEmpty())
         return false;
-    ui->textEdit->setHtml(html);
+    textEdit->setHtml(html);
     return true;
 }

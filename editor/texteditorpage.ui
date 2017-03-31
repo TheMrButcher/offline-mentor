@@ -41,9 +41,6 @@
      </property>
     </widget>
    </item>
-   <item>
-    <widget class="QTextEdit" name="textEdit"/>
-   </item>
   </layout>
  </widget>
  <resources/>
