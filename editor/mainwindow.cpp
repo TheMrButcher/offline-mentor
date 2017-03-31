@@ -40,6 +40,8 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(ui->saveAction, SIGNAL(triggered()), this, SLOT(save()));
     connect(ui->exitAction, SIGNAL(triggered()), this, SLOT(close()));
     connect(ui->aboutAction, SIGNAL(triggered()), this, SLOT(showAbout()));
+    connect(ui->selectAllAction, SIGNAL(triggered()), this, SLOT(selectAll()));
+    connect(ui->clearFormatAction, SIGNAL(triggered()), this, SLOT(clearFormat()));
 
     QTimer::singleShot(0, this, SLOT(loadSettings()));
 }
@@ -95,6 +97,20 @@ void MainWindow::save()
     ((SectionEditForm*)ui->tabWidget->currentWidget())->save();
 }
 
+void MainWindow::selectAll()
+{
+    if (isSectionsFormCurrent())
+        return;
+    currentForm()->selectAll();
+}
+
+void MainWindow::clearFormat()
+{
+    if (isSectionsFormCurrent())
+        return;
+    currentForm()->clearFormat();
+}
+
 void MainWindow::showAbout()
 {
     if (!aboutDialog)
@@ -120,8 +136,11 @@ void MainWindow::openSection(const Section& section)
     ui->tabWidget->addTab(sectionEditForm, trim(section.name, 16));
     ui->tabWidget->setCurrentWidget(sectionEditForm);
     openedPages[section.id] = sectionEditForm;
+
     connect(sectionEditForm, SIGNAL(sectionSaved(Section)),
             this, SLOT(onSectionSaved(Section)));
+    connect(sectionEditForm, SIGNAL(textEditInFocus(bool)),
+            this, SLOT(onTextEditInFocus(bool)));
 }
 
 void MainWindow::onSectionSaved(const Section& section)
@@ -132,9 +151,29 @@ void MainWindow::onSectionSaved(const Section& section)
     sectionsForm->updateSection(section);
 }
 
+void MainWindow::onTextEditInFocus(bool inFocus)
+{
+    if (QObject::sender() != ui->tabWidget->currentWidget())
+        return;
+    setTextEditButtonsEnabled(inFocus);
+}
+
 bool MainWindow::isSectionsFormCurrent() const
 {
     return ui->tabWidget->currentWidget() == sectionsForm;
+}
+
+SectionEditForm* MainWindow::currentForm()
+{
+    if (isSectionsFormCurrent())
+        return nullptr;
+    return (SectionEditForm*)ui->tabWidget->currentWidget();
+}
+
+void MainWindow::setTextEditButtonsEnabled(bool enabled)
+{
+    ui->selectAllAction->setEnabled(enabled);
+    ui->clearFormatAction->setEnabled(enabled);
 }
 
 void MainWindow::on_tabWidget_tabCloseRequested(int index)
@@ -151,4 +190,11 @@ void MainWindow::on_tabWidget_currentChanged(int index)
 {
     bool isEditor = index != ui->tabWidget->indexOf(sectionsForm);
     ui->saveAction->setEnabled(isEditor);
+
+    if (isEditor) {
+        auto sectionEditForm = (SectionEditForm*)ui->tabWidget->widget(index);
+        setTextEditButtonsEnabled(sectionEditForm->isTextEditInFocus());
+    } else {
+        setTextEditButtonsEnabled(false);
+    }
 }

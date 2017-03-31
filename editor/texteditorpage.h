@@ -23,10 +23,11 @@ public:
     QString fileName() const;
     bool save();
     bool load();
+    RichTextEdit* textEdit();
 
 private:
     Ui::TextEditorPage *ui;
-    RichTextEdit* textEdit;
+    RichTextEdit* myTextEdit;
     QDir dir;
     QString myFileName;
 };

@@ -37,6 +37,8 @@
    <addaction name="createAction"/>
    <addaction name="openAction"/>
    <addaction name="saveAction"/>
+   <addaction name="separator"/>
+   <addaction name="clearFormatAction"/>
   </widget>
   <widget class="QMenuBar" name="menuBar">
    <property name="geometry">
@@ -62,7 +64,15 @@
     </property>
     <addaction name="aboutAction"/>
    </widget>
+   <widget class="QMenu" name="menu_3">
+    <property name="title">
+     <string>&amp;Правка</string>
+    </property>
+    <addaction name="selectAllAction"/>
+    <addaction name="clearFormatAction"/>
+   </widget>
    <addaction name="menu"/>
+   <addaction name="menu_3"/>
    <addaction name="menu_2"/>
   </widget>
   <action name="saveAction">
@@ -130,6 +140,35 @@
    </property>
    <property name="toolTip">
     <string>О программе</string>
+   </property>
+  </action>
+  <action name="clearFormatAction">
+   <property name="enabled">
+    <bool>false</bool>
+   </property>
+   <property name="icon">
+    <iconset resource="resources.qrc">
+     <normaloff>:/icons/clear.png</normaloff>:/icons/clear.png</iconset>
+   </property>
+   <property name="text">
+    <string>О&amp;чистить формат</string>
+   </property>
+   <property name="toolTip">
+    <string>Очистить формат</string>
+   </property>
+  </action>
+  <action name="selectAllAction">
+   <property name="enabled">
+    <bool>false</bool>
+   </property>
+   <property name="text">
+    <string>В&amp;ыделить все</string>
+   </property>
+   <property name="toolTip">
+    <string>Выделить все</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+A</string>
    </property>
   </action>
  </widget>

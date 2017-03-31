@@ -25,12 +25,16 @@ public:
     Section section() const;
     void setSection(const Section& section);
     QUuid sectionId() const;
+    bool isTextEditInFocus() const;
 
 signals:
     void sectionSaved(const Section& section);
+    void textEditInFocus(bool);
 
 public slots:
     void save();
+    void selectAll();
+    void clearFormat();
 
 private slots:
     void on_addCaseButton_clicked();
@@ -51,6 +55,8 @@ private:
     QTreeWidgetItem* totalItem;
     TextEditorPage* totalEditorPage;
 
+    TextEditorPage* currectTextEditorPage = nullptr;
+
     struct CasePages {
         CasePage* mainPage;
         TextEditorPage* questionPage;
@@ -59,6 +65,7 @@ private:
 
     struct NodeDescriptor {
         int pageId;
+        TextEditorPage* textEditorPage;
         CasePages pages;
     };
 

@@ -11,5 +11,6 @@
         <file>icons/open.png</file>
         <file>icons/add.png</file>
         <file>icons/total.png</file>
+        <file>icons/clear.png</file>
     </qresource>
 </RCC>

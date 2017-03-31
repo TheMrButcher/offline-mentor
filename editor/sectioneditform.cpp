@@ -2,6 +2,7 @@
 #include "casepage.h"
 #include "texteditorpage.h"
 #include "ui_sectioneditform.h"
+#include "richtextedit.h"
 
 #include <QMessageBox>
 
@@ -38,7 +39,6 @@ Section SectionEditForm::section() const
 void SectionEditForm::setSection(const Section& section)
 {
     ui->treeWidget->setCurrentItem(rootItem);
-    select(ui->sectionPage);
     this->originalSection = section;
     setSectionName(originalSection.name);
 
@@ -92,6 +92,11 @@ QUuid SectionEditForm::sectionId() const
     return originalSection.id;
 }
 
+bool SectionEditForm::isTextEditInFocus() const
+{
+    return currectTextEditorPage != nullptr;
+}
+
 void SectionEditForm::save()
 {
     Section result = section();
@@ -122,6 +127,20 @@ void SectionEditForm::save()
         return;
     }
     emit sectionSaved(result);
+}
+
+void SectionEditForm::selectAll()
+{
+    if (!isTextEditInFocus())
+        return;
+    currectTextEditorPage->textEdit()->selectAll();
+}
+
+void SectionEditForm::clearFormat()
+{
+    if (!isTextEditInFocus())
+        return;
+    currectTextEditorPage->textEdit()->clearFormat();
 }
 
 Section SectionEditForm::sectionFromUI() const
@@ -155,11 +174,16 @@ void SectionEditForm::on_treeWidget_currentItemChanged(QTreeWidgetItem* current,
 {
     if (current == rootItem) {
         select(ui->sectionPage);
+        currectTextEditorPage = nullptr;
     } else if (current == totalItem) {
         select(totalEditorPage);
+        currectTextEditorPage = totalEditorPage;
     } else {
-        ui->stackedWidget->setCurrentIndex(nodes[current].pageId);
+        const auto& node = nodes[current];
+        ui->stackedWidget->setCurrentIndex(node.pageId);
+        currectTextEditorPage = node.textEditorPage;
     }
+    emit textEditInFocus(isTextEditInFocus());
 }
 
 void SectionEditForm::on_nameEdit_textEdited(const QString &arg)
@@ -213,9 +237,9 @@ void SectionEditForm::addCase(const Case& caseValue)
 
     CasePages pages{ casePage, questionPage, answerPage };
 
-    nodes[caseRootItem] = NodeDescriptor{ casePageId, pages };
-    nodes[questionItem] = NodeDescriptor{ questionPageId, pages };
-    nodes[answerItem] = NodeDescriptor{ answerPageId, pages };
+    nodes[caseRootItem] = NodeDescriptor{ casePageId, nullptr, pages };
+    nodes[questionItem] = NodeDescriptor{ questionPageId, questionPage, pages };
+    nodes[answerItem] = NodeDescriptor{ answerPageId, answerPage, pages };
 }
 
 void SectionEditForm::generateFileNames(Case& c)
@@ -229,5 +253,5 @@ void SectionEditForm::generateFileNames(Case& c)
 
 void SectionEditForm::select(QWidget* widget)
 {
-    ui->stackedWidget->setCurrentIndex(ui->stackedWidget->indexOf(widget));
+    ui->stackedWidget->setCurrentWidget(widget);
 }

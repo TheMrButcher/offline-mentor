@@ -9,8 +9,8 @@ TextEditorPage::TextEditorPage(QWidget *parent) :
 {
     ui->setupUi(this);
 
-    textEdit = new RichTextEdit(this);
-    ui->verticalLayout->addWidget(textEdit);
+    myTextEdit = new RichTextEdit(this);
+    ui->verticalLayout->addWidget(myTextEdit);
 }
 
 TextEditorPage::~TextEditorPage()
@@ -39,7 +39,7 @@ bool TextEditorPage::save()
     if (myFileName.isEmpty())
         return false;
     QString path = dir.absoluteFilePath(myFileName);
-    return writeHTML(path, textEdit->document());
+    return writeHTML(path, myTextEdit->document());
 }
 
 bool TextEditorPage::load()
@@ -48,6 +48,11 @@ bool TextEditorPage::load()
     QString html = readHTML(path);
     if (html.isEmpty())
         return false;
-    textEdit->setHtml(html);
+    myTextEdit->setHtml(html);
     return true;
+}
+
+RichTextEdit* TextEditorPage::textEdit()
+{
+    return myTextEdit;
 }
