@@ -12,6 +12,7 @@ public:
 public slots:
     void clearFormat();
     void applyFormat(const QTextCharFormat& format);
+    void updateCursor();
 
     // QTextEdit interface
 protected:

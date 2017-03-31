@@ -43,6 +43,7 @@
    <addaction name="boldAction"/>
    <addaction name="italicAction"/>
    <addaction name="underlineAction"/>
+   <addaction name="separator"/>
   </widget>
   <widget class="QMenuBar" name="menuBar">
    <property name="geometry">

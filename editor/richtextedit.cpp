@@ -1,6 +1,7 @@
 #include "richtextedit.h"
 #include <QMimeData>
 #include <QRegExp>
+#include <QDebug>
 
 namespace {
 QRegExp imgRegExp =
@@ -14,7 +15,9 @@ QRegExp imgRegExp =
 
 RichTextEdit::RichTextEdit(QWidget* parent)
     : QTextEdit(parent)
-{}
+{
+    connect(this, SIGNAL(textChanged()), this, SLOT(updateCursor()));
+}
 
 void RichTextEdit::clearFormat()
 {
@@ -38,6 +41,21 @@ void RichTextEdit::applyFormat(const QTextCharFormat& format)
         cursor.select(QTextCursor::WordUnderCursor);
     cursor.mergeCharFormat(format);
     mergeCurrentCharFormat(format);
+}
+
+void RichTextEdit::updateCursor()
+{
+    QTextCursor cursor = textCursor();
+    if (cursor.position() == 0) {
+        if (document()->isEmpty()) {
+            clearFormat();
+        } else {
+            cursor.setPosition(1);
+            setTextCursor(cursor);
+            cursor.setPosition(0);
+            setTextCursor(cursor);
+        }
+    }
 }
 
 void RichTextEdit::insertFromMimeData(const QMimeData* source)

@@ -12,6 +12,8 @@
 #include <omkit/string_utils.h>
 #include <omkit/omkit.h>
 
+#include <QFontComboBox>
+#include <QComboBox>
 #include <QFileDialog>
 #include <QMessageBox>
 #include <QTimer>
@@ -26,6 +28,18 @@ MainWindow::MainWindow(QWidget *parent) :
     showMaximized();
 
     OMKit::instance().init();
+
+    fontComboBox = new QFontComboBox(this);
+    fontComboBox->setCurrentFont(QFont("Times New Roman"));
+    fontComboBox->setEnabled(false);
+    ui->toolBar->insertWidget(ui->boldAction, fontComboBox);
+
+    fontSizeComboBox = new QComboBox(this);
+    foreach (int fontSize, QFontDatabase::standardSizes())
+        fontSizeComboBox->addItem(QString::number(fontSize));
+    fontSizeComboBox->setCurrentText("12");
+    fontSizeComboBox->setEnabled(false);
+    ui->toolBar->insertWidget(ui->boldAction, fontSizeComboBox);
 
     sectionsForm = new SectionsForm(this);
     int tabIndex = ui->tabWidget->addTab(sectionsForm, "Список разделов");
@@ -46,6 +60,8 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(ui->boldAction, SIGNAL(triggered(bool)), this, SLOT(setBold(bool)));
     connect(ui->italicAction, SIGNAL(triggered(bool)), this, SLOT(setItalic(bool)));
     connect(ui->underlineAction, SIGNAL(triggered(bool)), this, SLOT(setUnderline(bool)));
+    connect(fontComboBox, SIGNAL(activated(QString)), this, SLOT(setFontFamily(QString)));
+    connect(fontSizeComboBox, SIGNAL(activated(QString)), this, SLOT(setFontSize(QString)));
 
     QTimer::singleShot(0, this, SLOT(loadSettings()));
 }
@@ -119,6 +135,7 @@ void MainWindow::setBold(bool bold)
         QTextCharFormat format;
         format.setFontWeight(bold ? QFont::Bold : QFont::Normal);
         textEdit->applyFormat(format);
+        textEdit->setFocus();
     }
 }
 
@@ -128,6 +145,7 @@ void MainWindow::setItalic(bool italic)
         QTextCharFormat format;
         format.setFontItalic(italic);
         textEdit->applyFormat(format);
+        textEdit->setFocus();
     }
 }
 
@@ -137,6 +155,34 @@ void MainWindow::setUnderline(bool underline)
         QTextCharFormat format;
         format.setFontUnderline(underline);
         textEdit->applyFormat(format);
+        textEdit->setFocus();
+    }
+}
+
+void MainWindow::setFontFamily(QString fontFamily)
+{
+    if (RichTextEdit* textEdit = currentTextEdit()) {
+        QTextCharFormat format;
+        format.setFontFamily(fontFamily);
+        textEdit->applyFormat(format);
+        textEdit->setFocus();
+    }
+}
+
+void MainWindow::setFontSize(QString fontSizeStr)
+{
+    bool isNumber = false;
+    int fontSize = fontSizeStr.toInt(&isNumber);
+    if (!isNumber || fontSize < 6) {
+        QMessageBox::warning(this, "Неверные данные", "Введите корректный размер шрифта.");
+        return;
+    }
+
+    if (RichTextEdit* textEdit = currentTextEdit()) {
+        QTextCharFormat format;
+        format.setFontPointSize(fontSize);
+        textEdit->applyFormat(format);
+        textEdit->setFocus();
     }
 }
 
@@ -187,6 +233,8 @@ void MainWindow::onTextEditInFocus(bool inFocus)
     if (QObject::sender() != ui->tabWidget->currentWidget())
         return;
     setTextEditButtonsEnabled(inFocus);
+    if (inFocus)
+        updateTextEditButtons();
 }
 
 void MainWindow::onFontChanged(const QFont& font)
@@ -217,6 +265,14 @@ void MainWindow::setTextEditButtonsEnabled(bool enabled)
     ui->boldAction->setEnabled(enabled);
     ui->italicAction->setEnabled(enabled);
     ui->underlineAction->setEnabled(enabled);
+    fontComboBox->setEnabled(enabled);
+    fontSizeComboBox->setEnabled(enabled);
+}
+
+void MainWindow::updateTextEditButtons()
+{
+    QTextCharFormat format = currentTextEdit()->textCursor().charFormat();
+    updateFontButtons(format.font());
 }
 
 void MainWindow::updateFontButtons(const QFont& font)
@@ -224,6 +280,8 @@ void MainWindow::updateFontButtons(const QFont& font)
     ui->boldAction->setChecked(font.bold());
     ui->italicAction->setChecked(font.italic());
     ui->underlineAction->setChecked(font.underline());
+    fontComboBox->setCurrentFont(font);
+    fontSizeComboBox->setCurrentText(QString::number(font.pointSize()));
 }
 
 void MainWindow::on_tabWidget_tabCloseRequested(int index)
@@ -246,8 +304,8 @@ void MainWindow::on_tabWidget_currentChanged(int index)
         setTextEditButtonsEnabled(sectionEditForm->isTextEditInFocus());
 
         if (sectionEditForm->isTextEditInFocus()) {
-            QTextCharFormat format = sectionEditForm->currentTextEdit()->textCursor().charFormat();
-            updateFontButtons(format.font());
+            sectionEditForm->currentTextEdit()->setFocus();
+            updateTextEditButtons();
         }
     } else {
         setTextEditButtonsEnabled(false);

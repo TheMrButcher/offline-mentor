@@ -95,14 +95,14 @@ QUuid SectionEditForm::sectionId() const
 
 bool SectionEditForm::isTextEditInFocus() const
 {
-    return currectTextEditorPage != nullptr;
+    return currentTextEditorPage != nullptr;
 }
 
 RichTextEdit* SectionEditForm::currentTextEdit() const
 {
-    if (!currectTextEditorPage)
+    if (!currentTextEditorPage)
         return nullptr;
-    return currectTextEditorPage->textEdit();
+    return currentTextEditorPage->textEdit();
 }
 
 void SectionEditForm::save()
@@ -139,7 +139,7 @@ void SectionEditForm::save()
 
 void SectionEditForm::onCharFormatChanged(const QTextCharFormat& format)
 {
-    if (!currectTextEditorPage || QObject::sender() != currectTextEditorPage->textEdit())
+    if (!currentTextEditorPage || QObject::sender() != currentTextEditorPage->textEdit())
         return;
 
     emit fontChanged(format.font());
@@ -176,14 +176,19 @@ void SectionEditForm::on_treeWidget_currentItemChanged(QTreeWidgetItem* current,
 {
     if (current == rootItem) {
         select(ui->sectionPage);
-        currectTextEditorPage = nullptr;
+        currentTextEditorPage = nullptr;
     } else if (current == totalItem) {
         select(totalEditorPage);
-        currectTextEditorPage = totalEditorPage;
+        currentTextEditorPage = totalEditorPage;
     } else {
         const auto& node = nodes[current];
         ui->stackedWidget->setCurrentIndex(node.pageId);
-        currectTextEditorPage = node.textEditorPage;
+        currentTextEditorPage = node.textEditorPage;
+    }
+    if (currentTextEditorPage) {
+        RichTextEdit* textEdit = currentTextEditorPage->textEdit();
+        textEdit->setFocus();
+        textEdit->updateCursor();
     }
     emit textEditInFocus(isTextEditInFocus());
 }

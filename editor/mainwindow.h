@@ -14,6 +14,8 @@ class CreateSectionDialog;
 class AboutDialog;
 class SectionEditForm;
 class RichTextEdit;
+class QFontComboBox;
+class QComboBox;
 
 class MainWindow : public QMainWindow
 {
@@ -32,6 +34,8 @@ private slots:
     void setBold(bool bold);
     void setItalic(bool italic);
     void setUnderline(bool underline);
+    void setFontFamily(QString fontFamily);
+    void setFontSize(QString fontSizeStr);
     void showAbout();
     void loadSettings();
     void openSection(const Section& section);
@@ -46,9 +50,12 @@ private:
     bool isSectionsFormCurrent() const;
     RichTextEdit* currentTextEdit();
     void setTextEditButtonsEnabled(bool enabled);
+    void updateTextEditButtons();
     void updateFontButtons(const QFont& font);
 
     Ui::MainWindow *ui;
+    QFontComboBox* fontComboBox;
+    QComboBox* fontSizeComboBox;
 
     SectionsForm* sectionsForm;
     CreateSectionDialog* createSectionDialog = nullptr;

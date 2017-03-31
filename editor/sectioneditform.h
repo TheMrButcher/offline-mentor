@@ -59,7 +59,7 @@ private:
     QTreeWidgetItem* totalItem;
     TextEditorPage* totalEditorPage;
 
-    TextEditorPage* currectTextEditorPage = nullptr;
+    TextEditorPage* currentTextEditorPage = nullptr;
 
     struct CasePages {
         CasePage* mainPage;
