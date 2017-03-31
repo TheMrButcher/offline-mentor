@@ -11,13 +11,11 @@ public:
 
 public slots:
     void clearFormat();
+    void applyFormat(const QTextCharFormat& format);
 
     // QTextEdit interface
 protected:
     virtual void insertFromMimeData(const QMimeData* source) override;
-
-private:
-    void applyFormat(const QTextCharFormat& format);
 };
 
 #endif // RICHTEXTEDIT_H

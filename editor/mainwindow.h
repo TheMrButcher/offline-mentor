@@ -13,6 +13,7 @@ class SectionsForm;
 class CreateSectionDialog;
 class AboutDialog;
 class SectionEditForm;
+class RichTextEdit;
 
 class MainWindow : public QMainWindow
 {
@@ -28,19 +29,24 @@ private slots:
     void save();
     void selectAll();
     void clearFormat();
+    void setBold(bool bold);
+    void setItalic(bool italic);
+    void setUnderline(bool underline);
     void showAbout();
     void loadSettings();
     void openSection(const Section& section);
     void onSectionSaved(const Section& section);
     void onTextEditInFocus(bool inFocus);
+    void onFontChanged(const QFont& font);
 
     void on_tabWidget_tabCloseRequested(int index);
     void on_tabWidget_currentChanged(int index);
 
 private:
     bool isSectionsFormCurrent() const;
-    SectionEditForm* currentForm();
+    RichTextEdit* currentTextEdit();
     void setTextEditButtonsEnabled(bool enabled);
+    void updateFontButtons(const QFont& font);
 
     Ui::MainWindow *ui;
 

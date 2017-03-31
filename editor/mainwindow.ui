@@ -39,6 +39,10 @@
    <addaction name="saveAction"/>
    <addaction name="separator"/>
    <addaction name="clearFormatAction"/>
+   <addaction name="separator"/>
+   <addaction name="boldAction"/>
+   <addaction name="italicAction"/>
+   <addaction name="underlineAction"/>
   </widget>
   <widget class="QMenuBar" name="menuBar">
    <property name="geometry">
@@ -169,6 +173,69 @@
    </property>
    <property name="shortcut">
     <string>Ctrl+A</string>
+   </property>
+  </action>
+  <action name="boldAction">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="enabled">
+    <bool>false</bool>
+   </property>
+   <property name="icon">
+    <iconset resource="resources.qrc">
+     <normaloff>:/icons/bold.png</normaloff>:/icons/bold.png</iconset>
+   </property>
+   <property name="text">
+    <string>Полужирный</string>
+   </property>
+   <property name="toolTip">
+    <string>Полужирный</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+B</string>
+   </property>
+  </action>
+  <action name="italicAction">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="enabled">
+    <bool>false</bool>
+   </property>
+   <property name="icon">
+    <iconset resource="resources.qrc">
+     <normaloff>:/icons/italic.png</normaloff>:/icons/italic.png</iconset>
+   </property>
+   <property name="text">
+    <string>Курсив</string>
+   </property>
+   <property name="toolTip">
+    <string>Курсив</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+I</string>
+   </property>
+  </action>
+  <action name="underlineAction">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="enabled">
+    <bool>false</bool>
+   </property>
+   <property name="icon">
+    <iconset resource="resources.qrc">
+     <normaloff>:/icons/underline.png</normaloff>:/icons/underline.png</iconset>
+   </property>
+   <property name="text">
+    <string>Подчеркнутый</string>
+   </property>
+   <property name="toolTip">
+    <string>Подчеркнутый</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+U</string>
    </property>
   </action>
  </widget>

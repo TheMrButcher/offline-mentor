@@ -5,6 +5,7 @@
 #include "aboutdialog.h"
 #include "settings.h"
 #include "section_utils.h"
+#include "richtextedit.h"
 #include "ui_mainwindow.h"
 
 #include <omkit/utils.h>
@@ -42,6 +43,9 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(ui->aboutAction, SIGNAL(triggered()), this, SLOT(showAbout()));
     connect(ui->selectAllAction, SIGNAL(triggered()), this, SLOT(selectAll()));
     connect(ui->clearFormatAction, SIGNAL(triggered()), this, SLOT(clearFormat()));
+    connect(ui->boldAction, SIGNAL(triggered(bool)), this, SLOT(setBold(bool)));
+    connect(ui->italicAction, SIGNAL(triggered(bool)), this, SLOT(setItalic(bool)));
+    connect(ui->underlineAction, SIGNAL(triggered(bool)), this, SLOT(setUnderline(bool)));
 
     QTimer::singleShot(0, this, SLOT(loadSettings()));
 }
@@ -99,16 +103,41 @@ void MainWindow::save()
 
 void MainWindow::selectAll()
 {
-    if (isSectionsFormCurrent())
-        return;
-    currentForm()->selectAll();
+    if (RichTextEdit* textEdit = currentTextEdit())
+        textEdit->selectAll();
 }
 
 void MainWindow::clearFormat()
 {
-    if (isSectionsFormCurrent())
-        return;
-    currentForm()->clearFormat();
+    if (RichTextEdit* textEdit = currentTextEdit())
+        textEdit->clearFormat();
+}
+
+void MainWindow::setBold(bool bold)
+{
+    if (RichTextEdit* textEdit = currentTextEdit()) {
+        QTextCharFormat format;
+        format.setFontWeight(bold ? QFont::Bold : QFont::Normal);
+        textEdit->applyFormat(format);
+    }
+}
+
+void MainWindow::setItalic(bool italic)
+{
+    if (RichTextEdit* textEdit = currentTextEdit()) {
+        QTextCharFormat format;
+        format.setFontItalic(italic);
+        textEdit->applyFormat(format);
+    }
+}
+
+void MainWindow::setUnderline(bool underline)
+{
+    if (RichTextEdit* textEdit = currentTextEdit()) {
+        QTextCharFormat format;
+        format.setFontUnderline(underline);
+        textEdit->applyFormat(format);
+    }
 }
 
 void MainWindow::showAbout()
@@ -141,6 +170,8 @@ void MainWindow::openSection(const Section& section)
             this, SLOT(onSectionSaved(Section)));
     connect(sectionEditForm, SIGNAL(textEditInFocus(bool)),
             this, SLOT(onTextEditInFocus(bool)));
+    connect(sectionEditForm, SIGNAL(fontChanged(QFont)),
+            this, SLOT(onFontChanged(QFont)));
 }
 
 void MainWindow::onSectionSaved(const Section& section)
@@ -158,22 +189,41 @@ void MainWindow::onTextEditInFocus(bool inFocus)
     setTextEditButtonsEnabled(inFocus);
 }
 
+void MainWindow::onFontChanged(const QFont& font)
+{
+    if (QObject::sender() != ui->tabWidget->currentWidget())
+        return;
+    updateFontButtons(font);
+}
+
 bool MainWindow::isSectionsFormCurrent() const
 {
     return ui->tabWidget->currentWidget() == sectionsForm;
 }
 
-SectionEditForm* MainWindow::currentForm()
+RichTextEdit* MainWindow::currentTextEdit()
 {
     if (isSectionsFormCurrent())
         return nullptr;
-    return (SectionEditForm*)ui->tabWidget->currentWidget();
+    SectionEditForm* sectionEditForm =
+            (SectionEditForm*)ui->tabWidget->currentWidget();
+    return sectionEditForm->currentTextEdit();
 }
 
 void MainWindow::setTextEditButtonsEnabled(bool enabled)
 {
     ui->selectAllAction->setEnabled(enabled);
     ui->clearFormatAction->setEnabled(enabled);
+    ui->boldAction->setEnabled(enabled);
+    ui->italicAction->setEnabled(enabled);
+    ui->underlineAction->setEnabled(enabled);
+}
+
+void MainWindow::updateFontButtons(const QFont& font)
+{
+    ui->boldAction->setChecked(font.bold());
+    ui->italicAction->setChecked(font.italic());
+    ui->underlineAction->setChecked(font.underline());
 }
 
 void MainWindow::on_tabWidget_tabCloseRequested(int index)
@@ -194,6 +244,11 @@ void MainWindow::on_tabWidget_currentChanged(int index)
     if (isEditor) {
         auto sectionEditForm = (SectionEditForm*)ui->tabWidget->widget(index);
         setTextEditButtonsEnabled(sectionEditForm->isTextEditInFocus());
+
+        if (sectionEditForm->isTextEditInFocus()) {
+            QTextCharFormat format = sectionEditForm->currentTextEdit()->textCursor().charFormat();
+            updateFontButtons(format.font());
+        }
     } else {
         setTextEditButtonsEnabled(false);
     }

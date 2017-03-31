@@ -31,6 +31,15 @@ void RichTextEdit::clearFormat()
     applyFormat(format);
 }
 
+void RichTextEdit::applyFormat(const QTextCharFormat& format)
+{
+    QTextCursor cursor = textCursor();
+    if (!cursor.hasSelection())
+        cursor.select(QTextCursor::WordUnderCursor);
+    cursor.mergeCharFormat(format);
+    mergeCurrentCharFormat(format);
+}
+
 void RichTextEdit::insertFromMimeData(const QMimeData* source)
 {
     QMimeData* filteredSource = new QMimeData;
@@ -45,13 +54,4 @@ void RichTextEdit::insertFromMimeData(const QMimeData* source)
         filteredSource->setUrls(source->urls());
     QTextEdit::insertFromMimeData(filteredSource);
     delete filteredSource;
-}
-
-void RichTextEdit::applyFormat(const QTextCharFormat& format)
-{
-    QTextCursor cursor = textCursor();
-    if (!cursor.hasSelection())
-        cursor.select(QTextCursor::WordUnderCursor);
-    cursor.mergeCharFormat(format);
-    mergeCurrentCharFormat(format);
 }

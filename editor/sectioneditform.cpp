@@ -22,6 +22,7 @@ SectionEditForm::SectionEditForm(QWidget *parent) :
     totalEditorPage = new TextEditorPage;
     totalEditorPage->setTitle("Итоги раздела");
     ui->stackedWidget->addWidget(totalEditorPage);
+    connectPage(totalEditorPage);
 }
 
 SectionEditForm::~SectionEditForm()
@@ -97,6 +98,13 @@ bool SectionEditForm::isTextEditInFocus() const
     return currectTextEditorPage != nullptr;
 }
 
+RichTextEdit* SectionEditForm::currentTextEdit() const
+{
+    if (!currectTextEditorPage)
+        return nullptr;
+    return currectTextEditorPage->textEdit();
+}
+
 void SectionEditForm::save()
 {
     Section result = section();
@@ -129,18 +137,12 @@ void SectionEditForm::save()
     emit sectionSaved(result);
 }
 
-void SectionEditForm::selectAll()
+void SectionEditForm::onCharFormatChanged(const QTextCharFormat& format)
 {
-    if (!isTextEditInFocus())
+    if (!currectTextEditorPage || QObject::sender() != currectTextEditorPage->textEdit())
         return;
-    currectTextEditorPage->textEdit()->selectAll();
-}
 
-void SectionEditForm::clearFormat()
-{
-    if (!isTextEditInFocus())
-        return;
-    currectTextEditorPage->textEdit()->clearFormat();
+    emit fontChanged(format.font());
 }
 
 Section SectionEditForm::sectionFromUI() const
@@ -223,6 +225,7 @@ void SectionEditForm::addCase(const Case& caseValue)
     questionPage->setTitle("Текст вопроса");
     questionPage->setFilePath(sectionDir, caseValue.questionFileName);
     int questionPageId = ui->stackedWidget->addWidget(questionPage);
+    connectPage(questionPage);
 
     QTreeWidgetItem* answerItem = new QTreeWidgetItem();
     answerItem->setIcon(0, QIcon(":/icons/answer.png"));
@@ -234,6 +237,7 @@ void SectionEditForm::addCase(const Case& caseValue)
     answerPage->setTitle("Текст ответа наставника");
     answerPage->setFilePath(sectionDir, caseValue.answerFileName);
     int answerPageId = ui->stackedWidget->addWidget(answerPage);
+    connectPage(answerPage);
 
     CasePages pages{ casePage, questionPage, answerPage };
 
@@ -254,4 +258,10 @@ void SectionEditForm::generateFileNames(Case& c)
 void SectionEditForm::select(QWidget* widget)
 {
     ui->stackedWidget->setCurrentWidget(widget);
+}
+
+void SectionEditForm::connectPage(TextEditorPage* page)
+{
+    connect(page->textEdit(), SIGNAL(currentCharFormatChanged(QTextCharFormat)),
+            this, SLOT(onCharFormatChanged(QTextCharFormat)));
 }

@@ -13,6 +13,8 @@ class SectionEditForm;
 class QTreeWidgetItem;
 class CasePage;
 class TextEditorPage;
+class QTextCharFormat;
+class RichTextEdit;
 
 class SectionEditForm : public QWidget
 {
@@ -26,15 +28,16 @@ public:
     void setSection(const Section& section);
     QUuid sectionId() const;
     bool isTextEditInFocus() const;
+    RichTextEdit* currentTextEdit() const;
 
 signals:
     void sectionSaved(const Section& section);
     void textEditInFocus(bool);
+    void fontChanged(const QFont& font);
 
 public slots:
     void save();
-    void selectAll();
-    void clearFormat();
+    void onCharFormatChanged(const QTextCharFormat& format);
 
 private slots:
     void on_addCaseButton_clicked();
@@ -47,6 +50,7 @@ private:
     void generateFileNames(Case& c);
     Section sectionFromUI() const;
     void select(QWidget* widget);
+    void connectPage(TextEditorPage* page);
 
     Ui::SectionEditForm *ui;
 
