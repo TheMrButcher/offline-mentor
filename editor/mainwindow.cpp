@@ -17,6 +17,8 @@
 #include <QFileDialog>
 #include <QMessageBox>
 #include <QTimer>
+#include <QClipboard>
+#include <QMimeData>
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
@@ -62,6 +64,10 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(ui->underlineAction, SIGNAL(triggered(bool)), this, SLOT(setUnderline(bool)));
     connect(fontComboBox, SIGNAL(activated(QString)), this, SLOT(setFontFamily(QString)));
     connect(fontSizeComboBox, SIGNAL(activated(QString)), this, SLOT(setFontSize(QString)));
+    connect(QApplication::clipboard(), SIGNAL(dataChanged()), this, SLOT(updatePasteButton()));
+    connect(ui->cutAction, SIGNAL(triggered()), this, SLOT(cut()));
+    connect(ui->copyAction, SIGNAL(triggered()), this, SLOT(copy()));
+    connect(ui->pasteAction, SIGNAL(triggered()), this, SLOT(paste()));
 
     QTimer::singleShot(0, this, SLOT(loadSettings()));
 }
@@ -186,6 +192,30 @@ void MainWindow::setFontSize(QString fontSizeStr)
     }
 }
 
+void MainWindow::cut()
+{
+    if (RichTextEdit* textEdit = currentTextEdit()) {
+        textEdit->setFocus();
+        textEdit->cut();
+    }
+}
+
+void MainWindow::copy()
+{
+    if (RichTextEdit* textEdit = currentTextEdit()) {
+        textEdit->setFocus();
+        textEdit->copy();
+    }
+}
+
+void MainWindow::paste()
+{
+    if (RichTextEdit* textEdit = currentTextEdit()) {
+        textEdit->setFocus();
+        textEdit->paste();
+    }
+}
+
 void MainWindow::showAbout()
 {
     if (!aboutDialog)
@@ -218,6 +248,8 @@ void MainWindow::openSection(const Section& section)
             this, SLOT(onTextEditInFocus(bool)));
     connect(sectionEditForm, SIGNAL(fontChanged(QFont)),
             this, SLOT(onFontChanged(QFont)));
+    connect(sectionEditForm, SIGNAL(selectionChanged()),
+            this, SLOT(onSelectionChanged()));
 }
 
 void MainWindow::onSectionSaved(const Section& section)
@@ -233,8 +265,6 @@ void MainWindow::onTextEditInFocus(bool inFocus)
     if (QObject::sender() != ui->tabWidget->currentWidget())
         return;
     setTextEditButtonsEnabled(inFocus);
-    if (inFocus)
-        updateTextEditButtons();
 }
 
 void MainWindow::onFontChanged(const QFont& font)
@@ -242,6 +272,26 @@ void MainWindow::onFontChanged(const QFont& font)
     if (QObject::sender() != ui->tabWidget->currentWidget())
         return;
     updateFontButtons(font);
+}
+
+void MainWindow::onSelectionChanged()
+{
+    if (QObject::sender() != ui->tabWidget->currentWidget())
+        return;
+    RichTextEdit* textEdit = currentTextEdit();
+    setCopyAndCutButtonsEnabled(
+                textEdit && textEdit->textCursor().hasSelection());
+}
+
+void MainWindow::updatePasteButton()
+{
+    if (!currentTextEdit()) {
+        ui->pasteAction->setEnabled(false);
+        return;
+    }
+
+    const QMimeData* mimeData = QApplication::clipboard()->mimeData();
+    ui->pasteAction->setEnabled(mimeData->hasText() || mimeData->hasHtml());
 }
 
 bool MainWindow::isSectionsFormCurrent() const
@@ -267,12 +317,19 @@ void MainWindow::setTextEditButtonsEnabled(bool enabled)
     ui->underlineAction->setEnabled(enabled);
     fontComboBox->setEnabled(enabled);
     fontSizeComboBox->setEnabled(enabled);
-}
 
-void MainWindow::updateTextEditButtons()
-{
-    QTextCharFormat format = currentTextEdit()->textCursor().charFormat();
-    updateFontButtons(format.font());
+    if (enabled) {
+        RichTextEdit* textEdit = currentTextEdit();
+        QTextCursor cursor = textEdit->textCursor();
+
+        QTextCharFormat format = cursor.charFormat();
+        updateFontButtons(format.font());
+
+        setCopyAndCutButtonsEnabled(cursor.hasSelection());
+    } else {
+        setCopyAndCutButtonsEnabled(false);
+    }
+    updatePasteButton();
 }
 
 void MainWindow::updateFontButtons(const QFont& font)
@@ -282,6 +339,12 @@ void MainWindow::updateFontButtons(const QFont& font)
     ui->underlineAction->setChecked(font.underline());
     fontComboBox->setCurrentFont(font);
     fontSizeComboBox->setCurrentText(QString::number(font.pointSize()));
+}
+
+void MainWindow::setCopyAndCutButtonsEnabled(bool hasSelectedText)
+{
+    ui->cutAction->setEnabled(hasSelectedText);
+    ui->copyAction->setEnabled(hasSelectedText);
 }
 
 void MainWindow::on_tabWidget_tabCloseRequested(int index)
@@ -302,11 +365,8 @@ void MainWindow::on_tabWidget_currentChanged(int index)
     if (isEditor) {
         auto sectionEditForm = (SectionEditForm*)ui->tabWidget->widget(index);
         setTextEditButtonsEnabled(sectionEditForm->isTextEditInFocus());
-
-        if (sectionEditForm->isTextEditInFocus()) {
+        if (sectionEditForm->isTextEditInFocus())
             sectionEditForm->currentTextEdit()->setFocus();
-            updateTextEditButtons();
-        }
     } else {
         setTextEditButtonsEnabled(false);
     }

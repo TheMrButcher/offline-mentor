@@ -34,10 +34,12 @@ signals:
     void sectionSaved(const Section& section);
     void textEditInFocus(bool);
     void fontChanged(const QFont& font);
+    void selectionChanged();
 
 public slots:
     void save();
     void onCharFormatChanged(const QTextCharFormat& format);
+    void onSelectionChanged();
 
 private slots:
     void on_addCaseButton_clicked();

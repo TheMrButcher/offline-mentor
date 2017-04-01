@@ -36,12 +36,17 @@ private slots:
     void setUnderline(bool underline);
     void setFontFamily(QString fontFamily);
     void setFontSize(QString fontSizeStr);
+    void cut();
+    void copy();
+    void paste();
     void showAbout();
     void loadSettings();
     void openSection(const Section& section);
     void onSectionSaved(const Section& section);
     void onTextEditInFocus(bool inFocus);
     void onFontChanged(const QFont& font);
+    void onSelectionChanged();
+    void updatePasteButton();
 
     void on_tabWidget_tabCloseRequested(int index);
     void on_tabWidget_currentChanged(int index);
@@ -50,9 +55,8 @@ private:
     bool isSectionsFormCurrent() const;
     RichTextEdit* currentTextEdit();
     void setTextEditButtonsEnabled(bool enabled);
-    void updateTextEditButtons();
     void updateFontButtons(const QFont& font);
-
+    void setCopyAndCutButtonsEnabled(bool enabled);
     Ui::MainWindow *ui;
     QFontComboBox* fontComboBox;
     QComboBox* fontSizeComboBox;

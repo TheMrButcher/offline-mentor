@@ -145,6 +145,14 @@ void SectionEditForm::onCharFormatChanged(const QTextCharFormat& format)
     emit fontChanged(format.font());
 }
 
+void SectionEditForm::onSelectionChanged()
+{
+    if (!currentTextEditorPage || QObject::sender() != currentTextEditorPage->textEdit())
+        return;
+
+    emit selectionChanged();
+}
+
 Section SectionEditForm::sectionFromUI() const
 {
     Section section;
@@ -269,4 +277,5 @@ void SectionEditForm::connectPage(TextEditorPage* page)
 {
     connect(page->textEdit(), SIGNAL(currentCharFormatChanged(QTextCharFormat)),
             this, SLOT(onCharFormatChanged(QTextCharFormat)));
+    connect(page->textEdit(), SIGNAL(selectionChanged()), this, SLOT(onSelectionChanged()));
 }
