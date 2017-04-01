@@ -158,6 +158,20 @@ void SectionEditForm::onCursorPositionChanged()
     emit cursorPositionChanged();
 }
 
+void SectionEditForm::onUndoAvailable(bool available)
+{
+    if (!currentTextEditorPage || QObject::sender() != currentTextEditorPage->textEdit())
+        return;
+    emit undoAvailable(available);
+}
+
+void SectionEditForm::onRedoAvailable(bool available)
+{
+    if (!currentTextEditorPage || QObject::sender() != currentTextEditorPage->textEdit())
+        return;
+    emit redoAvailable(available);
+}
+
 Section SectionEditForm::sectionFromUI() const
 {
     Section section;
@@ -286,4 +300,8 @@ void SectionEditForm::connectPage(TextEditorPage* page)
             this, SLOT(onSelectionChanged()));
     connect(page->textEdit(), SIGNAL(cursorPositionChanged()),
             this, SLOT(onCursorPositionChanged()));
+    connect(page->textEdit(), SIGNAL(undoAvailable(bool)),
+            this, SLOT(onUndoAvailable(bool)));
+    connect(page->textEdit(), SIGNAL(redoAvailable(bool)),
+            this, SLOT(onRedoAvailable(bool)));
 }

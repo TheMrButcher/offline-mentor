@@ -72,7 +72,7 @@ void RichTextEdit::applyListStyle(QTextListFormat::Style style)
 void RichTextEdit::updateCursor()
 {
     QTextCursor cursor = textCursor();
-    if (cursor.position() == 0) {
+    if (cursor.position() == 0 && cursor.anchor() == 0) {
         if (document()->isEmpty()) {
             clearFormat();
         } else {

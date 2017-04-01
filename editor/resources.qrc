@@ -24,5 +24,7 @@
         <file>icons/align_right.png</file>
         <file>icons/ordered_list.png</file>
         <file>icons/unordered_list.png</file>
+        <file>icons/redo.png</file>
+        <file>icons/undo.png</file>
     </qresource>
 </RCC>

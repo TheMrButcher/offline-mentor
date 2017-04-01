@@ -75,6 +75,8 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(ui->alignJustifyAction, SIGNAL(triggered(bool)), this, SLOT(align(bool)));
     connect(ui->orderedListAction, SIGNAL(triggered(bool)), this, SLOT(list(bool)));
     connect(ui->unorderedListAction, SIGNAL(triggered(bool)), this, SLOT(list(bool)));
+    connect(ui->undoAction, SIGNAL(triggered()), this, SLOT(undo()));
+    connect(ui->redoAction, SIGNAL(triggered()), this, SLOT(redo()));
 
     QTimer::singleShot(0, this, SLOT(loadSettings()));
 }
@@ -282,6 +284,24 @@ void MainWindow::list(bool toggled)
     }
 }
 
+void MainWindow::undo()
+{
+    if (RichTextEdit* textEdit = currentTextEdit()) {
+        textEdit->undo();
+        textEdit->setFocus();
+        updateHistoryButtons();
+    }
+}
+
+void MainWindow::redo()
+{
+    if (RichTextEdit* textEdit = currentTextEdit()) {
+        textEdit->redo();
+        textEdit->setFocus();
+        updateHistoryButtons();
+    }
+}
+
 void MainWindow::showAbout()
 {
     if (!aboutDialog)
@@ -318,6 +338,10 @@ void MainWindow::openSection(const Section& section)
             this, SLOT(onSelectionChanged()));
     connect(sectionEditForm, SIGNAL(cursorPositionChanged()),
             this, SLOT(onCursorPositionChanged()));
+    connect(sectionEditForm, SIGNAL(undoAvailable(bool)),
+            this, SLOT(onHistoryAvailable(bool)));
+    connect(sectionEditForm, SIGNAL(redoAvailable(bool)),
+            this, SLOT(onHistoryAvailable(bool)));
 }
 
 void MainWindow::onSectionSaved(const Section& section)
@@ -362,6 +386,18 @@ void MainWindow::updatePasteButton()
     ui->pasteAction->setEnabled(mimeData->hasText() || mimeData->hasHtml());
 }
 
+void MainWindow::updateHistoryButtons()
+{
+    if (RichTextEdit* textEdit = currentTextEdit()) {
+        QTextDocument* document = textEdit->document();
+        ui->undoAction->setEnabled(document->isUndoAvailable());
+        ui->redoAction->setEnabled(document->isRedoAvailable());
+    } else {
+        ui->undoAction->setEnabled(false);
+        ui->redoAction->setEnabled(false);
+    }
+}
+
 void MainWindow::onCursorPositionChanged()
 {
     if (QObject::sender() != ui->tabWidget->currentWidget())
@@ -369,6 +405,13 @@ void MainWindow::onCursorPositionChanged()
     RichTextEdit* textEdit = currentTextEdit();
     updateAlignmentButtons(textEdit->alignment());
     updateListButtons();
+}
+
+void MainWindow::onHistoryAvailable(bool /*ignored*/)
+{
+    if (QObject::sender() != ui->tabWidget->currentWidget())
+        return;
+    updateHistoryButtons();
 }
 
 bool MainWindow::isSectionsFormCurrent() const
@@ -415,6 +458,7 @@ void MainWindow::setTextEditButtonsEnabled(bool enabled)
         setCopyAndCutButtonsEnabled(false);
     }
     updatePasteButton();
+    updateHistoryButtons();
 }
 
 void MainWindow::updateFontButtons(const QFont& font)

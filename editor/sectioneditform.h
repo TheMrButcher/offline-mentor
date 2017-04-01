@@ -36,14 +36,19 @@ signals:
     void fontChanged(const QFont& font);
     void selectionChanged();
     void cursorPositionChanged();
+    void undoAvailable(bool available);
+    void redoAvailable(bool available);
 
 public slots:
     void save();
+
+private slots:
     void onCharFormatChanged(const QTextCharFormat& format);
     void onSelectionChanged();
     void onCursorPositionChanged();
+    void onUndoAvailable(bool available);
+    void onRedoAvailable(bool available);
 
-private slots:
     void on_addCaseButton_clicked();
     void on_treeWidget_currentItemChanged(QTreeWidgetItem *current, QTreeWidgetItem* previous);
     void on_nameEdit_textEdited(const QString &arg1);

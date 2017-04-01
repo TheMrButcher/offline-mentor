@@ -41,6 +41,8 @@ private slots:
     void paste();
     void align(bool toggled);
     void list(bool toggled);
+    void undo();
+    void redo();
     void showAbout();
     void loadSettings();
     void openSection(const Section& section);
@@ -49,7 +51,9 @@ private slots:
     void onFontChanged(const QFont& font);
     void onSelectionChanged();
     void updatePasteButton();
+    void updateHistoryButtons();
     void onCursorPositionChanged();
+    void onHistoryAvailable(bool);
 
     void on_tabWidget_tabCloseRequested(int index);
     void on_tabWidget_currentChanged(int index);

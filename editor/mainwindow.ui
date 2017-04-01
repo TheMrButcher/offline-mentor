@@ -42,6 +42,9 @@
    <addaction name="copyAction"/>
    <addaction name="pasteAction"/>
    <addaction name="separator"/>
+   <addaction name="undoAction"/>
+   <addaction name="redoAction"/>
+   <addaction name="separator"/>
    <addaction name="clearFormatAction"/>
    <addaction name="separator"/>
    <addaction name="boldAction"/>
@@ -84,6 +87,9 @@
     <property name="title">
      <string>&amp;Правка</string>
     </property>
+    <addaction name="undoAction"/>
+    <addaction name="redoAction"/>
+    <addaction name="separator"/>
     <addaction name="cutAction"/>
     <addaction name="copyAction"/>
     <addaction name="pasteAction"/>
@@ -426,6 +432,42 @@
    </property>
    <property name="toolTip">
     <string>Маркированный список</string>
+   </property>
+  </action>
+  <action name="undoAction">
+   <property name="enabled">
+    <bool>false</bool>
+   </property>
+   <property name="icon">
+    <iconset resource="resources.qrc">
+     <normaloff>:/icons/undo.png</normaloff>:/icons/undo.png</iconset>
+   </property>
+   <property name="text">
+    <string>&amp;Отменить</string>
+   </property>
+   <property name="toolTip">
+    <string>Отменить</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+Z</string>
+   </property>
+  </action>
+  <action name="redoAction">
+   <property name="enabled">
+    <bool>false</bool>
+   </property>
+   <property name="icon">
+    <iconset resource="resources.qrc">
+     <normaloff>:/icons/redo.png</normaloff>:/icons/redo.png</iconset>
+   </property>
+   <property name="text">
+    <string>Вернут&amp;ь</string>
+   </property>
+   <property name="toolTip">
+    <string>Вернуть</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+Y</string>
    </property>
   </action>
  </widget>
