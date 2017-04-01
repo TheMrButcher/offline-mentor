@@ -141,7 +141,6 @@ void SectionEditForm::onCharFormatChanged(const QTextCharFormat& format)
 {
     if (!currentTextEditorPage || QObject::sender() != currentTextEditorPage->textEdit())
         return;
-
     emit fontChanged(format.font());
 }
 
@@ -149,8 +148,14 @@ void SectionEditForm::onSelectionChanged()
 {
     if (!currentTextEditorPage || QObject::sender() != currentTextEditorPage->textEdit())
         return;
-
     emit selectionChanged();
+}
+
+void SectionEditForm::onCursorPositionChanged()
+{
+    if (!currentTextEditorPage || QObject::sender() != currentTextEditorPage->textEdit())
+        return;
+    emit cursorPositionChanged();
 }
 
 Section SectionEditForm::sectionFromUI() const
@@ -277,5 +282,8 @@ void SectionEditForm::connectPage(TextEditorPage* page)
 {
     connect(page->textEdit(), SIGNAL(currentCharFormatChanged(QTextCharFormat)),
             this, SLOT(onCharFormatChanged(QTextCharFormat)));
-    connect(page->textEdit(), SIGNAL(selectionChanged()), this, SLOT(onSelectionChanged()));
+    connect(page->textEdit(), SIGNAL(selectionChanged()),
+            this, SLOT(onSelectionChanged()));
+    connect(page->textEdit(), SIGNAL(cursorPositionChanged()),
+            this, SLOT(onCursorPositionChanged()));
 }

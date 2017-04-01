@@ -48,6 +48,10 @@
    <addaction name="italicAction"/>
    <addaction name="underlineAction"/>
    <addaction name="separator"/>
+   <addaction name="alignLeftAction"/>
+   <addaction name="alignCenterAction"/>
+   <addaction name="alignRightAction"/>
+   <addaction name="alignJustifyAction"/>
   </widget>
   <widget class="QMenuBar" name="menuBar">
    <property name="geometry">
@@ -299,6 +303,90 @@
    </property>
    <property name="shortcut">
     <string>Ctrl+V</string>
+   </property>
+  </action>
+  <action name="alignLeftAction">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="enabled">
+    <bool>false</bool>
+   </property>
+   <property name="icon">
+    <iconset resource="resources.qrc">
+     <normaloff>:/icons/align_left.png</normaloff>:/icons/align_left.png</iconset>
+   </property>
+   <property name="text">
+    <string>По левому краю</string>
+   </property>
+   <property name="toolTip">
+    <string>По левому краю</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+L</string>
+   </property>
+  </action>
+  <action name="alignCenterAction">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="enabled">
+    <bool>false</bool>
+   </property>
+   <property name="icon">
+    <iconset resource="resources.qrc">
+     <normaloff>:/icons/align_center.png</normaloff>:/icons/align_center.png</iconset>
+   </property>
+   <property name="text">
+    <string>По центру</string>
+   </property>
+   <property name="toolTip">
+    <string>По центру</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+E</string>
+   </property>
+  </action>
+  <action name="alignRightAction">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="enabled">
+    <bool>false</bool>
+   </property>
+   <property name="icon">
+    <iconset resource="resources.qrc">
+     <normaloff>:/icons/align_right.png</normaloff>:/icons/align_right.png</iconset>
+   </property>
+   <property name="text">
+    <string>По правому краю</string>
+   </property>
+   <property name="toolTip">
+    <string>По правому краю</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+R</string>
+   </property>
+  </action>
+  <action name="alignJustifyAction">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="enabled">
+    <bool>false</bool>
+   </property>
+   <property name="icon">
+    <iconset resource="resources.qrc">
+     <normaloff>:/icons/align_justify.png</normaloff>:/icons/align_justify.png</iconset>
+   </property>
+   <property name="text">
+    <string>По ширине</string>
+   </property>
+   <property name="toolTip">
+    <string>По ширине</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+J</string>
    </property>
   </action>
  </widget>

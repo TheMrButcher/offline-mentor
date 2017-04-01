@@ -39,6 +39,7 @@ private slots:
     void cut();
     void copy();
     void paste();
+    void align(bool toggled);
     void showAbout();
     void loadSettings();
     void openSection(const Section& section);
@@ -47,6 +48,7 @@ private slots:
     void onFontChanged(const QFont& font);
     void onSelectionChanged();
     void updatePasteButton();
+    void onCursorPositionChanged();
 
     void on_tabWidget_tabCloseRequested(int index);
     void on_tabWidget_currentChanged(int index);
@@ -57,6 +59,7 @@ private:
     void setTextEditButtonsEnabled(bool enabled);
     void updateFontButtons(const QFont& font);
     void setCopyAndCutButtonsEnabled(bool enabled);
+    void updateAlignmentButtons(Qt::Alignment alignment);
     Ui::MainWindow *ui;
     QFontComboBox* fontComboBox;
     QComboBox* fontSizeComboBox;

@@ -18,5 +18,9 @@
         <file>icons/copy.png</file>
         <file>icons/cut.png</file>
         <file>icons/paste.png</file>
+        <file>icons/align_center.png</file>
+        <file>icons/align_justify.png</file>
+        <file>icons/align_left.png</file>
+        <file>icons/align_right.png</file>
     </qresource>
 </RCC>

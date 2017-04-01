@@ -35,11 +35,13 @@ signals:
     void textEditInFocus(bool);
     void fontChanged(const QFont& font);
     void selectionChanged();
+    void cursorPositionChanged();
 
 public slots:
     void save();
     void onCharFormatChanged(const QTextCharFormat& format);
     void onSelectionChanged();
+    void onCursorPositionChanged();
 
 private slots:
     void on_addCaseButton_clicked();

@@ -68,6 +68,10 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(ui->cutAction, SIGNAL(triggered()), this, SLOT(cut()));
     connect(ui->copyAction, SIGNAL(triggered()), this, SLOT(copy()));
     connect(ui->pasteAction, SIGNAL(triggered()), this, SLOT(paste()));
+    connect(ui->alignLeftAction, SIGNAL(triggered(bool)), this, SLOT(align(bool)));
+    connect(ui->alignCenterAction, SIGNAL(triggered(bool)), this, SLOT(align(bool)));
+    connect(ui->alignRightAction, SIGNAL(triggered(bool)), this, SLOT(align(bool)));
+    connect(ui->alignJustifyAction, SIGNAL(triggered(bool)), this, SLOT(align(bool)));
 
     QTimer::singleShot(0, this, SLOT(loadSettings()));
 }
@@ -216,6 +220,40 @@ void MainWindow::paste()
     }
 }
 
+void MainWindow::align(bool toggled)
+{
+    if (RichTextEdit* textEdit = currentTextEdit()) {
+        QObject* sender = QObject::sender();
+        Qt::Alignment alignment;
+        if (toggled) {
+            if (sender == ui->alignLeftAction) {
+                alignment = Qt::AlignLeft | Qt::AlignAbsolute;
+            } else if (sender == ui->alignCenterAction) {
+                alignment = Qt::AlignHCenter;
+            } else if (sender == ui->alignRightAction) {
+                alignment = Qt::AlignRight | Qt::AlignAbsolute;
+            } else if (sender == ui->alignJustifyAction) {
+                alignment = Qt::AlignJustify;
+            } else {
+                return;
+            }
+        } else {
+            if (sender == ui->alignLeftAction
+                || sender == ui->alignCenterAction
+                || sender == ui->alignRightAction) {
+                alignment = Qt::AlignJustify;
+            } else if (sender == ui->alignJustifyAction) {
+                alignment = Qt::AlignLeft | Qt::AlignAbsolute;
+            } else {
+                return;
+            }
+        }
+        textEdit->setAlignment(alignment);
+        updateAlignmentButtons(alignment);
+        textEdit->setFocus();
+    }
+}
+
 void MainWindow::showAbout()
 {
     if (!aboutDialog)
@@ -250,6 +288,8 @@ void MainWindow::openSection(const Section& section)
             this, SLOT(onFontChanged(QFont)));
     connect(sectionEditForm, SIGNAL(selectionChanged()),
             this, SLOT(onSelectionChanged()));
+    connect(sectionEditForm, SIGNAL(cursorPositionChanged()),
+            this, SLOT(onCursorPositionChanged()));
 }
 
 void MainWindow::onSectionSaved(const Section& section)
@@ -294,6 +334,14 @@ void MainWindow::updatePasteButton()
     ui->pasteAction->setEnabled(mimeData->hasText() || mimeData->hasHtml());
 }
 
+void MainWindow::onCursorPositionChanged()
+{
+    if (QObject::sender() != ui->tabWidget->currentWidget())
+        return;
+    RichTextEdit* textEdit = currentTextEdit();
+    updateAlignmentButtons(textEdit->alignment());
+}
+
 bool MainWindow::isSectionsFormCurrent() const
 {
     return ui->tabWidget->currentWidget() == sectionsForm;
@@ -317,6 +365,10 @@ void MainWindow::setTextEditButtonsEnabled(bool enabled)
     ui->underlineAction->setEnabled(enabled);
     fontComboBox->setEnabled(enabled);
     fontSizeComboBox->setEnabled(enabled);
+    ui->alignLeftAction->setEnabled(enabled);
+    ui->alignCenterAction->setEnabled(enabled);
+    ui->alignRightAction->setEnabled(enabled);
+    ui->alignJustifyAction->setEnabled(enabled);
 
     if (enabled) {
         RichTextEdit* textEdit = currentTextEdit();
@@ -326,6 +378,7 @@ void MainWindow::setTextEditButtonsEnabled(bool enabled)
         updateFontButtons(format.font());
 
         setCopyAndCutButtonsEnabled(cursor.hasSelection());
+        updateAlignmentButtons(textEdit->alignment());
     } else {
         setCopyAndCutButtonsEnabled(false);
     }
@@ -345,6 +398,14 @@ void MainWindow::setCopyAndCutButtonsEnabled(bool hasSelectedText)
 {
     ui->cutAction->setEnabled(hasSelectedText);
     ui->copyAction->setEnabled(hasSelectedText);
+}
+
+void MainWindow::updateAlignmentButtons(Qt::Alignment alignment)
+{
+    ui->alignLeftAction->setChecked(alignment & Qt::AlignLeft);
+    ui->alignCenterAction->setChecked(alignment & Qt::AlignHCenter);
+    ui->alignRightAction->setChecked(alignment & Qt::AlignRight);
+    ui->alignJustifyAction->setChecked(alignment & Qt::AlignJustify);
 }
 
 void MainWindow::on_tabWidget_tabCloseRequested(int index)
