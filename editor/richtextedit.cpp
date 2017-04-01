@@ -1,7 +1,7 @@
 #include "richtextedit.h"
 #include <QMimeData>
 #include <QRegExp>
-#include <QDebug>
+#include <QTextList>
 
 namespace {
 QRegExp imgRegExp =
@@ -41,6 +41,32 @@ void RichTextEdit::applyFormat(const QTextCharFormat& format)
         cursor.select(QTextCursor::WordUnderCursor);
     cursor.mergeCharFormat(format);
     mergeCurrentCharFormat(format);
+}
+
+void RichTextEdit::clearListFormat()
+{
+    QTextCursor cursor = textCursor();
+    QTextList* textList = cursor.currentList();
+    if (!textList)
+        return;
+    cursor.beginEditBlock();
+    textList->remove(cursor.block());
+    QTextBlockFormat blockFormat = cursor.blockFormat();
+    blockFormat.setIndent(0);
+    cursor.setBlockFormat(blockFormat);
+    cursor.endEditBlock();
+}
+
+void RichTextEdit::applyListStyle(QTextListFormat::Style style)
+{
+    QTextCursor cursor = textCursor();
+    cursor.beginEditBlock();
+    QTextListFormat format;
+    if (QTextList* textList = cursor.currentList())
+        format = textList->format();
+    format.setStyle(style);
+    cursor.createList(format);
+    cursor.endEditBlock();
 }
 
 void RichTextEdit::updateCursor()

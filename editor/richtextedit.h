@@ -12,6 +12,8 @@ public:
 public slots:
     void clearFormat();
     void applyFormat(const QTextCharFormat& format);
+    void clearListFormat();
+    void applyListStyle(QTextListFormat::Style style);
     void updateCursor();
 
     // QTextEdit interface

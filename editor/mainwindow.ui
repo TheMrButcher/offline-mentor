@@ -52,6 +52,9 @@
    <addaction name="alignCenterAction"/>
    <addaction name="alignRightAction"/>
    <addaction name="alignJustifyAction"/>
+   <addaction name="separator"/>
+   <addaction name="orderedListAction"/>
+   <addaction name="unorderedListAction"/>
   </widget>
   <widget class="QMenuBar" name="menuBar">
    <property name="geometry">
@@ -387,6 +390,42 @@
    </property>
    <property name="shortcut">
     <string>Ctrl+J</string>
+   </property>
+  </action>
+  <action name="orderedListAction">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="enabled">
+    <bool>false</bool>
+   </property>
+   <property name="icon">
+    <iconset resource="resources.qrc">
+     <normaloff>:/icons/ordered_list.png</normaloff>:/icons/ordered_list.png</iconset>
+   </property>
+   <property name="text">
+    <string>Нумерованный список</string>
+   </property>
+   <property name="toolTip">
+    <string>Нумерованный список</string>
+   </property>
+  </action>
+  <action name="unorderedListAction">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="enabled">
+    <bool>false</bool>
+   </property>
+   <property name="icon">
+    <iconset resource="resources.qrc">
+     <normaloff>:/icons/unordered_list.png</normaloff>:/icons/unordered_list.png</iconset>
+   </property>
+   <property name="text">
+    <string>Маркированный список</string>
+   </property>
+   <property name="toolTip">
+    <string>Маркированный список</string>
    </property>
   </action>
  </widget>

@@ -40,6 +40,7 @@ private slots:
     void copy();
     void paste();
     void align(bool toggled);
+    void list(bool toggled);
     void showAbout();
     void loadSettings();
     void openSection(const Section& section);
@@ -60,6 +61,8 @@ private:
     void updateFontButtons(const QFont& font);
     void setCopyAndCutButtonsEnabled(bool enabled);
     void updateAlignmentButtons(Qt::Alignment alignment);
+    void updateListButtons();
+
     Ui::MainWindow *ui;
     QFontComboBox* fontComboBox;
     QComboBox* fontSizeComboBox;

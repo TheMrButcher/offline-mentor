@@ -19,6 +19,7 @@
 #include <QTimer>
 #include <QClipboard>
 #include <QMimeData>
+#include <QTextList>
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
@@ -72,6 +73,8 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(ui->alignCenterAction, SIGNAL(triggered(bool)), this, SLOT(align(bool)));
     connect(ui->alignRightAction, SIGNAL(triggered(bool)), this, SLOT(align(bool)));
     connect(ui->alignJustifyAction, SIGNAL(triggered(bool)), this, SLOT(align(bool)));
+    connect(ui->orderedListAction, SIGNAL(triggered(bool)), this, SLOT(list(bool)));
+    connect(ui->unorderedListAction, SIGNAL(triggered(bool)), this, SLOT(list(bool)));
 
     QTimer::singleShot(0, this, SLOT(loadSettings()));
 }
@@ -254,6 +257,31 @@ void MainWindow::align(bool toggled)
     }
 }
 
+void MainWindow::list(bool toggled)
+{
+    if (RichTextEdit* textEdit = currentTextEdit()) {
+        QObject* sender = QObject::sender();
+        if (toggled) {
+            if (sender == ui->orderedListAction) {
+                textEdit->applyListStyle(QTextListFormat::ListDecimal);
+            } else if (sender == ui->unorderedListAction) {
+                textEdit->applyListStyle(QTextListFormat::ListDisc);
+            } else {
+                return;
+            }
+        } else {
+             if (sender == ui->orderedListAction
+                 || sender == ui->unorderedListAction) {
+                 textEdit->clearListFormat();
+             } else {
+                 return;
+             }
+        }
+        updateListButtons();
+        textEdit->setFocus();
+    }
+}
+
 void MainWindow::showAbout()
 {
     if (!aboutDialog)
@@ -340,6 +368,7 @@ void MainWindow::onCursorPositionChanged()
         return;
     RichTextEdit* textEdit = currentTextEdit();
     updateAlignmentButtons(textEdit->alignment());
+    updateListButtons();
 }
 
 bool MainWindow::isSectionsFormCurrent() const
@@ -369,6 +398,8 @@ void MainWindow::setTextEditButtonsEnabled(bool enabled)
     ui->alignCenterAction->setEnabled(enabled);
     ui->alignRightAction->setEnabled(enabled);
     ui->alignJustifyAction->setEnabled(enabled);
+    ui->orderedListAction->setEnabled(enabled);
+    ui->unorderedListAction->setEnabled(enabled);
 
     if (enabled) {
         RichTextEdit* textEdit = currentTextEdit();
@@ -379,6 +410,7 @@ void MainWindow::setTextEditButtonsEnabled(bool enabled)
 
         setCopyAndCutButtonsEnabled(cursor.hasSelection());
         updateAlignmentButtons(textEdit->alignment());
+        updateListButtons();
     } else {
         setCopyAndCutButtonsEnabled(false);
     }
@@ -406,6 +438,19 @@ void MainWindow::updateAlignmentButtons(Qt::Alignment alignment)
     ui->alignCenterAction->setChecked(alignment & Qt::AlignHCenter);
     ui->alignRightAction->setChecked(alignment & Qt::AlignRight);
     ui->alignJustifyAction->setChecked(alignment & Qt::AlignJustify);
+}
+
+void MainWindow::updateListButtons()
+{
+    QTextList* textList = currentTextEdit()->textCursor().currentList();
+    if (textList) {
+        QTextListFormat::Style style = textList->format().style();
+        ui->orderedListAction->setChecked(style == QTextListFormat::ListDecimal);
+        ui->unorderedListAction->setChecked(style == QTextListFormat::ListDisc);
+    } else {
+        ui->orderedListAction->setChecked(false);
+        ui->unorderedListAction->setChecked(false);
+    }
 }
 
 void MainWindow::on_tabWidget_tabCloseRequested(int index)

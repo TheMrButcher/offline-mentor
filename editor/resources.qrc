@@ -22,5 +22,7 @@
         <file>icons/align_justify.png</file>
         <file>icons/align_left.png</file>
         <file>icons/align_right.png</file>
+        <file>icons/ordered_list.png</file>
+        <file>icons/unordered_list.png</file>
     </qresource>
 </RCC>
