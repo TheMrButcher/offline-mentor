@@ -26,5 +26,6 @@
         <file>icons/unordered_list.png</file>
         <file>icons/redo.png</file>
         <file>icons/undo.png</file>
+        <file>translations/qtbase_ru.qm</file>
     </qresource>
 </RCC>

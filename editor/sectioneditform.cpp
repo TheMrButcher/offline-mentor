@@ -5,7 +5,6 @@
 #include "richtextedit.h"
 
 #include <QMessageBox>
-#include <QDebug>
 
 SectionEditForm::SectionEditForm(QWidget *parent) :
     QWidget(parent),
@@ -214,8 +213,6 @@ void SectionEditForm::onModificationChanged(bool changed)
     } else {
         modifiedDocuments.remove(sender);
     }
-
-    qDebug() << "was:" << hadChanges << "new:" << hasChanges();
     if (hadChanges != hasChanges())
         emit modificationChanged(hasChanges());
 }
@@ -224,7 +221,6 @@ void SectionEditForm::onNameChanged()
 {
     bool hadChanges = hasChanges();
     modifiedNames = true;
-    qDebug() << "was:" << hadChanges << "new:" << hasChanges();
     if (hadChanges != hasChanges())
         emit modificationChanged(hasChanges());
 }
