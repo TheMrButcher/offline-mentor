@@ -23,6 +23,7 @@ public:
     QString fileName() const;
     bool save();
     bool load();
+    bool removeFile();
     RichTextEdit* textEdit();
 
 private:

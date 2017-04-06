@@ -2,7 +2,6 @@
 #include <QApplication>
 #include <QTranslator>
 #include <QLibraryInfo>
-#include <QDebug>
 
 int main(int argc, char *argv[])
 {
@@ -12,7 +11,7 @@ int main(int argc, char *argv[])
     w.show();
 
     QTranslator qtTranslator;
-    qDebug() << qtTranslator.load("qtbase_ru", ":/translations");
+    qtTranslator.load("qtbase_ru", ":/translations");
     a.installTranslator(&qtTranslator);
 
     return a.exec();

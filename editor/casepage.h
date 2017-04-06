@@ -22,12 +22,16 @@ public:
     Case getCase() const;
     void setCase(const Case& caseValue);
     void connectWith(QTreeWidgetItem* treeItem);
+    QTreeWidgetItem* key() const;
 
 signals:
     void nameChanged();
+    void removeRequested();
 
 private slots:
     void on_nameEdit_textEdited(const QString &arg);
+
+    void on_removeButton_clicked();
 
 private:
     Ui::CasePage *ui;

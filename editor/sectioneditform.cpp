@@ -169,6 +169,38 @@ void SectionEditForm::save()
     emit modificationChanged(false);
 }
 
+void SectionEditForm::removeCurrentCase()
+{
+    if (ui->stackedWidget->currentWidget() == ui->sectionPage)
+        return;
+
+    QTreeWidgetItem* item = ui->treeWidget->currentItem();
+    if (!nodes.contains(item))
+        return;
+
+    int answer = QMessageBox::question(this, "Удаление кейса",
+                                       "Вы уверены, что хотите удалить текущий кейс?");
+    if (answer != QMessageBox::Yes)
+        return;
+
+    currentTextEditorPage = nullptr;
+    auto node = nodes[item];
+    node.pages.questionPage->removeFile();
+    node.pages.answerPage->removeFile();
+    modifiedDocuments.remove(node.pages.questionPage->textEdit()->document());
+    modifiedDocuments.remove(node.pages.answerPage->textEdit()->document());
+    nodes.remove(node.items.root);
+    nodes.remove(node.items.question);
+    nodes.remove(node.items.answer);
+    delete node.items.question;
+    delete node.items.answer;
+    delete node.items.root;
+    delete node.pages.questionPage;
+    delete node.pages.answerPage;
+    delete node.pages.mainPage;
+    onNameChanged();
+}
+
 void SectionEditForm::onCharFormatChanged(const QTextCharFormat& format)
 {
     if (!currentTextEditorPage || QObject::sender() != currentTextEditorPage->textEdit())
@@ -263,7 +295,7 @@ void SectionEditForm::on_treeWidget_currentItemChanged(QTreeWidgetItem* current,
         currentTextEditorPage = totalEditorPage;
     } else {
         const auto& node = nodes[current];
-        ui->stackedWidget->setCurrentIndex(node.pageId);
+        ui->stackedWidget->setCurrentWidget(node.page);
         currentTextEditorPage = node.textEditorPage;
     }
     if (currentTextEditorPage) {
@@ -296,10 +328,11 @@ void SectionEditForm::addCase(const Case& caseValue)
     rootItem->addChild(caseRootItem);
 
     CasePage* casePage = new CasePage;
-    int casePageId = ui->stackedWidget->addWidget(casePage);
+    ui->stackedWidget->addWidget(casePage);
     casePage->setCase(caseValue);
     casePage->connectWith(caseRootItem);
     connect(casePage, SIGNAL(nameChanged()), this, SLOT(onNameChanged()));
+    connect(casePage, SIGNAL(removeRequested()), this, SLOT(removeCurrentCase()));
 
     QDir sectionDir = originalSection.dir();
 
@@ -312,7 +345,7 @@ void SectionEditForm::addCase(const Case& caseValue)
     TextEditorPage* questionPage = new TextEditorPage;
     questionPage->setTitle("Текст вопроса");
     questionPage->setFilePath(sectionDir, caseValue.questionFileName);
-    int questionPageId = ui->stackedWidget->addWidget(questionPage);
+    ui->stackedWidget->addWidget(questionPage);
     connectPage(questionPage);
 
     QTreeWidgetItem* answerItem = new QTreeWidgetItem();
@@ -324,14 +357,15 @@ void SectionEditForm::addCase(const Case& caseValue)
     TextEditorPage* answerPage = new TextEditorPage;
     answerPage->setTitle("Текст ответа наставника");
     answerPage->setFilePath(sectionDir, caseValue.answerFileName);
-    int answerPageId = ui->stackedWidget->addWidget(answerPage);
+    ui->stackedWidget->addWidget(answerPage);
     connectPage(answerPage);
 
+    CaseItems items{ caseRootItem, questionItem, answerItem };
     CasePages pages{ casePage, questionPage, answerPage };
 
-    nodes[caseRootItem] = NodeDescriptor{ casePageId, nullptr, pages };
-    nodes[questionItem] = NodeDescriptor{ questionPageId, questionPage, pages };
-    nodes[answerItem] = NodeDescriptor{ answerPageId, answerPage, pages };
+    nodes[caseRootItem] = NodeDescriptor{ casePage, nullptr, items, pages };
+    nodes[questionItem] = NodeDescriptor{ questionPage, questionPage, items, pages };
+    nodes[answerItem] = NodeDescriptor{ answerPage, answerPage, items, pages };
 }
 
 void SectionEditForm::generateFileNames(Case& c)

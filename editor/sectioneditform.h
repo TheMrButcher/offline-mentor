@@ -44,6 +44,7 @@ signals:
 
 public slots:
     void save();
+    void removeCurrentCase();
 
 private slots:
     void onCharFormatChanged(const QTextCharFormat& format);
@@ -75,6 +76,12 @@ private:
 
     TextEditorPage* currentTextEditorPage = nullptr;
 
+    struct CaseItems {
+        QTreeWidgetItem* root;
+        QTreeWidgetItem* question;
+        QTreeWidgetItem* answer;
+    };
+
     struct CasePages {
         CasePage* mainPage;
         TextEditorPage* questionPage;
@@ -82,8 +89,9 @@ private:
     };
 
     struct NodeDescriptor {
-        int pageId;
+        QWidget* page;
         TextEditorPage* textEditorPage;
+        CaseItems items;
         CasePages pages;
     };
 

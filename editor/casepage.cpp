@@ -33,10 +33,20 @@ void CasePage::connectWith(QTreeWidgetItem* treeItem)
     this->treeItem = treeItem;
 }
 
+QTreeWidgetItem* CasePage::key() const
+{
+    return treeItem;
+}
+
 void CasePage::on_nameEdit_textEdited(const QString &arg)
 {
     if (!treeItem)
         return;
     treeItem->setText(0, "Кейс \"" + arg + "\"");
     emit nameChanged();
+}
+
+void CasePage::on_removeButton_clicked()
+{
+    emit removeRequested();
 }

@@ -53,6 +53,13 @@ bool TextEditorPage::load()
     return true;
 }
 
+bool TextEditorPage::removeFile()
+{
+    if (!dir.exists(myFileName))
+        return true;
+    return dir.remove(myFileName);
+}
+
 RichTextEdit* TextEditorPage::textEdit()
 {
     return myTextEdit;
