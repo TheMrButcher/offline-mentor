@@ -77,6 +77,8 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(ui->unorderedListAction, SIGNAL(triggered(bool)), this, SLOT(list(bool)));
     connect(ui->undoAction, SIGNAL(triggered()), this, SLOT(undo()));
     connect(ui->redoAction, SIGNAL(triggered()), this, SLOT(redo()));
+    connect(ui->addCaseAction, SIGNAL(triggered()), this, SLOT(addCase()));
+    connect(ui->removeCaseAction, SIGNAL(triggered()), this, SLOT(removeCase()));
 
     QTimer::singleShot(0, this, SLOT(loadSettings()));
 }
@@ -302,6 +304,18 @@ void MainWindow::redo()
     }
 }
 
+void MainWindow::addCase()
+{
+    if (SectionEditForm* sectionEditForm = currentSectionEditForm())
+        sectionEditForm->addCase();
+}
+
+void MainWindow::removeCase()
+{
+    if (SectionEditForm* sectionEditForm = currentSectionEditForm())
+        sectionEditForm->removeCurrentCase();
+}
+
 void MainWindow::showAbout()
 {
     if (!aboutDialog)
@@ -330,6 +344,8 @@ void MainWindow::openSection(const Section& section)
 
     connect(sectionEditForm, SIGNAL(sectionSaved(Section)),
             this, SLOT(onSectionSaved(Section)));
+    connect(sectionEditForm, SIGNAL(caseInFocus(bool)),
+            this, SLOT(onCaseInFocus(bool)));
     connect(sectionEditForm, SIGNAL(textEditInFocus(bool)),
             this, SLOT(onTextEditInFocus(bool)));
     connect(sectionEditForm, SIGNAL(fontChanged(QFont)),
@@ -352,6 +368,13 @@ void MainWindow::onSectionSaved(const Section& section)
     int index = ui->tabWidget->indexOf(widget);
     ui->tabWidget->setTabText(index, trim(section.name, 16));
     sectionsForm->updateSection(section);
+}
+
+void MainWindow::onCaseInFocus(bool inFocus)
+{
+    if (QObject::sender() != ui->tabWidget->currentWidget())
+        return;
+    setCaseEditButtonsEnabled(inFocus);
 }
 
 void MainWindow::onTextEditInFocus(bool inFocus)
@@ -484,6 +507,11 @@ void MainWindow::setTextEditButtonsEnabled(bool enabled)
     updateHistoryButtons();
 }
 
+void MainWindow::setCaseEditButtonsEnabled(bool enabled)
+{
+    ui->removeCaseAction->setEnabled(enabled);
+}
+
 void MainWindow::updateFontButtons(const QFont& font)
 {
     ui->boldAction->setChecked(font.bold());
@@ -550,14 +578,17 @@ void MainWindow::on_tabWidget_tabCloseRequested(int index)
 void MainWindow::on_tabWidget_currentChanged(int index)
 {
     bool isSectionEditForm = index != ui->tabWidget->indexOf(sectionsForm);
+    ui->addCaseAction->setEnabled(isSectionEditForm);
     if (isSectionEditForm) {
-        ui->saveAction->setEnabled(currentSectionEditForm()->hasChanges());
-        auto sectionEditForm = (SectionEditForm*)ui->tabWidget->widget(index);
+        SectionEditForm* sectionEditForm = currentSectionEditForm();
+        ui->saveAction->setEnabled(sectionEditForm->hasChanges());
+        setCaseEditButtonsEnabled(sectionEditForm->isCaseInFocus());
         setTextEditButtonsEnabled(sectionEditForm->isTextEditInFocus());
         if (sectionEditForm->isTextEditInFocus())
             sectionEditForm->currentTextEdit()->setFocus();
     } else {
         ui->saveAction->setEnabled(false);
+        setCaseEditButtonsEnabled(false);
         setTextEditButtonsEnabled(false);
     }
 }

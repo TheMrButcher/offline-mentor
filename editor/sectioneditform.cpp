@@ -24,8 +24,12 @@ SectionEditForm::SectionEditForm(QWidget *parent) :
     ui->stackedWidget->addWidget(totalEditorPage);
     connectPage(totalEditorPage);
 
+    connect(ui->addCaseButton, SIGNAL(clicked(bool)), this, SLOT(addCase()));
     connect(ui->descriptionEdit->document(), SIGNAL(modificationChanged(bool)),
             this, SLOT(onModificationChanged(bool)));
+
+    connect(ui->treeWidget->model(), SIGNAL(rowsInserted(QModelIndex,int,int)),
+            this, SLOT(onNameChanged()));
 }
 
 SectionEditForm::~SectionEditForm()
@@ -113,6 +117,12 @@ bool SectionEditForm::isTextEditInFocus() const
     return currentTextEditorPage != nullptr;
 }
 
+bool SectionEditForm::isCaseInFocus() const
+{
+    return ui->stackedWidget->currentWidget() != ui->sectionPage
+            && ui->stackedWidget->currentWidget() != totalEditorPage;
+}
+
 RichTextEdit* SectionEditForm::currentTextEdit() const
 {
     if (!currentTextEditorPage)
@@ -171,9 +181,19 @@ void SectionEditForm::save()
     emit modificationChanged(false);
 }
 
+void SectionEditForm::addCase()
+{
+    Case caseValue = Case::createCase();
+    caseValue.name = "Новый";
+    generateFileNames(caseValue);
+    QTreeWidgetItem* caseRootItem = addCase(caseValue);
+    caseRootItem->setExpanded(true);
+    onNameChanged();
+}
+
 void SectionEditForm::removeCurrentCase()
 {
-    if (ui->stackedWidget->currentWidget() == ui->sectionPage)
+    if (!isCaseInFocus())
         return;
 
     QTreeWidgetItem* item = ui->treeWidget->currentItem();
@@ -292,16 +312,6 @@ Section SectionEditForm::sectionFromUI() const
     return section;
 }
 
-void SectionEditForm::on_addCaseButton_clicked()
-{
-    Case caseValue = Case::createCase();
-    caseValue.name = "Новый";
-    generateFileNames(caseValue);
-    QTreeWidgetItem* caseRootItem = addCase(caseValue);
-    caseRootItem->setExpanded(true);
-    onNameChanged();
-}
-
 void SectionEditForm::on_treeWidget_currentItemChanged(QTreeWidgetItem* current, QTreeWidgetItem*)
 {
     if (current == rootItem) {
@@ -311,6 +321,8 @@ void SectionEditForm::on_treeWidget_currentItemChanged(QTreeWidgetItem* current,
         select(totalEditorPage);
         currentTextEditorPage = totalEditorPage;
     } else {
+        if (!nodes.contains(current))
+            return;
         const auto& node = nodes[current];
         ui->stackedWidget->setCurrentWidget(node.page);
         currentTextEditorPage = node.textEditorPage;
@@ -320,6 +332,7 @@ void SectionEditForm::on_treeWidget_currentItemChanged(QTreeWidgetItem* current,
         textEdit->setFocus();
         textEdit->updateCursor();
     }
+    emit caseInFocus(isCaseInFocus());
     emit textEditInFocus(isTextEditInFocus());
 }
 

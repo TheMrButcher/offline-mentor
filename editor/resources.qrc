@@ -29,5 +29,7 @@
         <file>translations/qtbase_ru.qm</file>
         <file>icons/delete.png</file>
         <file>icons/edit.png</file>
+        <file>icons/add_case.png</file>
+        <file>icons/remove_case.png</file>
     </qresource>
 </RCC>

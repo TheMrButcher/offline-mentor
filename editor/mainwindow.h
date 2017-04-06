@@ -43,10 +43,13 @@ private slots:
     void list(bool toggled);
     void undo();
     void redo();
+    void addCase();
+    void removeCase();
     void showAbout();
     void loadSettings();
     void openSection(const Section& section);
     void onSectionSaved(const Section& section);
+    void onCaseInFocus(bool inFocus);
     void onTextEditInFocus(bool inFocus);
     void onFontChanged(const QFont& font);
     void onSelectionChanged();
@@ -68,6 +71,7 @@ private:
     SectionEditForm* currentSectionEditForm();
     RichTextEdit* currentTextEdit();
     void setTextEditButtonsEnabled(bool enabled);
+    void setCaseEditButtonsEnabled(bool enabled);
     void updateFontButtons(const QFont& font);
     void setCopyAndCutButtonsEnabled(bool enabled);
     void updateAlignmentButtons(Qt::Alignment alignment);

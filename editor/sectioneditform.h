@@ -29,12 +29,14 @@ public:
     QString sectionName() const;
     QUuid sectionId() const;
     bool isTextEditInFocus() const;
+    bool isCaseInFocus() const;
     RichTextEdit* currentTextEdit() const;
     bool hasChanges() const;
 
 signals:
     void sectionSaved(const Section& section);
     void textEditInFocus(bool);
+    void caseInFocus(bool);
     void fontChanged(const QFont& font);
     void selectionChanged();
     void cursorPositionChanged();
@@ -44,6 +46,7 @@ signals:
 
 public slots:
     void save();
+    void addCase();
     void removeCurrentCase();
 
 private slots:
@@ -57,7 +60,6 @@ private slots:
     void openCurrentQuestionPage();
     void openCurrentAnswerPage();
 
-    void on_addCaseButton_clicked();
     void on_treeWidget_currentItemChanged(QTreeWidgetItem *current, QTreeWidgetItem* previous);
     void on_nameEdit_textEdited(const QString &arg1);
 
