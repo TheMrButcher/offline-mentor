@@ -50,3 +50,13 @@ void CasePage::on_removeButton_clicked()
 {
     emit removeRequested();
 }
+
+void CasePage::on_editQuestionButton_clicked()
+{
+    emit questionEditRequested();
+}
+
+void CasePage::on_editAnswerButton_clicked()
+{
+    emit answerEditRequested();
+}

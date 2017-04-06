@@ -27,11 +27,17 @@ public:
 signals:
     void nameChanged();
     void removeRequested();
+    void questionEditRequested();
+    void answerEditRequested();
 
 private slots:
     void on_nameEdit_textEdited(const QString &arg);
 
     void on_removeButton_clicked();
+
+    void on_editQuestionButton_clicked();
+
+    void on_editAnswerButton_clicked();
 
 private:
     Ui::CasePage *ui;

@@ -15,7 +15,7 @@ SectionEditForm::SectionEditForm(QWidget *parent) :
     totalItem = ui->treeWidget->topLevelItem(1);
 
     ui->splitter->setStretchFactor(0, 1);
-    ui->splitter->setStretchFactor(1, 4);
+    ui->splitter->setStretchFactor(1, 3);
     ui->treeWidget->invisibleRootItem()->setFlags(
                 ui->treeWidget->invisibleRootItem()->flags().setFlag(Qt::ItemIsDropEnabled, false));
 
@@ -84,6 +84,8 @@ void SectionEditForm::setSection(const Section& section)
     totalEditorPage->setFilePath(originalSection.dir(), originalSection.totalFileName);
     if (hasTotal && !totalEditorPage->load())
         badFiles.append("Итоги");
+
+    rootItem->setExpanded(true);
 
     modifiedDocuments.clear();
     modifiedNames = false;
@@ -257,6 +259,20 @@ void SectionEditForm::onNameChanged()
         emit modificationChanged(hasChanges());
 }
 
+void SectionEditForm::openCurrentQuestionPage()
+{
+    QTreeWidgetItem* item = ui->treeWidget->currentItem();
+    if (nodes.contains(item))
+        ui->treeWidget->setCurrentItem(nodes[item].items.question);
+}
+
+void SectionEditForm::openCurrentAnswerPage()
+{
+    QTreeWidgetItem* item = ui->treeWidget->currentItem();
+    if (nodes.contains(item))
+        ui->treeWidget->setCurrentItem(nodes[item].items.answer);
+}
+
 Section SectionEditForm::sectionFromUI() const
 {
     Section section;
@@ -281,7 +297,8 @@ void SectionEditForm::on_addCaseButton_clicked()
     Case caseValue = Case::createCase();
     caseValue.name = "Новый";
     generateFileNames(caseValue);
-    addCase(caseValue);
+    QTreeWidgetItem* caseRootItem = addCase(caseValue);
+    caseRootItem->setExpanded(true);
     onNameChanged();
 }
 
@@ -319,7 +336,7 @@ void SectionEditForm::setSectionName(QString name)
     rootItem->setText(0, title);
 }
 
-void SectionEditForm::addCase(const Case& caseValue)
+QTreeWidgetItem* SectionEditForm::addCase(const Case& caseValue)
 {
     QTreeWidgetItem* caseRootItem = new QTreeWidgetItem();
     caseRootItem->setIcon(0, QIcon(":/icons/case.png"));
@@ -333,6 +350,8 @@ void SectionEditForm::addCase(const Case& caseValue)
     casePage->connectWith(caseRootItem);
     connect(casePage, SIGNAL(nameChanged()), this, SLOT(onNameChanged()));
     connect(casePage, SIGNAL(removeRequested()), this, SLOT(removeCurrentCase()));
+    connect(casePage, SIGNAL(questionEditRequested()), this, SLOT(openCurrentQuestionPage()));
+    connect(casePage, SIGNAL(answerEditRequested()), this, SLOT(openCurrentAnswerPage()));
 
     QDir sectionDir = originalSection.dir();
 
@@ -366,6 +385,7 @@ void SectionEditForm::addCase(const Case& caseValue)
     nodes[caseRootItem] = NodeDescriptor{ casePage, nullptr, items, pages };
     nodes[questionItem] = NodeDescriptor{ questionPage, questionPage, items, pages };
     nodes[answerItem] = NodeDescriptor{ answerPage, answerPage, items, pages };
+    return caseRootItem;
 }
 
 void SectionEditForm::generateFileNames(Case& c)

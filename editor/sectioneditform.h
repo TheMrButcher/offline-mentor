@@ -54,6 +54,8 @@ private slots:
     void onRedoAvailable(bool available);
     void onModificationChanged(bool changed);
     void onNameChanged();
+    void openCurrentQuestionPage();
+    void openCurrentAnswerPage();
 
     void on_addCaseButton_clicked();
     void on_treeWidget_currentItemChanged(QTreeWidgetItem *current, QTreeWidgetItem* previous);
@@ -61,7 +63,7 @@ private slots:
 
 private:
     void setSectionName(QString name);
-    void addCase(const Case& caseValue);
+    QTreeWidgetItem* addCase(const Case& caseValue);
     void generateFileNames(Case& c);
     Section sectionFromUI() const;
     void select(QWidget* widget);

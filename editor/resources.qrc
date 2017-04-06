@@ -28,5 +28,6 @@
         <file>icons/undo.png</file>
         <file>translations/qtbase_ru.qm</file>
         <file>icons/delete.png</file>
+        <file>icons/edit.png</file>
     </qresource>
 </RCC>
