@@ -23,6 +23,9 @@ public:
     void setCase(const Case& caseValue);
     void connectWith(QTreeWidgetItem* treeItem);
 
+signals:
+    void nameChanged();
+
 private slots:
     void on_nameEdit_textEdited(const QString &arg);
 

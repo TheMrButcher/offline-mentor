@@ -38,4 +38,5 @@ void CasePage::on_nameEdit_textEdited(const QString &arg)
     if (!treeItem)
         return;
     treeItem->setText(0, "Кейс \"" + arg + "\"");
+    emit nameChanged();
 }

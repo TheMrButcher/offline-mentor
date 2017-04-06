@@ -54,18 +54,25 @@ private slots:
     void updateHistoryButtons();
     void onCursorPositionChanged();
     void onHistoryAvailable(bool);
+    void onModificationChanged(bool changed);
 
     void on_tabWidget_tabCloseRequested(int index);
     void on_tabWidget_currentChanged(int index);
 
+    // QWidget interface
+protected:
+    virtual void closeEvent(QCloseEvent* event) override;
+
 private:
     bool isSectionsFormCurrent() const;
+    SectionEditForm* currentSectionEditForm();
     RichTextEdit* currentTextEdit();
     void setTextEditButtonsEnabled(bool enabled);
     void updateFontButtons(const QFont& font);
     void setCopyAndCutButtonsEnabled(bool enabled);
     void updateAlignmentButtons(Qt::Alignment alignment);
     void updateListButtons();
+    bool closePage(SectionEditForm* sectionEditForm);
 
     Ui::MainWindow *ui;
     QFontComboBox* fontComboBox;

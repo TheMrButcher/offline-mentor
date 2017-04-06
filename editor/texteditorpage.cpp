@@ -49,6 +49,7 @@ bool TextEditorPage::load()
     if (html.isEmpty())
         return false;
     myTextEdit->setHtml(html);
+    myTextEdit->document()->setModified(false);
     return true;
 }
 

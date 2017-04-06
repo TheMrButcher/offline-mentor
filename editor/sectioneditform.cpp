@@ -5,6 +5,7 @@
 #include "richtextedit.h"
 
 #include <QMessageBox>
+#include <QDebug>
 
 SectionEditForm::SectionEditForm(QWidget *parent) :
     QWidget(parent),
@@ -23,6 +24,9 @@ SectionEditForm::SectionEditForm(QWidget *parent) :
     totalEditorPage->setTitle("Итоги раздела");
     ui->stackedWidget->addWidget(totalEditorPage);
     connectPage(totalEditorPage);
+
+    connect(ui->descriptionEdit->document(), SIGNAL(modificationChanged(bool)),
+            this, SLOT(onModificationChanged(bool)));
 }
 
 SectionEditForm::~SectionEditForm()
@@ -56,6 +60,7 @@ void SectionEditForm::setSection(const Section& section)
     ui->titleLabel->setText("Раздел \"" + originalSection.name + "\"");
     ui->nameEdit->setText(originalSection.name);
     ui->descriptionEdit->setPlainText(originalSection.description);
+    ui->descriptionEdit->document()->setModified(false);
 
     QStringList badFiles;
     for (int i = 0; i < originalSection.cases.size(); ++i) {
@@ -81,11 +86,20 @@ void SectionEditForm::setSection(const Section& section)
     if (hasTotal && !totalEditorPage->load())
         badFiles.append("Итоги");
 
+    modifiedDocuments.clear();
+    modifiedNames = false;
+    emit modificationChanged(false);
+
     if (!badFiles.isEmpty()) {
         QMessageBox::warning(this, "Ошибка при загрузке",
                              "Не удалось загрузить некоторые файлы кейсов: " + badFiles.join("; "));
         return;
     }
+}
+
+QString SectionEditForm::sectionName() const
+{
+    return originalSection.name;
 }
 
 QUuid SectionEditForm::sectionId() const
@@ -103,6 +117,12 @@ RichTextEdit* SectionEditForm::currentTextEdit() const
     if (!currentTextEditorPage)
         return nullptr;
     return currentTextEditorPage->textEdit();
+}
+
+bool SectionEditForm::hasChanges() const
+{
+    return !modifiedDocuments.empty()
+            || modifiedNames;
 }
 
 void SectionEditForm::save()
@@ -134,7 +154,20 @@ void SectionEditForm::save()
                              "Не удалось сохранить некоторые файлы кейсов: " + badFiles.join("; "));
         return;
     }
+    originalSection = result;
     emit sectionSaved(result);
+
+    for (auto it = nodes.begin(); it != nodes.end(); ++it) {
+        TextEditorPage* page = it.value().textEditorPage;
+        if (!page)
+            continue;
+        page->textEdit()->document()->setModified(false);
+    }
+    ui->descriptionEdit->document()->setModified(false);
+    totalEditorPage->textEdit()->document()->setModified(false);
+    modifiedDocuments.clear();
+    modifiedNames = false;
+    emit modificationChanged(false);
 }
 
 void SectionEditForm::onCharFormatChanged(const QTextCharFormat& format)
@@ -172,6 +205,30 @@ void SectionEditForm::onRedoAvailable(bool available)
     emit redoAvailable(available);
 }
 
+void SectionEditForm::onModificationChanged(bool changed)
+{
+    QObject* sender = QObject::sender();
+    bool hadChanges = hasChanges();
+    if (changed) {
+        modifiedDocuments.insert(sender);
+    } else {
+        modifiedDocuments.remove(sender);
+    }
+
+    qDebug() << "was:" << hadChanges << "new:" << hasChanges();
+    if (hadChanges != hasChanges())
+        emit modificationChanged(hasChanges());
+}
+
+void SectionEditForm::onNameChanged()
+{
+    bool hadChanges = hasChanges();
+    modifiedNames = true;
+    qDebug() << "was:" << hadChanges << "new:" << hasChanges();
+    if (hadChanges != hasChanges())
+        emit modificationChanged(hasChanges());
+}
+
 Section SectionEditForm::sectionFromUI() const
 {
     Section section;
@@ -197,6 +254,7 @@ void SectionEditForm::on_addCaseButton_clicked()
     caseValue.name = "Новый";
     generateFileNames(caseValue);
     addCase(caseValue);
+    onNameChanged();
 }
 
 void SectionEditForm::on_treeWidget_currentItemChanged(QTreeWidgetItem* current, QTreeWidgetItem*)
@@ -223,6 +281,7 @@ void SectionEditForm::on_treeWidget_currentItemChanged(QTreeWidgetItem* current,
 void SectionEditForm::on_nameEdit_textEdited(const QString &arg)
 {
     setSectionName(arg);
+    onNameChanged();
 }
 
 void SectionEditForm::setSectionName(QString name)
@@ -244,6 +303,7 @@ void SectionEditForm::addCase(const Case& caseValue)
     int casePageId = ui->stackedWidget->addWidget(casePage);
     casePage->setCase(caseValue);
     casePage->connectWith(caseRootItem);
+    connect(casePage, SIGNAL(nameChanged()), this, SLOT(onNameChanged()));
 
     QDir sectionDir = originalSection.dir();
 
@@ -304,4 +364,6 @@ void SectionEditForm::connectPage(TextEditorPage* page)
             this, SLOT(onUndoAvailable(bool)));
     connect(page->textEdit(), SIGNAL(redoAvailable(bool)),
             this, SLOT(onRedoAvailable(bool)));
+    connect(page->textEdit()->document(), SIGNAL(modificationChanged(bool)),
+            this, SLOT(onModificationChanged(bool)));
 }

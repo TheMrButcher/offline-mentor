@@ -342,6 +342,8 @@ void MainWindow::openSection(const Section& section)
             this, SLOT(onHistoryAvailable(bool)));
     connect(sectionEditForm, SIGNAL(redoAvailable(bool)),
             this, SLOT(onHistoryAvailable(bool)));
+    connect(sectionEditForm, SIGNAL(modificationChanged(bool)),
+            this, SLOT(onModificationChanged(bool)));
 }
 
 void MainWindow::onSectionSaved(const Section& section)
@@ -402,9 +404,10 @@ void MainWindow::onCursorPositionChanged()
 {
     if (QObject::sender() != ui->tabWidget->currentWidget())
         return;
-    RichTextEdit* textEdit = currentTextEdit();
-    updateAlignmentButtons(textEdit->alignment());
-    updateListButtons();
+    if (RichTextEdit* textEdit = currentTextEdit()) {
+        updateAlignmentButtons(textEdit->alignment());
+        updateListButtons();
+    }
 }
 
 void MainWindow::onHistoryAvailable(bool /*ignored*/)
@@ -414,18 +417,38 @@ void MainWindow::onHistoryAvailable(bool /*ignored*/)
     updateHistoryButtons();
 }
 
+void MainWindow::onModificationChanged(bool changed)
+{
+    SectionEditForm* sectionEditForm = (SectionEditForm*)QObject::sender();
+    int index = ui->tabWidget->indexOf(sectionEditForm);
+    if (index == -1)
+        return;
+    QString title = trim(sectionEditForm->sectionName(), 16)
+            + (changed ? QString("*") : "");
+    ui->tabWidget->setTabText(index, title);
+
+    if (QObject::sender() != ui->tabWidget->currentWidget())
+        return;
+    ui->saveAction->setEnabled(changed);
+}
+
 bool MainWindow::isSectionsFormCurrent() const
 {
     return ui->tabWidget->currentWidget() == sectionsForm;
 }
 
-RichTextEdit* MainWindow::currentTextEdit()
+SectionEditForm* MainWindow::currentSectionEditForm()
 {
     if (isSectionsFormCurrent())
         return nullptr;
-    SectionEditForm* sectionEditForm =
-            (SectionEditForm*)ui->tabWidget->currentWidget();
-    return sectionEditForm->currentTextEdit();
+    return (SectionEditForm*)ui->tabWidget->currentWidget();
+}
+
+RichTextEdit* MainWindow::currentTextEdit()
+{
+    if (SectionEditForm* sectionEditForm = currentSectionEditForm())
+        return sectionEditForm->currentTextEdit();
+    return nullptr;
 }
 
 void MainWindow::setTextEditButtonsEnabled(bool enabled)
@@ -497,27 +520,59 @@ void MainWindow::updateListButtons()
     }
 }
 
+bool MainWindow::closePage(SectionEditForm* sectionEditForm)
+{
+    if (sectionEditForm->hasChanges()) {
+        int answer = QMessageBox::question(
+                    this, "Несохраненные изменения",
+                    "Раздел \"" + sectionEditForm->sectionName() + "\" "
+                    "был изменен. Сохранить изменения?",
+                    QMessageBox::Yes, QMessageBox::No, QMessageBox::Cancel);
+        if (answer == QMessageBox::Cancel)
+            return false;
+        if (answer == QMessageBox::Yes)
+            sectionEditForm->save();
+    }
+    auto id = sectionEditForm->sectionId();
+    openedPages.remove(id);
+    delete sectionEditForm;
+    return true;
+}
+
 void MainWindow::on_tabWidget_tabCloseRequested(int index)
 {
     if (index == ui->tabWidget->indexOf(sectionsForm))
         return;
-    auto widget = ui->tabWidget->widget(index);
-    auto id = ((SectionEditForm*)widget)->sectionId();
-    openedPages.remove(id);
-    delete widget;
+    SectionEditForm* sectionEditForm = currentSectionEditForm();
+    closePage(sectionEditForm);
 }
 
 void MainWindow::on_tabWidget_currentChanged(int index)
 {
-    bool isEditor = index != ui->tabWidget->indexOf(sectionsForm);
-    ui->saveAction->setEnabled(isEditor);
-
-    if (isEditor) {
+    bool isSectionEditForm = index != ui->tabWidget->indexOf(sectionsForm);
+    if (isSectionEditForm) {
+        ui->saveAction->setEnabled(currentSectionEditForm()->hasChanges());
         auto sectionEditForm = (SectionEditForm*)ui->tabWidget->widget(index);
         setTextEditButtonsEnabled(sectionEditForm->isTextEditInFocus());
         if (sectionEditForm->isTextEditInFocus())
             sectionEditForm->currentTextEdit()->setFocus();
     } else {
+        ui->saveAction->setEnabled(false);
         setTextEditButtonsEnabled(false);
     }
+}
+
+void MainWindow::closeEvent(QCloseEvent* event)
+{
+    int sectionsFormIndex = ui->tabWidget->indexOf(sectionsForm);
+    for (int i = ui->tabWidget->count() - 1; i >= 0; --i) {
+        if (i == sectionsFormIndex)
+            continue;
+        auto sectionEditForm = (SectionEditForm*)ui->tabWidget->widget(i);
+        if (!closePage(sectionEditForm)) {
+            event->ignore();
+            return;
+        }
+    }
+    event->accept();
 }

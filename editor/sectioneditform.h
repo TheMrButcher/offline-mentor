@@ -4,7 +4,7 @@
 #include <omkit/section.h>
 
 #include <QWidget>
-#include <memory>
+#include <QSet>
 
 namespace Ui {
 class SectionEditForm;
@@ -26,9 +26,11 @@ public:
 
     Section section() const;
     void setSection(const Section& section);
+    QString sectionName() const;
     QUuid sectionId() const;
     bool isTextEditInFocus() const;
     RichTextEdit* currentTextEdit() const;
+    bool hasChanges() const;
 
 signals:
     void sectionSaved(const Section& section);
@@ -38,6 +40,7 @@ signals:
     void cursorPositionChanged();
     void undoAvailable(bool available);
     void redoAvailable(bool available);
+    void modificationChanged(bool changed);
 
 public slots:
     void save();
@@ -48,6 +51,8 @@ private slots:
     void onCursorPositionChanged();
     void onUndoAvailable(bool available);
     void onRedoAvailable(bool available);
+    void onModificationChanged(bool changed);
+    void onNameChanged();
 
     void on_addCaseButton_clicked();
     void on_treeWidget_currentItemChanged(QTreeWidgetItem *current, QTreeWidgetItem* previous);
@@ -83,6 +88,8 @@ private:
     };
 
     QHash<QTreeWidgetItem*, NodeDescriptor> nodes;
+    QSet<QObject*> modifiedDocuments;
+    bool modifiedNames = false;
 };
 
 #endif // SECTIONEDITFORM_H
