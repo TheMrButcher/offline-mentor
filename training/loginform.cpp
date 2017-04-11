@@ -30,7 +30,8 @@ void LoginForm::on_enterButton_clicked()
 {
     QString name = ui->nameEdit->text();
     if (name.isEmpty()) {
-        QMessageBox::warning(this, "Пустое имя пользователя", "Пожалуйста, введите имя пользователя");
+        QMessageBox::warning(this, "Пустое имя пользователя",
+                             "Пожалуйста, введите имя пользователя");
         return;
     }
 

@@ -14,5 +14,6 @@
         <file>icons/danger.png</file>
         <file>icons/question.png</file>
         <file>icons/wizard_new.png</file>
+        <file>translations/qtbase_ru.qm</file>
     </qresource>
 </RCC>
