@@ -21,7 +21,6 @@ MainWindow::MainWindow(QWidget *parent) :
 {
     ui->setupUi(this);
 
-    showMaximized();
     setWindowTitle("Offline-наставник. Тренажер v." + getVersion());
 
     OMKit::instance().init();
@@ -62,6 +61,7 @@ void MainWindow::loadSettings()
 
 void MainWindow::onLogin()
 {
+    showMaximized();
     setUserName(loginForm->userName());
     loadSolutions();
     sectionsForm->setUserName(loginForm->userName());

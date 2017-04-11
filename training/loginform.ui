@@ -60,25 +60,44 @@
     </layout>
    </item>
    <item>
-    <layout class="QHBoxLayout" name="horizontalLayout">
+    <layout class="QVBoxLayout" name="verticalLayout_2">
+     <property name="spacing">
+      <number>1</number>
+     </property>
      <item>
-      <widget class="QLabel" name="label">
+      <layout class="QHBoxLayout" name="horizontalLayout">
+       <item>
+        <widget class="QLabel" name="label">
+         <property name="font">
+          <font>
+           <pointsize>8</pointsize>
+          </font>
+         </property>
+         <property name="text">
+          <string>Имя пользователя:</string>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QLineEdit" name="nameEdit">
+         <property name="font">
+          <font>
+           <pointsize>8</pointsize>
+          </font>
+         </property>
+        </widget>
+       </item>
+      </layout>
+     </item>
+     <item>
+      <widget class="QLabel" name="label_3">
        <property name="font">
         <font>
-         <pointsize>8</pointsize>
+         <pointsize>7</pointsize>
         </font>
        </property>
        <property name="text">
-        <string>Имя пользователя:</string>
-       </property>
-      </widget>
-     </item>
-     <item>
-      <widget class="QLineEdit" name="nameEdit">
-       <property name="font">
-        <font>
-         <pointsize>8</pointsize>
-        </font>
+        <string>В именах разрешается использовать только кириллицу, пробельные символы и дефис</string>
        </property>
       </widget>
      </item>
