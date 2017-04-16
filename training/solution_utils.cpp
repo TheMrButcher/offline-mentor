@@ -74,9 +74,38 @@ bool setSolutionDir(SolutionPathType type, Solution& solution)
     return true;
 }
 
+void sync(SolutionPathType from, SolutionPathType to)
+{
+    auto solutionsCopy = solutions;
+    for (auto it = solutionsCopy.begin(); it != solutionsCopy.end(); ++it) {
+        const auto& srcKey = it.key();
+        if (srcKey.type != from)
+            continue;
+        const auto& srcSolution = it.value();
+        SolutionKey dstKey{ to, srcKey.sectionId };
+        Solution dstSolution;
+        if (solutions.contains(dstKey)) {
+            const auto& solutionInMap = solutions[dstKey];
+            if (solutionInMap.isEqual(srcSolution))
+                continue;
+            dstSolution = solutionInMap;
+        } else {
+            dstSolution = srcSolution.cloneHeader("");
+            if (!setSolutionDir(to, dstSolution))
+                continue;
+        }
+
+        if (!dstSolution.merge(srcSolution))
+            continue;
+        solutions[dstKey] = dstSolution;
+    }
+}
+
 void syncWithRemote()
 {
     isSynced = loadSolutionsFrom(SolutionPathType::Remote);
+    sync(SolutionPathType::Remote, SolutionPathType::Local);
+    sync(SolutionPathType::Local, SolutionPathType::Remote);
 }
 } // namespace
 
