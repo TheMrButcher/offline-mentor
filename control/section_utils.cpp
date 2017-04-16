@@ -5,12 +5,18 @@ namespace {
 QHash<QUuid, Section> sections;
 QList<Section> sortedSections;
 QStringList sectionNames;
+
+void clearSections()
+{
+    sections.clear();
+    sortedSections.clear();
+    sectionNames.clear();
+}
 }
 
 void loadSections()
 {
-    sections.clear();
-    sectionNames.clear();
+    clearSections();
 
     auto sectionList = Section::findAll(Settings::instance().sectionsPath);
     foreach (const auto& section, sectionList) {
