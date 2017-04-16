@@ -25,6 +25,7 @@ public:
     bool saveAnswer(Solution& solution);
     void connectWith(QListWidgetItem* item);
     bool isAnswered() const;
+    bool isModified() const;
 
 public slots:
     void onPageOpened();

@@ -25,14 +25,19 @@ public:
     bool isValid() const;
     bool isEqual(const Solution& other) const;
     bool merge(const Solution& other);
+    Answer& addAnswer(const Case& caseValue);
     Answer answer(const Case& caseValue) const;
     Solution cloneHeader(QString newDirPath) const;
+    int finalAnswersNum() const;
 
     QUuid sectionId;
     QString fileName;
     QString userName;
     QString dirPath;
     QList<Answer> answers;
+
+private:
+    int indexOfOldAnswer(const Answer& newAnswer) const;
 };
 
 #endif // SOLUTION_H

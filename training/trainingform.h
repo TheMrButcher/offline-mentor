@@ -24,6 +24,7 @@ public:
 
     bool setSection(const Section& section);
     QUuid sectionId() const;
+    bool tryClose();
 
 signals:
     void savedSolution(const Solution& solution);

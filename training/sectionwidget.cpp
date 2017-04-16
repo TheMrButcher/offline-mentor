@@ -39,9 +39,10 @@ void SectionWidget::updateProgress()
     if (!hasSolution(SolutionPathType::Local, section))
         return;
     const Solution& solution = peekSolution(SolutionPathType::Local, section);
+    int answersNum = solution.finalAnswersNum();
     if (solution.isValid()) {
-        ui->progressBar->setValue(solution.answers.size());
-        if (ui->progressBar->maximum() == solution.answers.size()) {
+        ui->progressBar->setValue(answersNum);
+        if (ui->progressBar->maximum() == answersNum) {
             ui->enterButton->setText("Просмотреть");
             ui->progressBar->setStyleSheet(
                     R"delim(

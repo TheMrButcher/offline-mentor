@@ -12,6 +12,7 @@ class MainWindow;
 class LoginForm;
 class SectionsForm;
 class Solution;
+class TrainingForm;
 
 class MainWindow : public QMainWindow
 {
@@ -29,8 +30,13 @@ private slots:
 
     void on_tabWidget_tabCloseRequested(int index);
 
+    // QWidget interface
+protected:
+    virtual void closeEvent(QCloseEvent* event) override;
+
 private:
     void select(QWidget* widget);
+    bool closePage(TrainingForm* trainingForm);
 
     Ui::MainWindow *ui;
     LoginForm* loginForm;

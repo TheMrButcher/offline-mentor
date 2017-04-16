@@ -18,10 +18,13 @@ public:
 
     static Answer fromJson(const QJsonObject& jsonObject);
     QJsonObject toJson() const;
-    bool isValid();
+    bool isValid() const;
+    void markAsFinal();
+    bool isFinal() const;
 
     QUuid caseId;
     QString fileName;
+    int version;
 };
 
 #endif // ANSWER_H

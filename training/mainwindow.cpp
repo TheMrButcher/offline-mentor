@@ -14,6 +14,7 @@
 #include <QMessageBox>
 #include <QTimer>
 #include <QDebug>
+#include <QCloseEvent>
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
@@ -100,7 +101,30 @@ void MainWindow::on_tabWidget_tabCloseRequested(int index)
     if (index == ui->tabWidget->indexOf(sectionsForm))
         return;
     auto widget = ui->tabWidget->widget(index);
-    auto id = ((TrainingForm*)widget)->sectionId();
+    closePage((TrainingForm*)widget);
+}
+
+void MainWindow::closeEvent(QCloseEvent* event)
+{
+    int sectionsFormIndex = ui->tabWidget->indexOf(sectionsForm);
+    for (int i = ui->tabWidget->count() - 1; i >= 0; --i) {
+        if (i == sectionsFormIndex)
+            continue;
+        auto trainingForm = (TrainingForm*)ui->tabWidget->widget(i);
+        if (!closePage(trainingForm)) {
+            event->ignore();
+            return;
+        }
+    }
+    event->accept();
+}
+
+bool MainWindow::closePage(TrainingForm* trainingForm)
+{
+    if (!trainingForm->tryClose())
+        return false;
+    auto id = trainingForm->sectionId();
     openedPages.remove(id);
-    delete widget;
+    delete trainingForm;
+    return true;
 }

@@ -1,6 +1,7 @@
 #include "solution.h"
 #include "section.h"
 #include "json_utils.h"
+#include "utils.h"
 #include <QDir>
 #include <QFileInfo>
 #include <QJsonArray>
@@ -95,31 +96,45 @@ bool Solution::isEqual(const Solution& other) const
 {
     if (answers.size() != other.answers.size())
         return false;
-    for (int i = 0; i < other.answers.size(); ++i)
-        if (answers[i].caseId != other.answers[i].caseId)
+    for (int i = 0; i < other.answers.size(); ++i) {
+        const auto& thisAnswer = answers[i];
+        const auto& otherAnswer = other.answers[i];
+        if (thisAnswer.caseId != otherAnswer.caseId
+            || thisAnswer.version != otherAnswer.version)
             return false;
+    }
     return true;
 }
 
 bool Solution::merge(const Solution& other)
 {
-    QSet<QUuid> answerIds;
-    foreach (const auto& answer, answers)
-        answerIds.insert(answer.caseId);
-
     auto thisDir = dir();
     auto otherDir = other.dir();
     foreach (const auto& answer, other.answers) {
-        const auto& id = answer.caseId;
-        if (answerIds.contains(id))
+        int index = indexOfOldAnswer(answer);
+        if (index == -1)
             continue;
-
-        if (!QFile::copy(otherDir.absoluteFilePath(answer.fileName),
-                         thisDir.absoluteFilePath(answer.fileName)))
+        if (!copyWithOverwrite(otherDir.absoluteFilePath(answer.fileName),
+                               thisDir.absoluteFilePath(answer.fileName)))
             return false;
-        answers.append(answer);
+        if (index == answers.size()) {
+            answers.append(answer);
+        } else {
+            answers[index] = answer;
+        }
     }
     return save();
+}
+
+Answer& Solution::addAnswer(const Case& caseValue)
+{
+    for (int i = 0; i < answers.size(); ++i) {
+        auto& answer = answers[i];
+        if (answer.caseId == caseValue.id)
+            return answer;
+    }
+    answers.append(Answer::createAnswer(caseValue));
+    return answers.back();
 }
 
 Answer Solution::answer(const Case& caseValue) const
@@ -138,4 +153,27 @@ Solution Solution::cloneHeader(QString newDirPath) const
     result.userName = userName;
     result.dirPath = newDirPath;
     return result;
+}
+
+int Solution::finalAnswersNum() const
+{
+    int result = 0;
+    foreach (const auto& answer, answers) {
+        if (answer.isFinal())
+            result++;
+    }
+    return result;
+}
+
+int Solution::indexOfOldAnswer(const Answer& newAnswer) const
+{
+    for (int i = 0; i < answers.size(); ++i) {
+        const auto& answer = answers[i];
+        if (answer.caseId == newAnswer.caseId) {
+            if (answer.version >= newAnswer.version)
+                return -1;
+            return i;
+        }
+    }
+    return answers.size();
 }

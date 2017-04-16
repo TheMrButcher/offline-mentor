@@ -120,6 +120,52 @@ QUuid TrainingForm::sectionId() const
     return section.id;
 }
 
+bool TrainingForm::tryClose()
+{
+    QSet<QuestionPage*> questionPages;
+    foreach (const auto& item, nodes) {
+        QWidget* widget = ui->stackedWidget->widget(item.questionPageId);
+        questionPages.insert((QuestionPage*)widget);
+    }
+
+    Solution solution = getSolution(SolutionPathType::Local, section);
+    Solution remoteSolution;
+    if (Settings::instance().hasRemoteSolutionsDir)
+        remoteSolution = getSolution(SolutionPathType::Remote, section);
+
+    bool askedAboutError = false;
+    bool changedSolution = false;
+    foreach (auto questionPage, questionPages) {
+        if (questionPage->isModified()) {
+            if (solution.isValid()
+                && questionPage->saveAnswer(solution)
+                && saveSolution(SolutionPathType::Local, solution)) {
+                changedSolution = true;
+            } else {
+                if (!askedAboutError) {
+                    askedAboutError = true;
+                    int answer = QMessageBox::question(
+                                this, "Ошибка при сохранении",
+                                "Не удалось сохранить ответы локально. "
+                                "Вы можете потерять введенные вами данные. "
+                                "Все равно закрыть раздел?");
+                    if (answer != QMessageBox::Yes)
+                        return false;
+                }
+            }
+
+            if (remoteSolution.isValid()) {
+                if (questionPage->saveAnswer(remoteSolution))
+                    saveSolution(SolutionPathType::Remote, remoteSolution);
+            }
+        }
+    }
+
+    if (changedSolution)
+        emit savedSolution(solution);
+    return true;
+}
+
 void TrainingForm::on_listWidget_itemSelectionChanged()
 {
     auto selectedItems = ui->listWidget->selectedItems();
@@ -237,7 +283,7 @@ bool TrainingForm::isSectionCompleted() const
     Solution solution = getSolution(SolutionPathType::Local, section);
     if (!solution.isValid())
         return false;
-    return solution.answers.size() == section.cases.size();
+    return solution.finalAnswersNum() == section.cases.size();
 }
 
 void TrainingForm::updateTotal()

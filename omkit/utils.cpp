@@ -55,3 +55,12 @@ bool copyDir(QDir srcDir, QDir dstDir)
     }
     return true;
 }
+
+bool copyWithOverwrite(QString srcPath, QString dstPath)
+{
+    if (QFile::exists(dstPath)) {
+        if (!QFile::remove(dstPath))
+            return false;
+    }
+    QFile::copy(srcPath, dstPath);
+}

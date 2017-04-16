@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>400</width>
+    <width>476</width>
     <height>300</height>
    </rect>
   </property>
@@ -74,7 +74,11 @@
         </widget>
        </item>
        <item>
-        <widget class="QTextEdit" name="answerEdit"/>
+        <widget class="QTextEdit" name="answerEdit">
+         <property name="acceptRichText">
+          <bool>false</bool>
+         </property>
+        </widget>
        </item>
       </layout>
      </widget>

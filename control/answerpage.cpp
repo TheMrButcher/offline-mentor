@@ -34,7 +34,7 @@ AnswerStatus AnswerPage::load(
     auto questionHTML = readHTML(sectionDir.absoluteFilePath(caseValue.questionFileName));
     if (questionHTML.isEmpty()) {
         hasErrors = true;
-        ui->questionBrowser->setPlainText("Произошла ошибка при загрузке текста вопроса");
+        ui->questionBrowser->setPlainText("Произошла ошибка при загрузке текста вопроса.");
     } else {
         ui->questionBrowser->setHtml(questionHTML);
     }
@@ -42,7 +42,8 @@ AnswerStatus AnswerPage::load(
     TextExplorer* answerExplorer = new TextExplorer(this);
     answerExplorer->setTitle("Ответ пользователя");
     Answer answer = solution.answer(caseValue);
-    if (answer.isValid()) {
+    bool hasFinalAnswer = answer.isFinal();
+    if (hasFinalAnswer) {
         if (!answerExplorer->load(
                 solution.dir().absoluteFilePath(answer.fileName))) {
             hasErrors = true;
@@ -64,7 +65,7 @@ AnswerStatus AnswerPage::load(
 
     if (hasErrors)
         return AnswerStatus::Error;
-    return answer.isValid() ? AnswerStatus::OK : AnswerStatus::Absent;
+    return hasFinalAnswer ? AnswerStatus::OK : AnswerStatus::Absent;
 }
 
 void AnswerPage::on_prevButton_clicked()

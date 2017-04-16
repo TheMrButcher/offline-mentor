@@ -8,7 +8,7 @@ namespace {
 QString makeStatistics(const Section& section, const Solution& solution)
 {
     int casesNum = section.cases.size();
-    int answersNum = solution.answers.size();
+    int answersNum = solution.finalAnswersNum();
     int percent = casesNum > answersNum
             ? static_cast<int>(100.0f * answersNum / casesNum + 0.5f)
             : 100;
@@ -131,7 +131,7 @@ void SolutionsForm::fillTable(const QList<Solution>& solutions)
         const auto& section = sections[solution.sectionId];
 
         QTableWidgetItem* statusItem = new QTableWidgetItem();
-        if (solution.answers.size() == section.cases.size()) {
+        if (solution.finalAnswersNum() == section.cases.size()) {
             statusItem->setIcon(QIcon(":/icons/answered.png"));
             statusItem->setText("Завершен");
         } else {

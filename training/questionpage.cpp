@@ -32,7 +32,8 @@ bool QuestionPage::loadCase(const Section& section, const Case& caseValue)
                         solutionDir.absoluteFilePath(answer.fileName));
             if (!answerHTML.isEmpty()) {
                 ui->answerEdit->setHtml(answerHTML);
-                hasFinalAnswer = true;
+                ui->answerEdit->document()->setModified(false);
+                hasFinalAnswer = answer.isFinal();
             }
         }
     }
@@ -46,13 +47,19 @@ bool QuestionPage::loadCase(const Section& section, const Case& caseValue)
 
 bool QuestionPage::saveAnswer(Solution& solution)
 {
-    Answer answer = Answer::createAnswer(caseValue);
-    QDir solutionDir = solution.dir();
+    Solution solutionCopy = solution;
+    Answer& answer = solutionCopy.addAnswer(caseValue);
+    if (hasFinalAnswer) {
+        answer.markAsFinal();
+    } else {
+        answer.version++;
+    }
+    QDir solutionDir = solutionCopy.dir();
     QString answerFileName = solutionDir.absoluteFilePath(answer.fileName);
     if (!writeHTML(answerFileName, ui->answerEdit->document()))
         return false;
-
-    solution.answers.append(answer);
+    solution = solutionCopy;
+    ui->answerEdit->document()->setModified(false);
     return true;
 }
 
@@ -64,6 +71,11 @@ void QuestionPage::connectWith(QListWidgetItem* item)
 bool QuestionPage::isAnswered() const
 {
     return hasFinalAnswer;
+}
+
+bool QuestionPage::isModified() const
+{
+    return ui->answerEdit->document()->isModified();
 }
 
 void QuestionPage::onPageOpened()
