@@ -32,11 +32,13 @@ private slots:
     void on_selectSectionButton_clicked();
     void on_selectUserButton_clicked();
     void on_openButton_clicked();
+    void on_tableWidget_doubleClicked(const QModelIndex &index);
 
 private:
     void fillTable(const QList<Solution>& solutions);
     void updateComboBox(QComboBox* comboBox, const QStringList& variants);
     void updateButtons();
+    void openSolutionInRow(int row);
 
     Ui::SolutionsForm *ui;
 };

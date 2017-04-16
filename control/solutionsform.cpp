@@ -108,15 +108,12 @@ void SolutionsForm::on_selectUserButton_clicked()
 void SolutionsForm::on_openButton_clicked()
 {
     int row = ui->tableWidget->selectionModel()->selectedRows()[0].row();
-    auto userName = ui->tableWidget->item(row, 2)->text();
-    auto sectionId = ui->tableWidget->item(row, 1)->data(Qt::UserRole).toUuid();
-    const auto& solution = getSolution(userName, sectionId);
-    if (!solution.isValid()) {
-        QMessageBox::warning(this, "Ошибка при открытии",
-                             "Невозможно открыть выбранное решение.");
-        return;
-    }
-    emit requestedOpen(getSolution(userName, sectionId));
+    openSolutionInRow(row);
+}
+
+void SolutionsForm::on_tableWidget_doubleClicked(const QModelIndex &index)
+{
+    openSolutionInRow(index.row());
 }
 
 void SolutionsForm::fillTable(const QList<Solution>& solutions)
@@ -186,4 +183,17 @@ void SolutionsForm::updateButtons()
     ui->selectSectionButton->setEnabled(isRowSelected);
     ui->selectUserButton->setEnabled(isRowSelected);
     ui->openButton->setEnabled(isRowSelected);
+}
+
+void SolutionsForm::openSolutionInRow(int row)
+{
+    auto userName = ui->tableWidget->item(row, 2)->text();
+    auto sectionId = ui->tableWidget->item(row, 1)->data(Qt::UserRole).toUuid();
+    const auto& solution = getSolution(userName, sectionId);
+    if (!solution.isValid()) {
+        QMessageBox::warning(this, "Ошибка при открытии",
+                             "Невозможно открыть выбранное решение.");
+        return;
+    }
+    emit requestedOpen(getSolution(userName, sectionId));
 }
