@@ -104,8 +104,10 @@ void sync(SolutionPathType from, SolutionPathType to)
 void syncWithRemote()
 {
     isSynced = loadSolutionsFrom(SolutionPathType::Remote);
-    sync(SolutionPathType::Remote, SolutionPathType::Local);
-    sync(SolutionPathType::Local, SolutionPathType::Remote);
+    if (isSynced) {
+        sync(SolutionPathType::Remote, SolutionPathType::Local);
+        sync(SolutionPathType::Local, SolutionPathType::Remote);
+    }
 }
 } // namespace
 

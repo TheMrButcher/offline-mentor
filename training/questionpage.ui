@@ -52,7 +52,14 @@
         </widget>
        </item>
        <item>
-        <widget class="QTextBrowser" name="questionBrowser"/>
+        <widget class="QTextBrowser" name="questionBrowser">
+         <property name="font">
+          <font>
+           <family>Times New Roman</family>
+           <pointsize>14</pointsize>
+          </font>
+         </property>
+        </widget>
        </item>
       </layout>
      </widget>
@@ -75,6 +82,12 @@
        </item>
        <item>
         <widget class="QTextEdit" name="answerEdit">
+         <property name="font">
+          <font>
+           <family>Times New Roman</family>
+           <pointsize>14</pointsize>
+          </font>
+         </property>
          <property name="acceptRichText">
           <bool>false</bool>
          </property>
@@ -123,6 +136,11 @@
          <height>0</height>
         </size>
        </property>
+       <property name="font">
+        <font>
+         <pointsize>10</pointsize>
+        </font>
+       </property>
        <property name="text">
         <string>Ввести ответ</string>
        </property>
@@ -139,6 +157,11 @@
          <width>150</width>
          <height>0</height>
         </size>
+       </property>
+       <property name="font">
+        <font>
+         <pointsize>10</pointsize>
+        </font>
        </property>
        <property name="text">
         <string>К ответу наставника</string>

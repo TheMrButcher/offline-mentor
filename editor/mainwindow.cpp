@@ -40,7 +40,7 @@ MainWindow::MainWindow(QWidget *parent) :
     fontSizeComboBox = new QComboBox(this);
     foreach (int fontSize, QFontDatabase::standardSizes())
         fontSizeComboBox->addItem(QString::number(fontSize));
-    fontSizeComboBox->setCurrentText("12");
+    fontSizeComboBox->setCurrentText("14");
     fontSizeComboBox->setEnabled(false);
     ui->toolBar->insertWidget(ui->boldAction, fontSizeComboBox);
 

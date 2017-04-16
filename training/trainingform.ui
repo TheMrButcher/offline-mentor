@@ -63,7 +63,13 @@
         <number>0</number>
        </property>
        <item>
-        <widget class="QListWidget" name="listWidget"/>
+        <widget class="QListWidget" name="listWidget">
+         <property name="font">
+          <font>
+           <pointsize>10</pointsize>
+          </font>
+         </property>
+        </widget>
        </item>
       </layout>
      </widget>
@@ -87,6 +93,11 @@
         </item>
         <item>
          <widget class="QLabel" name="label">
+          <property name="font">
+           <font>
+            <pointsize>10</pointsize>
+           </font>
+          </property>
           <property name="text">
            <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Вас приветствует программа &amp;quot;Тренажер&amp;quot; из комплекса &amp;quot;Offline-наставник&amp;quot;!&lt;/p&gt;&lt;p&gt;Вы начали прохождение раздела, состоящего из нескольких кейсов. Кейс - это подробно описанная ситуация, в которой может оказаться педагог. В каждом кейсе вам будет предложено ответить на несколько вопросов, связанных с описанной ситуацией. Представьте, что бы вы сделали в данной ситуации.&lt;/p&gt;&lt;p&gt;Опубликовать свой ответ вы сможете при помощи кнопки &amp;quot;Ввести ответ&amp;quot;. Учтите, что после нажатия на данную кнопку &lt;span style=&quot; font-weight:600;&quot;&gt;ответ больше нельзя будет изменить&lt;/span&gt;. После ввода ответа вам будет показан комментарий наставника - вариант ответов на вопросы, который предлагается составителем кейса.&lt;/p&gt;&lt;p&gt;Кейсы можно проходить &lt;span style=&quot; font-weight:600;&quot;&gt;в любом порядке&lt;/span&gt;, но чтобы закончить раздел, необходимо ввести ответ во всех кейсах. Вы можете переключаться между кейсами при помощи списка слева.&lt;/p&gt;&lt;p&gt;После завершения раздела появятся &amp;quot;Итоги раздела&amp;quot;, в которых будет указан статус отправки ваших ответов, а также представлено послесловие от составителя, список литературы и т.п. Если это возможно, &lt;span style=&quot; font-weight:600;&quot;&gt;программа отправит ваши ответы организатору обучения&lt;/span&gt; для анализа и, возможно, дальнейшего обсуждения с наставником. Если при отправке ответов произошла ошибка, либо требуется отправка ответов вручную, на странице &amp;quot;Итоги раздела&amp;quot; будет соответствующее сообщение об этом.&lt;/p&gt;&lt;p&gt;Если у вас возникли какие-то вопросы по использованию программы, обратитесь к организатору обучения.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
           </property>
@@ -120,15 +131,20 @@
             </property>
             <property name="minimumSize">
              <size>
-              <width>150</width>
+              <width>200</width>
               <height>0</height>
              </size>
             </property>
             <property name="maximumSize">
              <size>
-              <width>150</width>
+              <width>200</width>
               <height>16777215</height>
              </size>
+            </property>
+            <property name="font">
+             <font>
+              <pointsize>10</pointsize>
+             </font>
             </property>
             <property name="text">
              <string>Перейти к первому кейсу</string>

@@ -16,6 +16,8 @@ QRegExp imgRegExp =
 RichTextEdit::RichTextEdit(QWidget* parent)
     : QTextEdit(parent)
 {
+    setFont(QFont("Times New Roman", 14));
+
     connect(this, SIGNAL(textChanged()), this, SLOT(updateCursor()));
 }
 
@@ -27,7 +29,7 @@ void RichTextEdit::clearFormat()
     format.setFontStrikeOut(false);
     format.setFontItalic(false);
     format.setFontFamily("Times New Roman");
-    format.setFontPointSize(12);
+    format.setFontPointSize(14);
     format.setFontLetterSpacing(100);
     format.clearBackground();
     format.clearForeground();

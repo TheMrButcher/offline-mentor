@@ -43,6 +43,11 @@
    </item>
    <item>
     <widget class="QLabel" name="label">
+     <property name="font">
+      <font>
+       <pointsize>10</pointsize>
+      </font>
+     </property>
      <property name="text">
       <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Поздравляем, вы завершили раздел! Вы можете просмотреть ваши ответы, а также комментарии наставника, воспользовавшись списком слева.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
      </property>
@@ -100,6 +105,11 @@
        </item>
        <item>
         <widget class="QLabel" name="label_2">
+         <property name="font">
+          <font>
+           <pointsize>10</pointsize>
+          </font>
+         </property>
          <property name="text">
           <string>Ваши ответы были успешно переданы администратору.</string>
          </property>
@@ -218,7 +228,14 @@
      </property>
      <layout class="QVBoxLayout" name="totalLayout">
       <item>
-       <widget class="QTextBrowser" name="totalBrowser"/>
+       <widget class="QTextBrowser" name="totalBrowser">
+        <property name="font">
+         <font>
+          <family>Times New Roman</family>
+          <pointsize>14</pointsize>
+         </font>
+        </property>
+       </widget>
       </item>
      </layout>
     </widget>

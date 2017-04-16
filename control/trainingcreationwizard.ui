@@ -22,6 +22,11 @@
     <height>300</height>
    </size>
   </property>
+  <property name="font">
+   <font>
+    <pointsize>10</pointsize>
+   </font>
+  </property>
   <property name="windowTitle">
    <string>Мастер настройки тренажера</string>
   </property>
@@ -309,7 +314,13 @@
         </widget>
        </item>
        <item>
-        <widget class="QListWidget" name="sectionsListWidget"/>
+        <widget class="QListWidget" name="sectionsListWidget">
+         <property name="font">
+          <font>
+           <pointsize>10</pointsize>
+          </font>
+         </property>
+        </widget>
        </item>
       </layout>
      </widget>
