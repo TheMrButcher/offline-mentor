@@ -12,6 +12,9 @@ SettingsDialog::SettingsDialog(QWidget *parent) :
     ui(new Ui::SettingsDialog)
 {
     ui->setupUi(this);
+
+    connect(ui->startWizardButton, SIGNAL(clicked()),
+            this, SIGNAL(requestedSettingsWizard()));
 }
 
 SettingsDialog::~SettingsDialog()

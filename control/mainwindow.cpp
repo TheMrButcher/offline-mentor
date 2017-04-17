@@ -5,6 +5,7 @@
 #include "trainingcreationwizard.h"
 #include "section_utils.h"
 #include "settings.h"
+#include "settingswizard.h"
 #include "ui_mainwindow.h"
 #include <omkit/omkit.h>
 #include <omkit/utils.h>
@@ -27,6 +28,8 @@ MainWindow::MainWindow(QWidget *parent) :
 
     settingsDialog = new SettingsDialog(this);
     settingsDialog->hide();
+    connect(settingsDialog, SIGNAL(requestedSettingsWizard()),
+            this, SLOT(execSettingsWizard()));
 
     solutionsForm = new SolutionsForm(this);
     int tabIndex = ui->tabWidget->addTab(solutionsForm, "Сводная таблица");
@@ -54,6 +57,10 @@ void MainWindow::loadSettings()
                              "Не удалось прочесть файл с настройками. "
                              "Возможно, приложение установлено не полностью. "
                              "Приложение может работать некорректно.");
+
+    if (settings.isFirstUsage)
+        execSettingsWizard();
+
     solutionsForm->reload();
 }
 
@@ -66,6 +73,15 @@ void MainWindow::openSolution(const Solution& solution)
             .arg(trim(solution.userName, 10));
     int tabIndex = ui->tabWidget->addTab(solutionExplorer, tabTitle);
     ui->tabWidget->setCurrentIndex(tabIndex);
+}
+
+void MainWindow::execSettingsWizard()
+{
+    if (!settingsWizard)
+        settingsWizard = new SettingsWizard(this);
+    settingsWizard->restart();
+    settingsWizard->exec();
+    settingsDialog->initUI();
 }
 
 void MainWindow::on_settingsAction_triggered()

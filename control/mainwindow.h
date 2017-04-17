@@ -11,6 +11,7 @@ class Solution;
 class SettingsDialog;
 class SolutionsForm;
 class TrainingCreationWizard;
+class SettingsWizard;
 
 class MainWindow : public QMainWindow
 {
@@ -23,9 +24,9 @@ public:
 private slots:
     void loadSettings();
     void openSolution(const Solution& solution);
+    void execSettingsWizard();
     void on_settingsAction_triggered();
     void on_tabWidget_tabCloseRequested(int index);
-
     void on_trainingCreationWizardAction_triggered();
 
 private:
@@ -34,6 +35,7 @@ private:
     SettingsDialog* settingsDialog;
     SolutionsForm* solutionsForm;
     TrainingCreationWizard* trainingCreationWizard;
+    SettingsWizard* settingsWizard = nullptr;
 };
 
 #endif // MAINWINDOW_H

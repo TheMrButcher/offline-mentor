@@ -20,6 +20,7 @@ bool Settings::read()
     sectionsPath = rootObj["sectionsPath"].toString(sectionsPath);
     solutionsPath = rootObj["solutionsPath"].toString(solutionsPath);
     lastPath = rootObj["lastPath"].toString(lastPath);
+    isFirstUsage = rootObj["isFirstUsage"].toBool(false);
     return true;
 }
 
@@ -29,6 +30,7 @@ bool Settings::write() const
     rootObj["sectionsPath"] = sectionsPath;
     rootObj["solutionsPath"] = solutionsPath;
     rootObj["lastPath"] = lastPath;
+    rootObj["isFirstUsage"] = false;
     return writeJSON(SETTINGS_FILE_NAME, rootObj);
 }
 
@@ -60,4 +62,5 @@ void Settings::updateLastPath(QString newPath)
 }
 
 Settings::Settings()
+    : isFirstUsage(false)
 {}

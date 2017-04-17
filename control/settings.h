@@ -17,6 +17,7 @@ public:
     QString sectionsPath;
     QString solutionsPath;
     QString lastPath;
+    bool isFirstUsage;
 
 private:
     Settings();

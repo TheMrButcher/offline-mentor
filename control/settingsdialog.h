@@ -17,12 +17,14 @@ public:
 
     void initUI();
 
+signals:
+    void requestedSettingsWizard();
+
 public slots:
     virtual void accept() override;
 
 private slots:
     void on_chooseSectionsPathButton_clicked();
-
     void on_chooseSolutionsPathButton_clicked();
 
 private:
