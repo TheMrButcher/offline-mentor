@@ -42,13 +42,45 @@
    <addaction name="trainingCreationWizardAction"/>
    <addaction name="settingsAction"/>
   </widget>
+  <widget class="QMenuBar" name="menuBar">
+   <property name="geometry">
+    <rect>
+     <x>0</x>
+     <y>0</y>
+     <width>600</width>
+     <height>20</height>
+    </rect>
+   </property>
+   <widget class="QMenu" name="menu">
+    <property name="title">
+     <string>&amp;Файл</string>
+    </property>
+    <addaction name="exitAction"/>
+   </widget>
+   <widget class="QMenu" name="menu_2">
+    <property name="title">
+     <string>&amp;Инструменты</string>
+    </property>
+    <addaction name="trainingCreationWizardAction"/>
+    <addaction name="settingsAction"/>
+   </widget>
+   <widget class="QMenu" name="menu_3">
+    <property name="title">
+     <string>&amp;Справка</string>
+    </property>
+    <addaction name="aboutAction"/>
+   </widget>
+   <addaction name="menu"/>
+   <addaction name="menu_2"/>
+   <addaction name="menu_3"/>
+  </widget>
   <action name="settingsAction">
    <property name="icon">
-    <iconset resource="resources.qrc">
+    <iconset>
      <normaloff>:/icons/settings.png</normaloff>:/icons/settings.png</iconset>
    </property>
    <property name="text">
-    <string>Настройки</string>
+    <string>&amp;Настройки</string>
    </property>
    <property name="toolTip">
     <string>Настройки</string>
@@ -56,11 +88,11 @@
   </action>
   <action name="trainingCreationWizardAction">
    <property name="icon">
-    <iconset resource="resources.qrc">
+    <iconset>
      <normaloff>:/icons/wizard_new.png</normaloff>:/icons/wizard_new.png</iconset>
    </property>
    <property name="text">
-    <string>Мастер настройки тренажера</string>
+    <string>Мастер настройки &amp;тренажера</string>
    </property>
    <property name="toolTip">
     <string>Мастер настройки тренажера</string>
@@ -69,10 +101,27 @@
     <string>Ctrl+N</string>
    </property>
   </action>
+  <action name="exitAction">
+   <property name="text">
+    <string>В&amp;ыход</string>
+   </property>
+   <property name="toolTip">
+    <string>Выход</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+Q</string>
+   </property>
+  </action>
+  <action name="aboutAction">
+   <property name="text">
+    <string>&amp;О программе</string>
+   </property>
+   <property name="toolTip">
+    <string>О программе</string>
+   </property>
+  </action>
  </widget>
  <layoutdefault spacing="6" margin="11"/>
- <resources>
-  <include location="resources.qrc"/>
- </resources>
+ <resources/>
  <connections/>
 </ui>

@@ -12,6 +12,7 @@ class SettingsDialog;
 class SolutionsForm;
 class TrainingCreationWizard;
 class SettingsWizard;
+class AboutDialog;
 
 class MainWindow : public QMainWindow
 {
@@ -28,6 +29,7 @@ private slots:
     void on_settingsAction_triggered();
     void on_tabWidget_tabCloseRequested(int index);
     void on_trainingCreationWizardAction_triggered();
+    void on_aboutAction_triggered();
 
 private:
     Ui::MainWindow *ui;
@@ -36,6 +38,7 @@ private:
     SolutionsForm* solutionsForm;
     TrainingCreationWizard* trainingCreationWizard;
     SettingsWizard* settingsWizard = nullptr;
+    AboutDialog* aboutDialog = nullptr;
 };
 
 #endif // MAINWINDOW_H

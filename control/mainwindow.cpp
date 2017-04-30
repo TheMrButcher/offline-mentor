@@ -6,6 +6,7 @@
 #include "section_utils.h"
 #include "settings.h"
 #include "settingswizard.h"
+#include "aboutdialog.h"
 #include "ui_mainwindow.h"
 #include <omkit/omkit.h>
 #include <omkit/utils.h>
@@ -40,6 +41,8 @@ MainWindow::MainWindow(QWidget *parent) :
 
     trainingCreationWizard = new TrainingCreationWizard(this);
     trainingCreationWizard->hide();
+
+    connect(ui->exitAction, SIGNAL(triggered()), this, SLOT(close()));
 
     QTimer::singleShot(0, this, SLOT(loadSettings()));
 }
@@ -101,4 +104,11 @@ void MainWindow::on_trainingCreationWizardAction_triggered()
 {
     trainingCreationWizard->restart();
     trainingCreationWizard->exec();
+}
+
+void MainWindow::on_aboutAction_triggered()
+{
+    if (!aboutDialog)
+        aboutDialog = new AboutDialog(this);
+    aboutDialog->exec();
 }
