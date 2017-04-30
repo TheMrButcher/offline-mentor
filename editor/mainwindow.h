@@ -14,6 +14,7 @@ class CreateSectionDialog;
 class AboutDialog;
 class SectionEditForm;
 class RichTextEdit;
+class ExportDialog;
 class QFontComboBox;
 class QComboBox;
 
@@ -48,6 +49,7 @@ private slots:
     void showAbout();
     void loadSettings();
     void openSection(const Section& section);
+    void showExportDialog();
     void onSectionSaved(const Section& section);
     void onCaseInFocus(bool inFocus);
     void onTextEditInFocus(bool inFocus);
@@ -85,6 +87,7 @@ private:
     SectionsForm* sectionsForm;
     CreateSectionDialog* createSectionDialog = nullptr;
     AboutDialog* aboutDialog = nullptr;
+    ExportDialog* exportDialog = nullptr;
     QHash<QUuid, QWidget*> openedPages;
 };
 

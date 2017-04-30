@@ -108,6 +108,7 @@ void TrainingCreationWizard::on_nextButton_clicked()
             }
             if (saveDirectory(tempDir.path())) {
                 if (compress(tempDir.path(), path)) {
+                    showInExplorer(path);
                     accept();
                     return;
                 }
@@ -120,8 +121,10 @@ void TrainingCreationWizard::on_nextButton_clicked()
         if (ui->folderOption->isChecked()) {
             QString path = ui->pathEdit->text();
             Settings::instance().updateLastPath(path);
-            if (saveDirectory(path))
+            if (saveDirectory(path)) {
+                showInExplorer(path);
                 accept();
+            }
             return;
         }
     }
@@ -135,7 +138,6 @@ void TrainingCreationWizard::on_choosePathButton_clicked()
         if (!path.isEmpty()) {
             ui->pathEdit->setText(path);
             Settings::instance().updateLastPath(QFileInfo(path).absolutePath());
-            showInExplorer(path);
         }
     }
 
@@ -145,7 +147,6 @@ void TrainingCreationWizard::on_choosePathButton_clicked()
         if (!path.isEmpty()) {
             ui->pathEdit->setText(path);
             Settings::instance().updateLastPath(path);
-            showInExplorer(path);
         }
     }
 }

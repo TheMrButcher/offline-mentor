@@ -31,5 +31,6 @@
         <file>icons/edit.png</file>
         <file>icons/add_case.png</file>
         <file>icons/remove_case.png</file>
+        <file>icons/section_big.png</file>
     </qresource>
 </RCC>

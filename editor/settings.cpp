@@ -61,6 +61,7 @@ void Settings::updateLastDirectoryPath(QString path)
         lastDirectoryPath = fileInfo.absoluteFilePath();
     else
         lastDirectoryPath = fileInfo.absolutePath();
+    write();
 }
 
 Settings::Settings()

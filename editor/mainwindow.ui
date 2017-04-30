@@ -76,7 +76,7 @@
      <x>0</x>
      <y>0</y>
      <width>800</width>
-     <height>22</height>
+     <height>20</height>
     </rect>
    </property>
    <widget class="QMenu" name="menu">
@@ -86,6 +86,7 @@
     <addaction name="createAction"/>
     <addaction name="openAction"/>
     <addaction name="saveAction"/>
+    <addaction name="exportSectionsAction"/>
     <addaction name="exitAction"/>
    </widget>
    <widget class="QMenu" name="menu_2">
@@ -517,6 +518,18 @@
    </property>
    <property name="toolTip">
     <string>Удалить кейс</string>
+   </property>
+  </action>
+  <action name="exportSectionsAction">
+   <property name="icon">
+    <iconset resource="resources.qrc">
+     <normaloff>:/icons/section_big.png</normaloff>:/icons/section_big.png</iconset>
+   </property>
+   <property name="text">
+    <string>&amp;Экспорт разделов</string>
+   </property>
+   <property name="toolTip">
+    <string>Экспорт разделов</string>
    </property>
   </action>
  </widget>

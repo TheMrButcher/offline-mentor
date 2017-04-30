@@ -28,7 +28,8 @@ SOURCES += main.cpp\
     texteditorpage.cpp \
     section_utils.cpp \
     aboutdialog.cpp \
-    richtextedit.cpp
+    richtextedit.cpp \
+    exportdialog.cpp
 
 HEADERS  += mainwindow.h \
     sectionsform.h \
@@ -40,7 +41,8 @@ HEADERS  += mainwindow.h \
     texteditorpage.h \
     section_utils.h \
     aboutdialog.h \
-    richtextedit.h
+    richtextedit.h \
+    exportdialog.h
 
 FORMS    += mainwindow.ui \
     sectionsform.ui \
@@ -49,7 +51,8 @@ FORMS    += mainwindow.ui \
     sectioneditform.ui \
     casepage.ui \
     texteditorpage.ui \
-    aboutdialog.ui
+    aboutdialog.ui \
+    exportdialog.ui
 
 RESOURCES += \
     resources.qrc

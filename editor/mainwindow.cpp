@@ -6,6 +6,7 @@
 #include "settings.h"
 #include "section_utils.h"
 #include "richtextedit.h"
+#include "exportdialog.h"
 #include "ui_mainwindow.h"
 
 #include <omkit/utils.h>
@@ -79,6 +80,7 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(ui->redoAction, SIGNAL(triggered()), this, SLOT(redo()));
     connect(ui->addCaseAction, SIGNAL(triggered()), this, SLOT(addCase()));
     connect(ui->removeCaseAction, SIGNAL(triggered()), this, SLOT(removeCase()));
+    connect(ui->exportSectionsAction, SIGNAL(triggered()), this, SLOT(showExportDialog()));
 
     QTimer::singleShot(0, this, SLOT(loadSettings()));
 }
@@ -360,6 +362,14 @@ void MainWindow::openSection(const Section& section)
             this, SLOT(onHistoryAvailable(bool)));
     connect(sectionEditForm, SIGNAL(modificationChanged(bool)),
             this, SLOT(onModificationChanged(bool)));
+}
+
+void MainWindow::showExportDialog()
+{
+    if (!exportDialog)
+        exportDialog = new ExportDialog(this);
+    exportDialog->initUI();
+    exportDialog->exec();
 }
 
 void MainWindow::onSectionSaved(const Section& section)
