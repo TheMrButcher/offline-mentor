@@ -5,6 +5,8 @@
 #include "solution_utils.h"
 #include "settings.h"
 #include "ui_trainingform.h"
+#include <omkit/zip_utils.h>
+#include <omkit/ui_utils.h>
 #include <QMessageBox>
 
 TrainingForm::TrainingForm(QWidget *parent) :
@@ -130,7 +132,7 @@ bool TrainingForm::tryClose()
 
     Solution solution = getSolution(SolutionPathType::Local, section);
     Solution remoteSolution;
-    if (Settings::instance().hasRemoteSolutionsDir)
+    if (Settings::instance().answerType() == TrainingAnswerType::RemoteDir)
         remoteSolution = getSolution(SolutionPathType::Remote, section);
 
     bool askedAboutError = false;
@@ -208,7 +210,7 @@ void TrainingForm::onAnswerEntered(QListWidgetItem* caseItem)
                              "Возможно, приложение настроено неверно.");
     }
 
-    if (Settings::instance().hasRemoteSolutionsDir) {
+    if (Settings::instance().answerType() == TrainingAnswerType::RemoteDir) {
         solution = getSolution(SolutionPathType::Remote, section);
         if (!solution.isValid()
             || !questionPage->saveAnswer(solution)
@@ -271,6 +273,26 @@ void TrainingForm::transferSolution()
     }
 }
 
+void TrainingForm::createSolutionArchive(QString path)
+{
+    if (!isSectionCompleted()) {
+        QMessageBox::warning(this, "Ошибка при сохранении",
+                             "Ответы по разделу не полны или повреждены. "
+                             "Невозможно сохранить архив.");
+        return;
+    }
+
+    Solution solution = getSolution(SolutionPathType::Local, section);
+    if (!compress(solution.dirPath, path)) {
+        QMessageBox::warning(this, "Ошибка при сохранении",
+                             "При сохранении архива произошла ошибка. "
+                             "Невозможно сохранить архив.");
+        return;
+    }
+
+    showInExplorer(path);
+}
+
 void TrainingForm::openQuestionPage(int pageId)
 {
     QuestionPage* page = (QuestionPage*)ui->stackedWidget->widget(pageId);
@@ -293,6 +315,8 @@ void TrainingForm::updateTotal()
         totalPage->load(section);
         ui->stackedWidget->addWidget(totalPage);
         connect(totalPage, SIGNAL(requestedTransfer()), this, SLOT(transferSolution()));
+        connect(totalPage, SIGNAL(requestedArchiveSave(QString)),
+                this, SLOT(createSolutionArchive(QString)));
     }
 
     if (!totalItem) {
@@ -301,7 +325,7 @@ void TrainingForm::updateTotal()
         totalItem->setIcon(QIcon(":/icons/total.png"));
     }
 
-    if (Settings::instance().hasRemoteSolutionsDir) {
+    if (Settings::instance().answerType() == TrainingAnswerType::RemoteDir) {
         Solution localSolution = getSolution(SolutionPathType::Local, section);
         Solution remoteSolution = getSolution(SolutionPathType::Remote, section);
         if (remoteSolution.isValid()) {

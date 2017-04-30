@@ -1,7 +1,9 @@
 #include "totalpage.h"
+#include "user_utils.h"
 #include "ui_totalpage.h"
 #include <omkit/section.h>
 #include <omkit/html_utils.h>
+#include <QFileDialog>
 
 TotalPage::TotalPage(QWidget *parent) :
     QWidget(parent),
@@ -19,6 +21,7 @@ TotalPage::~TotalPage()
 
 void TotalPage::load(const Section& section)
 {
+    sectionPath = section.path;
     if (section.totalFileName.isEmpty()) {
         ui->totalWidget->hide();
         return;
@@ -47,5 +50,15 @@ void TotalPage::setTransferError()
 
 void TotalPage::setUnknownState()
 {
-    ui->stackedWidget->setCurrentWidget(ui->unknownStateWidget);
+    ui->stackedWidget->setCurrentWidget(ui->createArchiveWidget);
+}
+
+void TotalPage::on_archiveButton_clicked()
+{
+    QString zipArchiveName = userName() + " " + QFileInfo(sectionPath).baseName() + ".zip";
+    QString startPath = QDir::homePath() + "/" + zipArchiveName;
+    QString path = QFileDialog::getSaveFileName(
+                this, "Путь к архиву", startPath, "Архив (*.zip)");
+    if (!path.isEmpty())
+        emit requestedArchiveSave(path);
 }

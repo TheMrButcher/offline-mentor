@@ -4,6 +4,7 @@
 
 TrainingSettings::TrainingSettings(QString path)
     : path(path)
+    , hasRemoteSolutionsDir(false)
 {}
 
 bool TrainingSettings::read()
@@ -35,4 +36,11 @@ QString TrainingSettings::localDataPath() const
         if (!dir.mkdir("localData"))
             return QString();
     return dir.absoluteFilePath("localData");
+}
+
+TrainingAnswerType TrainingSettings::answerType() const
+{
+    return hasRemoteSolutionsDir
+            ? TrainingAnswerType::RemoteDir
+            : TrainingAnswerType::ZipArchive;
 }

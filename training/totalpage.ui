@@ -184,7 +184,7 @@
        </item>
       </layout>
      </widget>
-     <widget class="QWidget" name="unknownStateWidget">
+     <widget class="QWidget" name="createArchiveWidget">
       <layout class="QHBoxLayout" name="horizontalLayout_3">
        <property name="leftMargin">
         <number>0</number>
@@ -199,6 +199,37 @@
         <number>0</number>
        </property>
        <item>
+        <widget class="QLabel" name="label_8">
+         <property name="sizePolicy">
+          <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+           <horstretch>0</horstretch>
+           <verstretch>0</verstretch>
+          </sizepolicy>
+         </property>
+         <property name="minimumSize">
+          <size>
+           <width>16</width>
+           <height>16</height>
+          </size>
+         </property>
+         <property name="maximumSize">
+          <size>
+           <width>16</width>
+           <height>16</height>
+          </size>
+         </property>
+         <property name="text">
+          <string/>
+         </property>
+         <property name="pixmap">
+          <pixmap resource="resources.qrc">:/icons/archive.png</pixmap>
+         </property>
+         <property name="scaledContents">
+          <bool>true</bool>
+         </property>
+        </widget>
+       </item>
+       <item>
         <widget class="QLabel" name="label_7">
          <property name="sizePolicy">
           <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
@@ -207,10 +238,23 @@
           </sizepolicy>
          </property>
          <property name="text">
-          <string>Невозможно передать ответы на сервер, так как не настроен способ передачи.</string>
+          <string>Вы можете создать архив со всеми вашими ответами, чтобы затем передать его организатору обучения. Для этого нажмите на кнопку &quot;Создать архив&quot; и выберите, куда его сохранить.</string>
          </property>
          <property name="wordWrap">
           <bool>true</bool>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QPushButton" name="archiveButton">
+         <property name="sizePolicy">
+          <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+           <horstretch>0</horstretch>
+           <verstretch>0</verstretch>
+          </sizepolicy>
+         </property>
+         <property name="text">
+          <string>Создать архив</string>
          </property>
         </widget>
        </item>

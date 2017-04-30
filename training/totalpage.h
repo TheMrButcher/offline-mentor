@@ -25,8 +25,13 @@ public:
 
 signals:
     void requestedTransfer();
+    void requestedArchiveSave(QString path);
+
+private slots:
+    void on_archiveButton_clicked();
 
 private:
+    QString sectionPath;
     Ui::TotalPage *ui;
 };
 

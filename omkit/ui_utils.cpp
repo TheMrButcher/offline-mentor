@@ -1,6 +1,8 @@
 #include "ui_utils.h"
 #include <QMessageBox>
 #include <QDir>
+#include <QFileInfo>
+#include <QProcessEnvironment>
 
 bool createDirDialog(QWidget* parent, QString path, QString uiDirName)
 {
@@ -16,4 +18,14 @@ bool createDirDialog(QWidget* parent, QString path, QString uiDirName)
         return false;
     }
     return true;
+}
+
+bool showInExplorer(QString path)
+{
+    QString param;
+    if (!QFileInfo(path).isDir())
+        param = QLatin1String("/select,");
+    param += QDir::toNativeSeparators(path);
+    QString command = "explorer.exe " + param;
+    return QProcess::startDetached(command);
 }

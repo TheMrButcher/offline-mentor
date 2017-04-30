@@ -4,6 +4,11 @@
 #include "omkit_global.h"
 #include <QString>
 
+enum class TrainingAnswerType {
+    ZipArchive,
+    RemoteDir
+};
+
 class OMKITSHARED_EXPORT TrainingSettings
 {
 public:
@@ -12,11 +17,14 @@ public:
     bool read();
     bool write() const;
     QString localDataPath() const;
+    TrainingAnswerType answerType() const;
 
     QString path;
     QString lastLogin;
     QString sectionsPath;
     QString solutionsPath;
+
+private:
     bool hasRemoteSolutionsDir;
 };
 

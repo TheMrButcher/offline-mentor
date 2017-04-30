@@ -37,6 +37,7 @@ private slots:
     void backToQuestion(QListWidgetItem* caseItem);
     void next(QListWidgetItem* caseItem);
     void transferSolution();
+    void createSolutionArchive(QString path);
 
 private:
     void openQuestionPage(int pageId);

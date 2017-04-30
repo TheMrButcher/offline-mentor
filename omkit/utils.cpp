@@ -62,5 +62,5 @@ bool copyWithOverwrite(QString srcPath, QString dstPath)
         if (!QFile::remove(dstPath))
             return false;
     }
-    QFile::copy(srcPath, dstPath);
+    return QFile::copy(srcPath, dstPath);
 }

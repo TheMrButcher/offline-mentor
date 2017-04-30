@@ -10,5 +10,6 @@
         <file>icons/warning.png</file>
         <file>icons/info.png</file>
         <file>translations/qtbase_ru.qm</file>
+        <file>icons/archive.png</file>
     </qresource>
 </RCC>
