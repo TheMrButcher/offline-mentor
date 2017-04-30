@@ -16,5 +16,6 @@
         <file>icons/wizard_new.png</file>
         <file>translations/qtbase_ru.qm</file>
         <file>icons/wizard_settings.png</file>
+        <file>icons/solution_archive.png</file>
     </qresource>
 </RCC>

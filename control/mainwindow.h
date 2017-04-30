@@ -31,6 +31,8 @@ private slots:
     void on_trainingCreationWizardAction_triggered();
     void on_aboutAction_triggered();
 
+    void on_importSolutionArchiveAction_triggered();
+
 private:
     Ui::MainWindow *ui;
 

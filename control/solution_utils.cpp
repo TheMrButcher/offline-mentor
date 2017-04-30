@@ -2,9 +2,11 @@
 #include "settings.h"
 #include "section_utils.h"
 #include <omkit/utils.h>
+#include <omkit/zip_utils.h>
 #include <QHash>
 #include <QFileInfo>
 #include <QSet>
+#include <QTemporaryDir>
 
 namespace {
 struct SolutionKey {
@@ -50,51 +52,41 @@ QString makePath(QString rootPath, const Solution& solution)
 
     return path;
 }
-} // namespace
 
-void loadSolutions()
+void mergeTo(
+        const QList<Solution>& srcSolutions,
+        QHash<SolutionKey, Solution>& dstSolutions,
+        QString dstSolutionsPath)
+{
+    foreach (const auto& solution, srcSolutions) {
+        if (!solution.isValid())
+            continue;
+
+        SolutionKey key{ solution.userName, solution.sectionId };
+        Solution dstSolution;
+        if (dstSolutions.contains(key)) {
+            const auto& solutionInMap = dstSolutions[key];
+            if (solutionInMap.isEqual(solution))
+                continue;
+            dstSolution = solutionInMap;
+        } else {
+            auto path = makePath(dstSolutionsPath, solution);
+            if (path.isEmpty())
+                continue;
+            dstSolution = solution.cloneHeader(path);
+        }
+
+        if (!dstSolution.merge(solution))
+            continue;
+        dstSolutions[key] = dstSolution;
+    }
+
+}
+
+void updateLists()
 {
     solutions.clear();
     userNames.clear();
-
-    const auto& settings = Settings::instance();
-    QString localSolutionsPath = settings.localSolutionsPath();
-    if (localSolutions.isEmpty()) {
-        if (localSolutionsPath.isEmpty())
-            return;
-        auto solutionList = Solution::findAll(settings.localSolutionsPath());
-        foreach (const auto& solution, solutionList) {
-            SolutionKey key{ solution.userName, solution.sectionId };
-            localSolutions[key] = solution;
-        }
-    }
-
-    if (!settings.solutionsPath.isEmpty()) {
-        auto solutionList = Solution::findAll(settings.solutionsPath);
-        foreach (const auto& solution, solutionList) {
-            if (!solution.isValid())
-                continue;
-
-            SolutionKey key{ solution.userName, solution.sectionId };
-            Solution localSolution;
-            if (localSolutions.contains(key)) {
-                const auto& solutionInMap = localSolutions[key];
-                if (solutionInMap.isEqual(solution))
-                    continue;
-                localSolution = solutionInMap;
-            } else {
-                auto path = makePath(localSolutionsPath, solution);
-                if (path.isEmpty())
-                    continue;
-                localSolution = solution.cloneHeader(path);
-            }
-
-            if (!localSolution.merge(solution))
-                continue;
-            localSolutions[key] = localSolution;
-        }
-    }
-
     const auto& sections = getSections();
     QSet<QString> userNameSet;
     for (auto it = localSolutions.cbegin(); it != localSolutions.cend(); ++it) {
@@ -102,12 +94,37 @@ void loadSolutions()
         if (!sections.contains(solution.sectionId))
             continue;
         solutions.append(solution);
-        userNameSet.insert(solution.userName);
+        userNameSet.insert(it.value().userName);
     }
-
     foreach (const auto& userName, userNameSet)
         userNames.append(userName);
     qSort(userNames);
+}
+
+void loadTo(QString path, QHash<SolutionKey, Solution>& dstSolutions)
+{
+    auto solutionList = Solution::findAll(path);
+    foreach (const auto& solution, solutionList) {
+        SolutionKey key{ solution.userName, solution.sectionId };
+        dstSolutions[key] = solution;
+    }
+}
+} // namespace
+
+void loadSolutions()
+{
+    const auto& settings = Settings::instance();
+    QString localSolutionsPath = settings.localSolutionsPath();
+    if (localSolutions.isEmpty()) {
+        if (localSolutionsPath.isEmpty())
+            return;
+        loadTo(localSolutionsPath, localSolutions);
+    }
+
+    if (!settings.solutionsPath.isEmpty())
+        mergeTo(Solution::findAll(settings.solutionsPath), localSolutions, localSolutionsPath);
+
+    updateLists();
 }
 
 const QList<Solution>& getSolutions()
@@ -127,4 +144,30 @@ const Solution& getSolution(QString userName, const QUuid& sectionId)
 const QStringList& getUserNames()
 {
     return userNames;
+}
+
+bool loadSolutionsFromArchive(QString path)
+{
+    if (!QFileInfo(path).isFile())
+        return false;
+
+    QTemporaryDir tempDir;
+    if (!tempDir.isValid())
+        return false;
+
+    if (!extract(path, tempDir.path()))
+        return false;
+
+    auto newSolutions = Solution::findAll(tempDir.path());
+    if (newSolutions.empty())
+        return false;
+
+    const auto& settings = Settings::instance();
+    mergeTo(newSolutions, localSolutions, settings.localSolutionsPath());
+    if (!settings.solutionsPath.isEmpty()) {
+        QHash<SolutionKey, Solution> remoteSolutions;
+        loadTo(settings.solutionsPath, remoteSolutions);
+        mergeTo(newSolutions, remoteSolutions, settings.solutionsPath);
+    }
+    return true;
 }

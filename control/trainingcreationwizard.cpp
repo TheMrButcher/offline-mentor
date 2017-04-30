@@ -5,6 +5,7 @@
 #include <omkit/utils.h>
 #include <omkit/trainingsettings.h>
 #include <omkit/zip_utils.h>
+#include <omkit/ui_utils.h>
 #include <QMessageBox>
 #include <QFileDialog>
 #include <QDir>
@@ -134,6 +135,7 @@ void TrainingCreationWizard::on_choosePathButton_clicked()
         if (!path.isEmpty()) {
             ui->pathEdit->setText(path);
             Settings::instance().updateLastPath(QFileInfo(path).absolutePath());
+            showInExplorer(path);
         }
     }
 
@@ -143,6 +145,7 @@ void TrainingCreationWizard::on_choosePathButton_clicked()
         if (!path.isEmpty()) {
             ui->pathEdit->setText(path);
             Settings::instance().updateLastPath(path);
+            showInExplorer(path);
         }
     }
 }

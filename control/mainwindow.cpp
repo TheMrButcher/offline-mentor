@@ -4,6 +4,7 @@
 #include "solutionexplorer.h"
 #include "trainingcreationwizard.h"
 #include "section_utils.h"
+#include "solution_utils.h"
 #include "settings.h"
 #include "settingswizard.h"
 #include "aboutdialog.h"
@@ -11,10 +12,12 @@
 #include <omkit/omkit.h>
 #include <omkit/utils.h>
 #include <omkit/string_utils.h>
+#include <omkit/ui_utils.h>
 #include <omkit/solution.h>
 #include <QMessageBox>
 #include <QTimer>
 #include <QStringList>
+#include <QFileDialog>
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
@@ -111,4 +114,19 @@ void MainWindow::on_aboutAction_triggered()
     if (!aboutDialog)
         aboutDialog = new AboutDialog(this);
     aboutDialog->exec();
+}
+
+void MainWindow::on_importSolutionArchiveAction_triggered()
+{
+    QString path = QFileDialog::getOpenFileName(
+                this, "Путь к архиву", Settings::instance().lastPath, "Архив (*.zip)");
+    if (!path.isEmpty()) {
+        Settings::instance().updateLastPath(QFileInfo(path).absolutePath());
+        if (!loadSolutionsFromArchive(path)) {
+            QMessageBox::warning(this, "Ошибка при загрузке",
+                                 "Не удалось загрузить ответы из указанного архива.");
+            return;
+        }
+        solutionsForm->reload();
+    }
 }
