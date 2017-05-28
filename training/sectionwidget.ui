@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>518</width>
-    <height>164</height>
+    <width>558</width>
+    <height>236</height>
    </rect>
   </property>
   <property name="sizePolicy">
@@ -39,7 +39,10 @@
      </property>
      <property name="font">
       <font>
-       <pointsize>12</pointsize>
+       <family>Segoe UI</family>
+       <pointsize>14</pointsize>
+       <weight>75</weight>
+       <bold>true</bold>
       </font>
      </property>
      <property name="title">
@@ -53,13 +56,19 @@
      </property>
      <layout class="QVBoxLayout" name="verticalLayout">
       <property name="spacing">
-       <number>6</number>
+       <number>10</number>
       </property>
       <property name="sizeConstraint">
        <enum>QLayout::SetDefaultConstraint</enum>
       </property>
       <item>
        <layout class="QFormLayout" name="formLayout">
+        <property name="horizontalSpacing">
+         <number>10</number>
+        </property>
+        <property name="verticalSpacing">
+         <number>10</number>
+        </property>
         <item row="1" column="1">
          <widget class="QLabel" name="descriptionLabel">
           <property name="sizePolicy">
@@ -82,7 +91,8 @@
           </property>
           <property name="font">
            <font>
-            <pointsize>10</pointsize>
+            <weight>50</weight>
+            <bold>false</bold>
            </font>
           </property>
           <property name="text">
@@ -103,7 +113,8 @@
           </property>
           <property name="font">
            <font>
-            <pointsize>10</pointsize>
+            <weight>50</weight>
+            <bold>false</bold>
            </font>
           </property>
           <property name="text">
@@ -121,7 +132,8 @@
           </property>
           <property name="font">
            <font>
-            <pointsize>10</pointsize>
+            <weight>50</weight>
+            <bold>false</bold>
            </font>
           </property>
           <property name="text">
@@ -139,7 +151,8 @@
           </property>
           <property name="font">
            <font>
-            <pointsize>10</pointsize>
+            <weight>50</weight>
+            <bold>false</bold>
            </font>
           </property>
           <property name="text">
@@ -172,8 +185,11 @@
           </property>
           <property name="font">
            <font>
-            <pointsize>10</pointsize>
+            <family>Segoe UI</family>
+            <pointsize>14</pointsize>
+            <weight>50</weight>
             <italic>false</italic>
+            <bold>false</bold>
             <underline>false</underline>
             <kerning>true</kerning>
            </font>
@@ -211,7 +227,8 @@ QProgressBar::chunk {
          <widget class="QLabel" name="label_3">
           <property name="font">
            <font>
-            <pointsize>10</pointsize>
+            <weight>50</weight>
+            <bold>false</bold>
            </font>
           </property>
           <property name="text">
@@ -232,13 +249,7 @@ QProgressBar::chunk {
            <enum>Qt::Horizontal</enum>
           </property>
           <property name="sizeType">
-           <enum>QSizePolicy::Fixed</enum>
-          </property>
-          <property name="sizeHint" stdset="0">
-           <size>
-            <width>150</width>
-            <height>20</height>
-           </size>
+           <enum>QSizePolicy::Expanding</enum>
           </property>
          </spacer>
         </item>
@@ -264,7 +275,8 @@ QProgressBar::chunk {
           </property>
           <property name="font">
            <font>
-            <pointsize>10</pointsize>
+            <weight>50</weight>
+            <bold>false</bold>
            </font>
           </property>
           <property name="text">
@@ -285,12 +297,6 @@ QProgressBar::chunk {
          <spacer name="horizontalSpacer_2">
           <property name="orientation">
            <enum>Qt::Horizontal</enum>
-          </property>
-          <property name="sizeHint" stdset="0">
-           <size>
-            <width>40</width>
-            <height>20</height>
-           </size>
           </property>
          </spacer>
         </item>

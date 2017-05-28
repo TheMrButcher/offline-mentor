@@ -12,7 +12,8 @@
   </property>
   <property name="font">
    <font>
-    <pointsize>10</pointsize>
+    <family>Segoe UI</family>
+    <pointsize>14</pointsize>
    </font>
   </property>
   <property name="windowTitle">

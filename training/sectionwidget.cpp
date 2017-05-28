@@ -44,6 +44,7 @@ void SectionWidget::updateProgress()
         ui->progressBar->setValue(answersNum);
         if (ui->progressBar->maximum() == answersNum) {
             ui->enterButton->setText("Просмотреть");
+            auto font = ui->progressBar->font();
             ui->progressBar->setStyleSheet(
                     R"delim(
                     QProgressBar {
@@ -55,6 +56,7 @@ void SectionWidget::updateProgress()
                         background-color: rgb(15, 255, 60);
                         width: 20px;
                     })delim");
+            ui->progressBar->setFont(font);
         } else {
             ui->enterButton->setText("Продолжить");
         }
