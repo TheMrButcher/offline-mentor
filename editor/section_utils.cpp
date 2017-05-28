@@ -34,12 +34,22 @@ bool isKnownSection(QString path)
 
 void addSection(const Section& section)
 {
+    if (isKnownSection(section.path)) {
+        for (auto it = sections.begin(); it != sections.end(); ++it) {
+            if (it->path == section.path) {
+                sections.erase(it);
+                break;
+            }
+        }
+    }
     sections.prepend(section);
     pathToSection[section.path] = section;
 
     auto& settings = Settings::instance();
-    settings.knownSections.prepend(section.path);
-    settings.write();
+    if (!settings.knownSections.contains(section.path)) {
+        settings.knownSections.prepend(section.path);
+        settings.write();
+    }
 }
 
 const QList<Section>& getSections()

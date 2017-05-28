@@ -31,6 +31,14 @@ void CreateSectionDialog::accept()
     if (!path.endsWith(".oms", Qt::CaseInsensitive))
         path.append(".oms");
 
+    if (QFileInfo(path).exists()) {
+        auto answer = QMessageBox::question(this, "Замена файла",
+                                            "Файл по выбранному пути уже существует. "
+                                            "Вы уверены, что хотите заменить его?");
+        if (answer != QMessageBox::Yes)
+            return;
+    }
+
     section = Section::createSection(path);
     section.name = ui->nameEdit->text();
 
