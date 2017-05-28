@@ -33,6 +33,8 @@ private slots:
 
     void on_importSolutionArchiveAction_triggered();
 
+    void on_importSectionFolderAction_triggered();
+
 private:
     Ui::MainWindow *ui;
 

@@ -1,5 +1,6 @@
 #include "section.h"
 #include "json_utils.h"
+#include "utils.h"
 #include <QFileInfo>
 #include <QJsonArray>
 #include <QDir>
@@ -42,6 +43,34 @@ QList<Section> Section::findAll(QString path)
 bool Section::isValid() const
 {
     return !id.isNull() && !name.isEmpty() && !path.isEmpty();
+}
+
+bool Section::remove()
+{
+    if (!isValid())
+        return false;
+
+    QDir sectionDir = dir();
+    foreach (const auto& caseValue, cases) {
+        if (!caseValue.questionFileName.isEmpty())
+            sectionDir.remove(caseValue.questionFileName);
+        if (!caseValue.answerFileName.isEmpty())
+            sectionDir.remove(caseValue.answerFileName);
+    }
+    cases.clear();
+    if (!totalFileName.isEmpty()) {
+        sectionDir.remove(totalFileName);
+        totalFileName = "";
+    }
+    if (!sectionDir.remove(QFileInfo(path).fileName()))
+        return false;
+    if (isDirEmpty(sectionDir)) {
+        QString dirName = sectionDir.dirName();
+        sectionDir.cdUp();
+        sectionDir.rmdir(dirName);
+    }
+    return true;
+
 }
 
 bool Section::open()

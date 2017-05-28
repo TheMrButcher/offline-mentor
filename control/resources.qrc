@@ -17,5 +17,6 @@
         <file>translations/qtbase_ru.qm</file>
         <file>icons/wizard_settings.png</file>
         <file>icons/solution_archive.png</file>
+        <file>icons/section_folder.png</file>
     </qresource>
 </RCC>

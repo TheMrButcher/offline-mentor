@@ -122,10 +122,31 @@ void MainWindow::on_importSolutionArchiveAction_triggered()
                 this, "Путь к архиву", Settings::instance().lastPath, "Архив (*.zip)");
     if (!path.isEmpty()) {
         Settings::instance().updateLastPath(QFileInfo(path).absolutePath());
-        if (!loadSolutionsFromArchive(path)) {
+        if (!importSolutionsFromArchive(path)) {
             QMessageBox::warning(this, "Ошибка при загрузке",
                                  "Не удалось загрузить ответы из указанного архива.");
             return;
+        }
+        solutionsForm->reload();
+    }
+}
+
+void MainWindow::on_importSectionFolderAction_triggered()
+{
+    QString path = QFileDialog::getExistingDirectory(
+                this, "Путь к папке", Settings::instance().lastPath);
+    if (!path.isEmpty()) {
+        Settings::instance().updateLastPath(path);
+        auto importedSectionNames = importSectionsFromFolder(path);
+        if (importedSectionNames.isEmpty()) {
+            QMessageBox::warning(this, "Ошибка при загрузке",
+                                 "Не удалось загрузить разделы из указанной папки.");
+            return;
+        } else {
+            QMessageBox::information(this, "Загрузка разделов",
+                                     QString("Было загружено %1 разделов: \n%2")
+                                     .arg(importedSectionNames.size())
+                                     .arg(importedSectionNames.join('\n')));
         }
         solutionsForm->reload();
     }

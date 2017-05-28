@@ -18,6 +18,7 @@ public:
     static QList<Section> findAll(QString path);
 
     bool isValid() const;
+    bool remove();
     bool open();
     bool save() const;
     Section saveAs(QString newPath) const;

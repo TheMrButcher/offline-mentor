@@ -10,6 +10,15 @@ QString getVersion()
     return QString(versionFile.readAll());
 }
 
+QDir getDir(QString path)
+{
+    QDir dir(path);
+    if (dir.exists())
+        return dir;
+    QDir().mkpath(path);
+    return dir;
+}
+
 QString getNewDir(QString path, QString dirNamePrefix)
 {
     QDir dir(path);
@@ -26,6 +35,16 @@ QString getNewDir(QString path, QString dirNamePrefix)
         }
     }
     return QString();
+}
+
+bool isDirEmpty(QString path)
+{
+    return isDirEmpty(QDir(path));
+}
+
+bool isDirEmpty(QDir dir)
+{
+    return dir.entryList(QDir::AllEntries | QDir::NoDotAndDotDot | QDir::System | QDir::Hidden).isEmpty();
 }
 
 bool copyDir(QString srcPath, QString dstPath)

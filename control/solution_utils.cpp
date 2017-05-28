@@ -146,7 +146,7 @@ const QStringList& getUserNames()
     return userNames;
 }
 
-bool loadSolutionsFromArchive(QString path)
+bool importSolutionsFromArchive(QString path)
 {
     if (!QFileInfo(path).isFile())
         return false;

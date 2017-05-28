@@ -1,5 +1,6 @@
 #include "section_utils.h"
 #include "settings.h"
+#include <omkit/utils.h>
 
 namespace {
 QHash<QUuid, Section> sections;
@@ -43,4 +44,38 @@ const QList<Section>& getSortedSections()
 const QStringList& getSectionNames()
 {
     return sectionNames;
+}
+
+QStringList importSectionsFromFolder(QString path)
+{
+    QStringList importedSectionNames;
+    auto newSections = Section::findAll(path);
+    if (newSections.empty())
+        return importedSectionNames;
+
+    auto rootPath = Settings::instance().sectionsPath;
+
+    if (!getDir(rootPath).exists())
+        return importedSectionNames;
+
+
+    foreach (const auto& section, newSections) {
+        QString path = getNewDir(rootPath, QFileInfo(section.path).baseName());
+        if (path.isEmpty())
+            continue;
+
+        QDir dir(path);
+        QString newFilePath = dir.absoluteFilePath(QFileInfo(section.path).fileName());
+        auto importedSection = section.saveAs(newFilePath);
+        if (!importedSection.isValid())
+            continue;
+
+        importedSectionNames.append(importedSection.name);
+        if (sections.contains(section.id))
+            sections[section.id].remove();
+    }
+
+    if (!importedSectionNames.isEmpty())
+        loadSections();
+    return importedSectionNames;
 }
