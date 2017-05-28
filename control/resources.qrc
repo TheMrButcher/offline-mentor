@@ -18,5 +18,6 @@
         <file>icons/wizard_settings.png</file>
         <file>icons/solution_archive.png</file>
         <file>icons/section_folder.png</file>
+        <file>icons/section_archive.png</file>
     </qresource>
 </RCC>

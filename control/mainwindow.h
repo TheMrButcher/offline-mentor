@@ -35,6 +35,8 @@ private slots:
 
     void on_importSectionFolderAction_triggered();
 
+    void on_importSectionArchiveAction_triggered();
+
 private:
     Ui::MainWindow *ui;
 

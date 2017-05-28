@@ -151,3 +151,24 @@ void MainWindow::on_importSectionFolderAction_triggered()
         solutionsForm->reload();
     }
 }
+
+void MainWindow::on_importSectionArchiveAction_triggered()
+{
+    QString path = QFileDialog::getOpenFileName(
+                this, "Путь к архиву", Settings::instance().lastPath, "Архив (*.zip)");
+    if (!path.isEmpty()) {
+        Settings::instance().updateLastPath(QFileInfo(path).absolutePath());
+        auto importedSectionNames = importSectionsFromArchive(path);
+        if (importedSectionNames.isEmpty()) {
+            QMessageBox::warning(this, "Ошибка при загрузке",
+                                 "Не удалось загрузить разделы из указанного архива.");
+            return;
+        } else {
+            QMessageBox::information(this, "Загрузка разделов",
+                                     QString("Было загружено %1 разделов: \n%2")
+                                     .arg(importedSectionNames.size())
+                                     .arg(importedSectionNames.join('\n')));
+        }
+        solutionsForm->reload();
+    }
+}

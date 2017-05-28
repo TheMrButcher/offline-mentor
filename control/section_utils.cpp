@@ -1,6 +1,8 @@
 #include "section_utils.h"
 #include "settings.h"
 #include <omkit/utils.h>
+#include <omkit/zip_utils.h>
+#include <QTemporaryDir>
 
 namespace {
 QHash<QUuid, Section> sections;
@@ -78,4 +80,19 @@ QStringList importSectionsFromFolder(QString path)
     if (!importedSectionNames.isEmpty())
         loadSections();
     return importedSectionNames;
+}
+
+QStringList importSectionsFromArchive(QString path)
+{
+    if (!QFileInfo(path).isFile())
+        return QStringList();
+
+    QTemporaryDir tempDir;
+    if (!tempDir.isValid())
+        return QStringList();
+
+    if (!extract(path, tempDir.path()))
+        return QStringList();
+
+    return importSectionsFromFolder(tempDir.path());
 }

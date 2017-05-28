@@ -11,5 +11,6 @@ const QHash<QUuid, Section>& getSections();
 const QList<Section>& getSortedSections();
 const QStringList& getSectionNames();
 QStringList importSectionsFromFolder(QString path);
+QStringList importSectionsFromArchive(QString path);
 
 #endif // SECTION_UTILS_H
