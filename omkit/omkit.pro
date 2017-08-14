@@ -30,7 +30,8 @@ SOURCES += omkit.cpp \
     ui_utils.cpp \
     trainingsettings.cpp \
     zip_utils.cpp \
-    string_utils.cpp
+    string_utils.cpp \
+    caseimage.cpp
 
 HEADERS += omkit.h\
         omkit_global.h \
@@ -44,7 +45,9 @@ HEADERS += omkit.h\
     ui_utils.h \
     trainingsettings.h \
     zip_utils.h \
-    string_utils.h
+    string_utils.h \
+    caseimage.h \
+    smallbimap.h
 
 unix {
     target.path = /usr/lib

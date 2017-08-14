@@ -126,6 +126,16 @@ Section Section::saveAs(QString newPath) const
         if (!QFile::copy(srcDir.absoluteFilePath(caseValue.answerFileName),
                          dstDir.absoluteFilePath(caseValue.answerFileName)))
             return Section();
+        if (!caseValue.questionImage.isEmpty()) {
+            if (!QFile::copy(srcDir.absoluteFilePath(caseValue.questionImage.fileName),
+                             dstDir.absoluteFilePath(caseValue.questionImage.fileName)))
+                return Section();
+        }
+        if (!caseValue.answerImage.isEmpty()) {
+            if (!QFile::copy(srcDir.absoluteFilePath(caseValue.answerImage.fileName),
+                             dstDir.absoluteFilePath(caseValue.answerImage.fileName)))
+                return Section();
+        }
     }
 
     if (!totalFileName.isEmpty()) {

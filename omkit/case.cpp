@@ -22,6 +22,10 @@ Case Case::fromJson(const QJsonObject& jsonObject)
     c.name = jsonObject["name"].toString("");
     c.questionFileName = jsonObject["questionFileName"].toString("");
     c.answerFileName = jsonObject["answerFileName"].toString("");
+    if (jsonObject.contains("questionImage"))
+        c.questionImage = CaseImage::fromJson(jsonObject["questionImage"].toObject());
+    if (jsonObject.contains("answerImage"))
+        c.answerImage = CaseImage::fromJson(jsonObject["answerImage"].toObject());
     return c;
 }
 
@@ -32,6 +36,10 @@ QJsonObject Case::toJson() const
     result["name"] = name;
     result["questionFileName"] = questionFileName;
     result["answerFileName"] = answerFileName;
+    if (!questionImage.isEmpty())
+        result["questionImage"] = questionImage.toJson();
+    if (!answerImage.isEmpty())
+        result["answerImage"] = answerImage.toJson();
     return result;
 }
 

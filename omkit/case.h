@@ -2,6 +2,7 @@
 #define CASE_H
 
 #include "omkit_global.h"
+#include "caseimage.h"
 
 #include <QJsonObject>
 #include <QString>
@@ -25,6 +26,8 @@ public:
     QString name;
     QString questionFileName;
     QString answerFileName;
+    CaseImage questionImage;
+    CaseImage answerImage;
 };
 
 #endif // CASE_H
