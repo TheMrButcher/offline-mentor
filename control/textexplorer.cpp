@@ -1,6 +1,7 @@
 #include "textexplorer.h"
 #include "ui_textexplorer.h"
 #include <omkit/html_utils.h>
+#include <omkit/caseimage.h>
 
 TextExplorer::TextExplorer(QWidget *parent) :
     QWidget(parent),
@@ -31,4 +32,14 @@ bool TextExplorer::load(QString path)
         return false;
     ui->textBrowser->setHtml(html);
     return true;
+}
+
+bool TextExplorer::load(QDir dir, QString fileName, const CaseImage& image)
+{
+    QString html = readHTML(dir.absoluteFilePath(fileName));
+    if (html.isEmpty())
+        return false;
+    setImageAndHTML(dir, image, html, ui->textBrowser);
+    return true;
+
 }

@@ -22,7 +22,8 @@ bool MentorAnswerPage::loadCase(const Section& section, const Case& caseValue)
     QString html = readHTML(path);
     if (html.isEmpty())
         return false;
-    ui->answerBrowser->setHtml(html);
+    setImageAndHTML(section.dir(), caseValue.answerImage,
+                    html, ui->answerBrowser);
     ui->titleLabel->setText("Кейс \"" + caseValue.name + "\". Ответ наставника");
     this->section = section;
     this->caseValue = caseValue;

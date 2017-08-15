@@ -36,7 +36,8 @@ AnswerStatus AnswerPage::load(
         hasErrors = true;
         ui->questionBrowser->setPlainText("Произошла ошибка при загрузке текста вопроса.");
     } else {
-        ui->questionBrowser->setHtml(questionHTML);
+        setImageAndHTML(section.dir(), caseValue.questionImage,
+                        questionHTML, ui->questionBrowser);
     }
 
     TextExplorer* answerExplorer = new TextExplorer(this);
@@ -57,7 +58,7 @@ AnswerStatus AnswerPage::load(
     TextExplorer* mentrorAnswerExplorer = new TextExplorer(this);
     mentrorAnswerExplorer->setTitle("Ответ наставника");
     if (!mentrorAnswerExplorer->load(
-            sectionDir.absoluteFilePath(caseValue.answerFileName))) {
+            sectionDir, caseValue.answerFileName, caseValue.answerImage)) {
         hasErrors = true;
         mentrorAnswerExplorer->setPlainText("Произошла ошибка при загрузке ответа наставника.");
     }

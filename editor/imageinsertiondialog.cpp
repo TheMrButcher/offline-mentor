@@ -174,32 +174,28 @@ void ImageInsertionDialog::on_widthBox_valueChanged(int width)
 {
     if (ignoreSizeChanges)
         return;
-    bool updatedImage = false;
     if (ui->lockButton->isChecked()) {
         int height = static_cast<int>(width / ratio + 0.5f);
-        if (ui->heightBox->value() != height) {
+        ignoreSizeChanges = true;
+        if (ui->heightBox->value() != height)
             ui->heightBox->setValue(height);
-            updatedImage = true;
-        }
+        ignoreSizeChanges = false;
     }
-    if (!updatedImage)
-        updatePreview(originalPixmap, ui->widthBox->value(), ui->heightBox->value());
+    updatePreview(originalPixmap, ui->widthBox->value(), ui->heightBox->value());
 }
 
 void ImageInsertionDialog::on_heightBox_valueChanged(int height)
 {
     if (ignoreSizeChanges)
         return;
-    bool updatedImage = false;
     if (ui->lockButton->isChecked()) {
         int width = static_cast<int>(height * ratio + 0.5f);
-        if (ui->widthBox->value() != width) {
+        ignoreSizeChanges = true;
+        if (ui->widthBox->value() != width)
             ui->widthBox->setValue(width);
-            updatedImage = true;
-        }
+        ignoreSizeChanges = false;
     }
-    if (!updatedImage)
-        updatePreview(originalPixmap, ui->widthBox->value(), ui->heightBox->value());
+    updatePreview(originalPixmap, ui->widthBox->value(), ui->heightBox->value());
 }
 
 void ImageInsertionDialog::on_lockButton_clicked()

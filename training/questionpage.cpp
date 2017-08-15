@@ -21,7 +21,8 @@ bool QuestionPage::loadCase(const Section& section, const Case& caseValue)
     QString questionHTML = readHTML(sectionDir.absoluteFilePath(caseValue.questionFileName));
     if (questionHTML.isEmpty())
         return false;
-    ui->questionBrowser->setHtml(questionHTML);
+    setImageAndHTML(section.dir(), caseValue.questionImage,
+                    questionHTML, ui->questionBrowser);
 
     Solution solution = getSolution(SolutionPathType::Local, section);
     if (solution.isValid()) {
