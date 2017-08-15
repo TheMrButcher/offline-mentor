@@ -15,6 +15,7 @@ class AboutDialog;
 class SectionEditForm;
 class RichTextEdit;
 class ExportDialog;
+class ImageInsertionDialog;
 class QFontComboBox;
 class QComboBox;
 
@@ -47,6 +48,7 @@ private slots:
     void addCase();
     void removeCase();
     void showAbout();
+    void showImageMenu();
     void loadSettings();
     void openSection(const Section& section);
     void showExportDialog();
@@ -88,6 +90,7 @@ private:
     CreateSectionDialog* createSectionDialog = nullptr;
     AboutDialog* aboutDialog = nullptr;
     ExportDialog* exportDialog = nullptr;
+    ImageInsertionDialog* imageInsertionDialog = nullptr;
     QHash<QUuid, QWidget*> openedPages;
 };
 

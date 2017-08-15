@@ -30,6 +30,10 @@ public:
     QString fileName;
     HorAlign horAlign;
     VertAlign vertAlign;
+    int width;
+    int height;
 };
+
+OMKITSHARED_EXPORT bool operator==(const CaseImage& image1, const CaseImage& image2);
 
 #endif // CASEIMAGE_H

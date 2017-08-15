@@ -28,10 +28,15 @@ public:
     void setSection(const Section& section);
     QString sectionName() const;
     QUuid sectionId() const;
+    QDir sectionDir() const;
     bool isTextEditInFocus() const;
     bool isCaseInFocus() const;
     RichTextEdit* currentTextEdit() const;
     bool hasChanges() const;
+
+    bool isImageHolderInFocus() const;
+    CaseImage currentImage() const;
+    void setCurrentImage(const CaseImage& image);
 
 signals:
     void sectionSaved(const Section& section);
@@ -43,6 +48,7 @@ signals:
     void undoAvailable(bool available);
     void redoAvailable(bool available);
     void modificationChanged(bool changed);
+    void requestedCurrentImageMenu();
 
 public slots:
     void save();
@@ -70,6 +76,7 @@ private:
     Section sectionFromUI() const;
     void select(QWidget* widget);
     void connectPage(TextEditorPage* page);
+    void removeImage(const CaseImage& caseImage);
 
     Ui::SectionEditForm *ui;
 
@@ -100,8 +107,10 @@ private:
     };
 
     QHash<QTreeWidgetItem*, NodeDescriptor> nodes;
+    QHash<TextEditorPage*, CaseImage> images;
     QSet<QObject*> modifiedDocuments;
     bool modifiedNames = false;
+    bool modifiedImages = false;
 };
 
 #endif // SECTIONEDITFORM_H

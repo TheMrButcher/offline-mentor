@@ -7,6 +7,7 @@
 #include "section_utils.h"
 #include "richtextedit.h"
 #include "exportdialog.h"
+#include "imageinsertiondialog.h"
 #include "ui_mainwindow.h"
 
 #include <omkit/utils.h>
@@ -81,6 +82,7 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(ui->addCaseAction, SIGNAL(triggered()), this, SLOT(addCase()));
     connect(ui->removeCaseAction, SIGNAL(triggered()), this, SLOT(removeCase()));
     connect(ui->exportSectionsAction, SIGNAL(triggered()), this, SLOT(showExportDialog()));
+    connect(ui->imageMenuAction, SIGNAL(triggered()), this, SLOT(showImageMenu()));
 
     QTimer::singleShot(0, this, SLOT(loadSettings()));
 }
@@ -325,6 +327,20 @@ void MainWindow::showAbout()
     aboutDialog->exec();
 }
 
+void MainWindow::showImageMenu()
+{
+    if (SectionEditForm* sectionEditForm = currentSectionEditForm()) {
+        if (!sectionEditForm->isImageHolderInFocus())
+            return;
+        if (!imageInsertionDialog)
+            imageInsertionDialog = new ImageInsertionDialog(this);
+        imageInsertionDialog->init(sectionEditForm->sectionDir(),
+                                   sectionEditForm->currentImage());
+        if (imageInsertionDialog->exec() == QDialog::Accepted)
+            sectionEditForm->setCurrentImage(imageInsertionDialog->result());
+    }
+}
+
 void MainWindow::loadSettings()
 {
     auto& settings = Settings::instance();
@@ -362,6 +378,8 @@ void MainWindow::openSection(const Section& section)
             this, SLOT(onHistoryAvailable(bool)));
     connect(sectionEditForm, SIGNAL(modificationChanged(bool)),
             this, SLOT(onModificationChanged(bool)));
+    connect(sectionEditForm, SIGNAL(requestedCurrentImageMenu()),
+            this, SLOT(showImageMenu()));
 }
 
 void MainWindow::showExportDialog()
@@ -510,8 +528,10 @@ void MainWindow::setTextEditButtonsEnabled(bool enabled)
         setCopyAndCutButtonsEnabled(cursor.hasSelection());
         updateAlignmentButtons(textEdit->alignment());
         updateListButtons();
+        ui->imageMenuAction->setEnabled(currentSectionEditForm()->isImageHolderInFocus());
     } else {
         setCopyAndCutButtonsEnabled(false);
+        ui->imageMenuAction->setEnabled(false);
     }
     updatePasteButton();
     updateHistoryButtons();

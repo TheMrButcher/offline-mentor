@@ -32,5 +32,8 @@
         <file>icons/add_case.png</file>
         <file>icons/remove_case.png</file>
         <file>icons/section_big.png</file>
+        <file>icons/image.png</file>
+        <file>icons/lock.png</file>
+        <file>icons/unlock.png</file>
     </qresource>
 </RCC>

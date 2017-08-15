@@ -1,6 +1,7 @@
 #ifndef TEXTEDITORPAGE_H
 #define TEXTEDITORPAGE_H
 
+#include <omkit/caseimage.h>
 #include <QWidget>
 #include <QDir>
 
@@ -25,6 +26,11 @@ public:
     bool load();
     bool removeFile();
     RichTextEdit* textEdit();
+    void setImage(const CaseImage& image);
+    void resetImage();
+
+signals:
+    void requestedImageMenu();
 
 private:
     Ui::TextEditorPage *ui;

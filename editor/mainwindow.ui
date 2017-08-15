@@ -69,6 +69,8 @@
    <addaction name="separator"/>
    <addaction name="orderedListAction"/>
    <addaction name="unorderedListAction"/>
+   <addaction name="separator"/>
+   <addaction name="imageMenuAction"/>
   </widget>
   <widget class="QMenuBar" name="menuBar">
    <property name="geometry">
@@ -530,6 +532,21 @@
    </property>
    <property name="toolTip">
     <string>Экспорт разделов</string>
+   </property>
+  </action>
+  <action name="imageMenuAction">
+   <property name="enabled">
+    <bool>false</bool>
+   </property>
+   <property name="icon">
+    <iconset resource="resources.qrc">
+     <normaloff>:/icons/image.png</normaloff>:/icons/image.png</iconset>
+   </property>
+   <property name="text">
+    <string>Вставить/настроить изображение</string>
+   </property>
+   <property name="toolTip">
+    <string>Вставить/настроить изображение</string>
    </property>
   </action>
  </widget>

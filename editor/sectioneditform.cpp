@@ -112,6 +112,11 @@ QUuid SectionEditForm::sectionId() const
     return originalSection.id;
 }
 
+QDir SectionEditForm::sectionDir() const
+{
+    return originalSection.dir();
+}
+
 bool SectionEditForm::isTextEditInFocus() const
 {
     return currentTextEditorPage != nullptr;
@@ -133,7 +138,36 @@ RichTextEdit* SectionEditForm::currentTextEdit() const
 bool SectionEditForm::hasChanges() const
 {
     return !modifiedDocuments.empty()
-            || modifiedNames;
+            || modifiedNames
+            || modifiedImages;
+}
+
+bool SectionEditForm::isImageHolderInFocus() const
+{
+    return currentTextEditorPage != nullptr
+            && images.contains(currentTextEditorPage);
+}
+
+CaseImage SectionEditForm::currentImage() const
+{
+    if (!isImageHolderInFocus())
+        return CaseImage();
+    return images[currentTextEditorPage];
+}
+
+void SectionEditForm::setCurrentImage(const CaseImage& image)
+{
+    if (!isImageHolderInFocus())
+        return;
+    if (images[currentTextEditorPage] == image)
+        return;
+    images[currentTextEditorPage] = image;
+    currentTextEditorPage->setImage(image);
+
+    bool hadChanges = hasChanges();
+    modifiedImages = true;
+    if (hadChanges != hasChanges())
+        emit modificationChanged(hasChanges());
 }
 
 void SectionEditForm::save()
@@ -178,6 +212,7 @@ void SectionEditForm::save()
     totalEditorPage->textEdit()->document()->setModified(false);
     modifiedDocuments.clear();
     modifiedNames = false;
+    modifiedImages = false;
     emit modificationChanged(false);
 }
 
@@ -209,6 +244,12 @@ void SectionEditForm::removeCurrentCase()
     auto node = nodes[item];
     node.pages.questionPage->removeFile();
     node.pages.answerPage->removeFile();
+
+    removeImage(images[node.pages.questionPage]);
+    images.remove(node.pages.questionPage);
+    removeImage(images[node.pages.answerPage]);
+    images.remove(node.pages.answerPage);
+
     modifiedDocuments.remove(node.pages.questionPage->textEdit()->document());
     modifiedDocuments.remove(node.pages.answerPage->textEdit()->document());
     nodes.remove(node.items.root);
@@ -306,6 +347,8 @@ Section SectionEditForm::sectionFromUI() const
         auto caseValue = pages.mainPage->getCase();
         caseValue.questionFileName = pages.questionPage->fileName();
         caseValue.answerFileName = pages.answerPage->fileName();
+        caseValue.questionImage = images[pages.questionPage];
+        caseValue.answerImage = images[pages.answerPage];
         section.cases.append(caseValue);
     }
 
@@ -398,6 +441,12 @@ QTreeWidgetItem* SectionEditForm::addCase(const Case& caseValue)
     nodes[caseRootItem] = NodeDescriptor{ casePage, nullptr, items, pages };
     nodes[questionItem] = NodeDescriptor{ questionPage, questionPage, items, pages };
     nodes[answerItem] = NodeDescriptor{ answerPage, answerPage, items, pages };
+
+    images[questionPage] = caseValue.questionImage;
+    questionPage->setImage(caseValue.questionImage);
+    images[answerPage] = caseValue.answerImage;
+    answerPage->setImage(caseValue.answerImage);
+
     return caseRootItem;
 }
 
@@ -429,4 +478,12 @@ void SectionEditForm::connectPage(TextEditorPage* page)
             this, SLOT(onRedoAvailable(bool)));
     connect(page->textEdit()->document(), SIGNAL(modificationChanged(bool)),
             this, SLOT(onModificationChanged(bool)));
+    connect(page, SIGNAL(requestedImageMenu()), this, SIGNAL(requestedCurrentImageMenu()));
+}
+
+void SectionEditForm::removeImage(const CaseImage& caseImage)
+{
+    if (caseImage.isEmpty())
+        return;
+    QFile::remove(originalSection.dir().absoluteFilePath(caseImage.fileName));
 }

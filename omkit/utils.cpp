@@ -2,6 +2,7 @@
 
 #include <QFile>
 #include <QDir>
+#include <QFileInfo>
 
 QString getVersion()
 {
@@ -33,6 +34,24 @@ QString getNewDir(QString path, QString dirNamePrefix)
             if (dir.mkdir(dirName))
                 return dir.absoluteFilePath(dirName);
         }
+    }
+    return QString();
+}
+
+QString getNewFileName(QString dirPath, QString oldFilePath)
+{
+    QFileInfo fileInfo(oldFilePath);
+    QString fileName = fileInfo.fileName();
+    QDir dir(dirPath);
+    if (!dir.exists(fileName))
+        return dir.absoluteFilePath(fileName);
+
+    QString baseFileName = fileInfo.baseName();
+    QString suffix = fileInfo.completeSuffix();
+    for (int i = 0; i < 100; ++i) {
+        QString newFileName = QString("%1_%2.%3").arg(baseFileName).arg(i).arg(suffix);
+        if (!dir.exists(newFileName))
+            return dir.absoluteFilePath(newFileName);
     }
     return QString();
 }

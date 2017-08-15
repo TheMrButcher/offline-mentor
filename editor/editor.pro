@@ -29,7 +29,8 @@ SOURCES += main.cpp\
     section_utils.cpp \
     aboutdialog.cpp \
     richtextedit.cpp \
-    exportdialog.cpp
+    exportdialog.cpp \
+    imageinsertiondialog.cpp
 
 HEADERS  += mainwindow.h \
     sectionsform.h \
@@ -42,7 +43,8 @@ HEADERS  += mainwindow.h \
     section_utils.h \
     aboutdialog.h \
     richtextedit.h \
-    exportdialog.h
+    exportdialog.h \
+    imageinsertiondialog.h
 
 FORMS    += mainwindow.ui \
     sectionsform.ui \
@@ -52,7 +54,8 @@ FORMS    += mainwindow.ui \
     casepage.ui \
     texteditorpage.ui \
     aboutdialog.ui \
-    exportdialog.ui
+    exportdialog.ui \
+    imageinsertiondialog.ui
 
 RESOURCES += \
     resources.qrc

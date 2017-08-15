@@ -9,6 +9,7 @@
 OMKITSHARED_EXPORT QString getVersion();
 OMKITSHARED_EXPORT QDir getDir(QString path);
 OMKITSHARED_EXPORT QString getNewDir(QString path, QString dirNamePrefix);
+OMKITSHARED_EXPORT QString getNewFileName(QString dirPath, QString oldFilePath);
 OMKITSHARED_EXPORT bool isDirEmpty(QString path);
 OMKITSHARED_EXPORT bool isDirEmpty(QDir dir);
 
