@@ -10,5 +10,7 @@ const QList<Solution>& getSolutions();
 const Solution& getSolution(QString userName, const QUuid& sectionId);
 const QStringList& getUserNames();
 bool importSolutionsFromArchive(QString path);
+const QStringList& getUserNamesWithoutGroup();
+void updateUserNamesWithoutGroup();
 
 #endif // SOLUTION_UTILS_H

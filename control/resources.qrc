@@ -19,5 +19,9 @@
         <file>icons/solution_archive.png</file>
         <file>icons/section_folder.png</file>
         <file>icons/section_archive.png</file>
+        <file>icons/add.png</file>
+        <file>icons/edit.png</file>
+        <file>icons/remove.png</file>
+        <file>icons/group.png</file>
     </qresource>
 </RCC>

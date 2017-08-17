@@ -24,6 +24,7 @@ signals:
 
 public slots:
     void reload();
+    void onGroupCollectionChanged();
 
 private slots:
     void applyFilter();
@@ -33,14 +34,19 @@ private slots:
     void on_selectUserButton_clicked();
     void on_openButton_clicked();
     void on_tableWidget_doubleClicked(const QModelIndex &index);
+    void on_selectGroupButton_clicked();
+    void on_groupNameComboBox_currentIndexChanged(int index);
 
 private:
     void fillTable(const QList<Solution>& solutions);
     void updateComboBox(QComboBox* comboBox, const QStringList& variants);
+    void updateGroupComboBox();
+    void selectGroupComboVariant(int index);
     void updateButtons();
     void openSolutionInRow(int row);
 
     Ui::SolutionsForm *ui;
+    bool isGroupComboBoxReady = true;
 };
 
 #endif // SOLUTIONSFORM_H

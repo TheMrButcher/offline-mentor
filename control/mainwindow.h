@@ -10,6 +10,7 @@ class MainWindow;
 class Solution;
 class SettingsDialog;
 class SolutionsForm;
+class GroupsForm;
 class TrainingCreationWizard;
 class SettingsWizard;
 class AboutDialog;
@@ -42,6 +43,7 @@ private:
 
     SettingsDialog* settingsDialog;
     SolutionsForm* solutionsForm;
+    GroupsForm* groupsForm;
     TrainingCreationWizard* trainingCreationWizard;
     SettingsWizard* settingsWizard = nullptr;
     AboutDialog* aboutDialog = nullptr;

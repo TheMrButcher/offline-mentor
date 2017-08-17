@@ -1,10 +1,12 @@
 #include "mainwindow.h"
 #include "settingsdialog.h"
 #include "solutionsform.h"
+#include "groupsform.h"
 #include "solutionexplorer.h"
 #include "trainingcreationwizard.h"
 #include "section_utils.h"
 #include "solution_utils.h"
+#include "group_utils.h"
 #include "settings.h"
 #include "settingswizard.h"
 #include "aboutdialog.h"
@@ -42,6 +44,13 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(solutionsForm, SIGNAL(requestedOpen(Solution)),
             this, SLOT(openSolution(Solution)));
 
+    groupsForm = new GroupsForm(this);
+    tabIndex = ui->tabWidget->addTab(groupsForm, "Группы");
+    ui->tabWidget->tabBar()->setTabButton(tabIndex, QTabBar::LeftSide, nullptr);
+    ui->tabWidget->tabBar()->setTabButton(tabIndex, QTabBar::RightSide, nullptr);
+    connect(groupsForm, SIGNAL(groupCollectionChanged()),
+            solutionsForm, SLOT(onGroupCollectionChanged()));
+
     trainingCreationWizard = new TrainingCreationWizard(this);
     trainingCreationWizard->hide();
 
@@ -67,6 +76,8 @@ void MainWindow::loadSettings()
     if (settings.isFirstUsage)
         execSettingsWizard();
 
+    loadGroups();
+    groupsForm->load();
     solutionsForm->reload();
 }
 
@@ -99,7 +110,7 @@ void MainWindow::on_settingsAction_triggered()
 void MainWindow::on_tabWidget_tabCloseRequested(int index)
 {
     QWidget* widget = ui->tabWidget->widget(index);
-    if (widget != solutionsForm)
+    if (widget != solutionsForm && widget != groupsForm)
         delete widget;
 }
 

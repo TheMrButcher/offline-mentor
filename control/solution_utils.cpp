@@ -1,6 +1,7 @@
 #include "solution_utils.h"
 #include "settings.h"
 #include "section_utils.h"
+#include "group_utils.h"
 #include <omkit/utils.h>
 #include <omkit/zip_utils.h>
 #include <QHash>
@@ -27,6 +28,7 @@ uint qHash(const SolutionKey& key, uint seed)
 QList<Solution> solutions;
 QHash<SolutionKey, Solution> localSolutions;
 QStringList userNames;
+QStringList userNamesWithoutGroup;
 
 QString getUserPath(QString path, QString userName)
 {
@@ -99,6 +101,7 @@ void updateLists()
     foreach (const auto& userName, userNameSet)
         userNames.append(userName);
     qSort(userNames);
+    updateUserNamesWithoutGroup();
 }
 
 void loadTo(QString path, QHash<SolutionKey, Solution>& dstSolutions)
@@ -170,4 +173,18 @@ bool importSolutionsFromArchive(QString path)
         mergeTo(newSolutions, remoteSolutions, settings.solutionsPath);
     }
     return true;
+}
+
+const QStringList& getUserNamesWithoutGroup()
+{
+    return userNamesWithoutGroup;
+}
+
+void updateUserNamesWithoutGroup()
+{
+    userNamesWithoutGroup.clear();
+    for (const auto& userName : userNames) {
+        if (getGroupsByUserName(userName).isEmpty())
+            userNamesWithoutGroup.append(userName);
+    }
 }

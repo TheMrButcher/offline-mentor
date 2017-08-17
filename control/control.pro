@@ -29,7 +29,10 @@ SOURCES += main.cpp\
     textexplorer.cpp \
     trainingcreationwizard.cpp \
     settingswizard.cpp \
-    aboutdialog.cpp
+    aboutdialog.cpp \
+    group_utils.cpp \
+    groupsform.cpp \
+    groupdialog.cpp
 
 HEADERS  += mainwindow.h \
     settings.h \
@@ -42,7 +45,10 @@ HEADERS  += mainwindow.h \
     textexplorer.h \
     trainingcreationwizard.h \
     settingswizard.h \
-    aboutdialog.h
+    aboutdialog.h \
+    group_utils.h \
+    groupsform.h \
+    groupdialog.h
 
 FORMS    += mainwindow.ui \
     settingsdialog.ui \
@@ -52,7 +58,9 @@ FORMS    += mainwindow.ui \
     textexplorer.ui \
     trainingcreationwizard.ui \
     settingswizard.ui \
-    aboutdialog.ui
+    aboutdialog.ui \
+    groupsform.ui \
+    groupdialog.ui
 
 RESOURCES += \
     resources.qrc
