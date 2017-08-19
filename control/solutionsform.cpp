@@ -66,6 +66,11 @@ void SolutionsForm::onGroupCollectionChanged()
     applyFilter();
 }
 
+void SolutionsForm::onGroupAdded(const QUuid&)
+{
+    onGroupCollectionChanged();
+}
+
 void SolutionsForm::applyFilter()
 {
     const auto& allSolutions = getSolutions();

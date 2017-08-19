@@ -19,6 +19,7 @@ bool Settings::read()
         return false;
     sectionsPath = rootObj["sectionsPath"].toString(sectionsPath);
     solutionsPath = rootObj["solutionsPath"].toString(solutionsPath);
+    groupsPath = rootObj["groupsPath"].toString(groupsPath);
     lastPath = rootObj["lastPath"].toString(lastPath);
     isFirstUsage = rootObj["isFirstUsage"].toBool(false);
     return true;
@@ -29,6 +30,7 @@ bool Settings::write() const
     QJsonObject rootObj;
     rootObj["sectionsPath"] = sectionsPath;
     rootObj["solutionsPath"] = solutionsPath;
+    rootObj["groupsPath"] = groupsPath;
     rootObj["lastPath"] = lastPath;
     rootObj["isFirstUsage"] = false;
     return writeJSON(SETTINGS_FILE_NAME, rootObj);
@@ -53,6 +55,20 @@ QString Settings::localSolutionsPath() const
         if (!dir.mkdir("solutions"))
             return QString();
     return dir.absoluteFilePath("solutions");
+}
+
+QString Settings::localGroupsPath() const
+{
+    QString path = localDataPath();
+    if (path.isEmpty())
+        return QString();
+    QDir dir(path);
+    return dir.absoluteFilePath("Groups.json");
+}
+
+bool Settings::isNetworkSupported() const
+{
+    return !solutionsPath.isEmpty();
 }
 
 void Settings::updateLastPath(QString newPath)

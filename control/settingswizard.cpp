@@ -31,6 +31,22 @@ bool makeDir(QWidget* parent, QDir dir, QString path, QString nameUI)
     }
     return true;
 }
+
+bool ensureNotDir(QWidget* parent, QDir dir, QString path, QString nameUI)
+{
+    QFileInfo fileInfo(dir, path);
+    if (fileInfo.exists()) {
+        if (fileInfo.isDir()) {
+            QDir dirToRemove(dir.absoluteFilePath(path));
+            if (!dirToRemove.removeRecursively()) {
+                QMessageBox::warning(parent, "Ошибка при сохранении",
+                                     "Невозможно создать файл " + nameUI + ".");
+                return false;
+            }
+        }
+    }
+    return true;
+}
 }
 
 SettingsWizard::SettingsWizard(QWidget *parent) :
@@ -92,7 +108,7 @@ bool SettingsWizard::createCommonDirectory(QString path)
     QFileInfo fileInfo(path);
     if (fileInfo.isDir()) {
         QDir dir(path);
-        if (dir.exists("sections") || dir.exists("solutions")) {
+        if (dir.exists("sections") || dir.exists("solutions") || dir.exists("Groups.json")) {
             auto answer = QMessageBox::question(
                         this, "Папка не пуста",
                         "Выбранная папка уже существует и содержит другие файлы. "
@@ -117,8 +133,9 @@ bool SettingsWizard::applySettings()
     if (ui->homeOption->isChecked()) {
         if (!makeDir(this, QDir(), "sections", "для разделов"))
             return false;
-        settings.solutionsPath = "";
         settings.sectionsPath = QDir().absoluteFilePath("sections");
+        settings.solutionsPath = "";
+        settings.groupsPath = "";
         settings.write();
         return true;
     }
@@ -133,11 +150,13 @@ bool SettingsWizard::applySettings()
         }
 
         if (!makeDir(this, dir, "sections", "для разделов")
-            || !makeDir(this, dir, "solutions", "для ответов"))
+            || !makeDir(this, dir, "solutions", "для ответов")
+            || !ensureNotDir(this, dir, "Groups.json", "со списком групп"))
             return false;
 
-        settings.solutionsPath = dir.absoluteFilePath("solutions");
         settings.sectionsPath = dir.absoluteFilePath("sections");
+        settings.solutionsPath = dir.absoluteFilePath("solutions");
+        settings.groupsPath = dir.absoluteFilePath("Groups.json");
         settings.write();
         return true;
     }

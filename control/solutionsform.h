@@ -25,6 +25,7 @@ signals:
 public slots:
     void reload();
     void onGroupCollectionChanged();
+    void onGroupAdded(const QUuid&);
 
 private slots:
     void applyFilter();

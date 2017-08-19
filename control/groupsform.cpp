@@ -17,9 +17,32 @@ GroupsForm::~GroupsForm()
 
 void GroupsForm::load()
 {
+    ui->listWidget->clear();
+    ui->listWidget->selectionModel()->clear();
     for (const auto& group : getGroups()) {
         QListWidgetItem* item = new QListWidgetItem(group.name, ui->listWidget);
         item->setData(Qt::UserRole, group.id);
+    }
+}
+
+void GroupsForm::onGroupsPathChanged()
+{
+    loadGroups();
+    load();
+    emit groupCollectionChanged();
+}
+
+void GroupsForm::createGroup()
+{
+    if (!groupDialog)
+        groupDialog = new GroupDialog(this);
+    groupDialog->init(Group::createGroup());
+    if (groupDialog->exec() == QDialog::Accepted) {
+        auto newGroup = groupDialog->result();
+        QListWidgetItem* item = new QListWidgetItem(newGroup.name, ui->listWidget);
+        item->setData(Qt::UserRole, newGroup.id);
+        addGroup(newGroup);
+        emit groupAdded(newGroup.id);
     }
 }
 
@@ -40,16 +63,7 @@ void GroupsForm::editGroupInRow(int row)
 
 void GroupsForm::on_addButton_clicked()
 {
-    if (!groupDialog)
-        groupDialog = new GroupDialog(this);
-    groupDialog->init(Group::createGroup());
-    if (groupDialog->exec() == QDialog::Accepted) {
-        auto newGroup = groupDialog->result();
-        QListWidgetItem* item = new QListWidgetItem(newGroup.name, ui->listWidget);
-        item->setData(Qt::UserRole, newGroup.id);
-        addGroup(newGroup);
-        emit groupCollectionChanged();
-    }
+    createGroup();
 }
 
 void GroupsForm::on_editButton_clicked()

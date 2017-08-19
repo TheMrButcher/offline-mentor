@@ -1,5 +1,6 @@
 #include "trainingcreationwizard.h"
 #include "section_utils.h"
+#include "group_utils.h"
 #include "settings.h"
 #include "ui_trainingcreationwizard.h"
 #include <omkit/utils.h>
@@ -21,6 +22,9 @@ TrainingCreationWizard::TrainingCreationWizard(QWidget *parent) :
     ui(new Ui::TrainingCreationWizard)
 {
     ui->setupUi(this);
+
+    connect(ui->createGroupButton, SIGNAL(clicked()),
+            this, SIGNAL(groupCreationRequested()));
 }
 
 TrainingCreationWizard::~TrainingCreationWizard()
@@ -33,16 +37,43 @@ void TrainingCreationWizard::restart()
     ui->pathEdit->setText(Settings::instance().lastPath);
     prevPages.clear();
     ui->stackedWidget->setCurrentWidget(ui->usageSelectionPage);
+
+    bool isNetworkSupported = Settings::instance().isNetworkSupported();
+    ui->networkOption->setEnabled(isNetworkSupported);
+    ui->networkOptionLabel->setEnabled(isNetworkSupported);
+    ui->noNetworkLabel->setVisible(!isNetworkSupported);
+    if (!isNetworkSupported)
+        ui->homeOption->setChecked(true);
+
     updateButtons();
 
     ui->sectionsListWidget->clear();
-    foreach (const auto& section, getSortedSections()) {
+    for (const auto& section : getSortedSections()) {
         QListWidgetItem* item = new QListWidgetItem(ui->sectionsListWidget);
         item->setText(section.name);
         item->setData(Qt::UserRole, section.id);
         item->setFlags(item->flags() | Qt::ItemIsUserCheckable);
         item->setCheckState(Qt::Unchecked);
     }
+
+    ui->groupsListWidget->clear();
+    for (const auto& group : getGroups()) {
+        QListWidgetItem* item = new QListWidgetItem(ui->groupsListWidget);
+        item->setText(group.name);
+        item->setData(Qt::UserRole, group.id);
+        item->setFlags(item->flags() | Qt::ItemIsUserCheckable);
+        item->setCheckState(Qt::Unchecked);
+    }
+}
+
+void TrainingCreationWizard::onGroupAdded(const QUuid& id)
+{
+    const auto& group = getGroup(id);
+    QListWidgetItem* item = new QListWidgetItem(ui->groupsListWidget);
+    item->setText(group.name);
+    item->setData(Qt::UserRole, group.id);
+    item->setFlags(item->flags() | Qt::ItemIsUserCheckable);
+    item->setCheckState(Qt::Unchecked);
 }
 
 void TrainingCreationWizard::on_prevButton_clicked()
@@ -56,25 +87,13 @@ void TrainingCreationWizard::on_prevButton_clicked()
 void TrainingCreationWizard::on_nextButton_clicked()
 {
     if (ui->stackedWidget->currentWidget() == ui->usageSelectionPage) {
-        if (ui->networkOption->isChecked())
-            goTo(ui->saveTypeSelectionPage);
-        if (ui->homeOption->isChecked())
-            goTo(ui->sectionsSelectionPage);
-        return;
-    }
-
-    if (ui->stackedWidget->currentWidget() == ui->saveTypeSelectionPage) {
-        if (ui->archiveOption->isChecked()) {
-            ui->fileSuggestionLabel->show();
-            ui->dirSuggestionLabel->hide();
-            if (QFileInfo(ui->pathEdit->text()).isDir())
-                ui->pathEdit->setText(ui->pathEdit->text() + "/Тренажер.zip");
-            goTo(ui->savePathSelectionPage);
+        if (ui->networkOption->isChecked()) {
+            ui->emptyGroupsPathLabel->setVisible(Settings::instance().groupsPath.isEmpty());
+            goTo(ui->loginSelectionPage);
         }
-        if (ui->folderOption->isChecked()) {
-            ui->fileSuggestionLabel->hide();
-            ui->dirSuggestionLabel->show();
-            goTo(ui->savePathSelectionPage);
+        if (ui->homeOption->isChecked()) {
+            ui->emptyGroupsPathLabel->setVisible(false);
+            goTo(ui->sectionsSelectionPage);
         }
         return;
     }
@@ -92,7 +111,59 @@ void TrainingCreationWizard::on_nextButton_clicked()
                                  "включить в тренажер.");
             return;
         }
+        goTo(ui->loginSelectionPage);
+        return;
+    }
+
+    if (ui->stackedWidget->currentWidget() == ui->loginSelectionPage) {
+        if (!ui->groupsBox->isChecked() && !ui->customLoginsBox->isChecked()) {
+            QMessageBox::warning(this, "Неверные данные",
+                                 "Не выбран ни один вариант системы входа пользователей. "
+                                 "Пользователи не смогут зайти в тренажер.");
+            return;
+        }
+
+        if (ui->groupsBox->isChecked())
+            goTo(ui->groupsSelectionPage);
+        else
+            goTo(ui->saveTypeSelectionPage);
+        return;
+    }
+
+    if (ui->stackedWidget->currentWidget() == ui->groupsSelectionPage) {
+        if (ui->selectGroupsButton->isChecked()) {
+            int groupsNum = 0;
+            for (int i = 0; i < ui->groupsListWidget->count(); ++i) {
+                QListWidgetItem* item = ui->groupsListWidget->item(i);
+                if (item->checkState() == Qt::Checked)
+                    groupsNum++;
+            }
+            if (groupsNum == 0) {
+                auto answer = QMessageBox::question(
+                            this, "Не выбраны группы", "Не выбрана ни одна группа. "
+                                                       "Вы уверены, что хотите продолжить?");
+                if (answer == QMessageBox::Yes)
+                    goTo(ui->saveTypeSelectionPage);
+                return;
+            }
+        }
         goTo(ui->saveTypeSelectionPage);
+        return;
+    }
+
+    if (ui->stackedWidget->currentWidget() == ui->saveTypeSelectionPage) {
+        if (ui->archiveOption->isChecked()) {
+            ui->fileSuggestionLabel->show();
+            ui->dirSuggestionLabel->hide();
+            if (QFileInfo(ui->pathEdit->text()).isDir())
+                ui->pathEdit->setText(ui->pathEdit->text() + "/Тренажер.zip");
+            goTo(ui->savePathSelectionPage);
+        }
+        if (ui->folderOption->isChecked()) {
+            ui->fileSuggestionLabel->hide();
+            ui->dirSuggestionLabel->show();
+            goTo(ui->savePathSelectionPage);
+        }
         return;
     }
 
@@ -205,9 +276,14 @@ bool TrainingCreationWizard::saveDirectory(QString path)
 
     const auto& settings = Settings::instance();
     TrainingSettings trainingSettings(dstDir.absoluteFilePath("Settings.json"));
+    bool saveGroupsToPackage = true;
     if (ui->networkOption->isChecked()) {
         trainingSettings.solutionsPath = settings.solutionsPath;
         trainingSettings.sectionsPath = settings.sectionsPath;
+        if (!settings.groupsPath.isEmpty()) {
+            saveGroupsToPackage = false;
+            trainingSettings.groupsPath = settings.groupsPath;
+        }
     } else {
         trainingSettings.solutionsPath = "";
         trainingSettings.sectionsPath = "sections";
@@ -237,10 +313,63 @@ bool TrainingCreationWizard::saveDirectory(QString path)
             }
         }
     }
+
+    if (ui->selectGroupsButton->isChecked()) {
+        trainingSettings.areAllGroupsAllowed = false;
+        for (int i = 0; i < ui->groupsListWidget->count(); ++i) {
+            QListWidgetItem* item = ui->groupsListWidget->item(i);
+            if (item->checkState() == Qt::Checked)
+                trainingSettings.customGroups.append(item->data(Qt::UserRole).toUuid());
+        }
+    } else {
+        trainingSettings.areAllGroupsAllowed = true;
+    }
+
+    if (ui->customLoginsBox->isChecked()) {
+        if (ui->anyLoginButton->isChecked())
+            trainingSettings.loginType = LoginType::Login;
+        if (ui->firstNameAndSurnameButton->isChecked())
+            trainingSettings.loginType = LoginType::FirstNameAndSurname;
+    } else {
+        trainingSettings.loginType = LoginType::OnlyFromGroup;
+    }
+
+    if (saveGroupsToPackage) {
+        trainingSettings.groupsPath = "Groups.json";
+        auto groups = getGroups();
+        if (ui->selectGroupsButton->isChecked()) {
+            auto groupSet = QSet<QUuid>::fromList(trainingSettings.customGroups);
+            QList<Group> filteredGroups;
+            for (const auto& group : groups) {
+                if (groupSet.contains(group.id))
+                    filteredGroups.append(group);
+            }
+            groups.swap(filteredGroups);
+        }
+        if (!Group::save(groups, dstDir.absoluteFilePath("Groups.json"))) {
+            QMessageBox::warning(this, "Ошибка при сохранении",
+                                 "Не удалось записать список групп.");
+            return false;
+        }
+    }
+
     if (!trainingSettings.write()) {
         QMessageBox::warning(this, "Ошибка при сохранении",
                              "Не удалось записать настройки тренажера.");
         return false;
     }
     return true;
+}
+
+void TrainingCreationWizard::on_selectGroupsButton_toggled(bool checked)
+{
+    ui->groupsListWidget->setEnabled(checked);
+}
+
+void TrainingCreationWizard::on_customLoginsBox_toggled(bool checked)
+{
+    ui->firstNameAndSurnameButton->setEnabled(checked);
+    ui->firstNameAndSurnameLabel->setEnabled(checked);
+    ui->anyLoginButton->setEnabled(checked);
+    ui->anyLoginLabel->setEnabled(checked);
 }

@@ -50,11 +50,19 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->tabWidget->tabBar()->setTabButton(tabIndex, QTabBar::RightSide, nullptr);
     connect(groupsForm, SIGNAL(groupCollectionChanged()),
             solutionsForm, SLOT(onGroupCollectionChanged()));
+    connect(groupsForm, SIGNAL(groupAdded(QUuid)),
+            solutionsForm, SLOT(onGroupAdded(QUuid)));
+    connect(settingsDialog, SIGNAL(groupsPathChanged()),
+            groupsForm, SLOT(onGroupsPathChanged()));
 
     trainingCreationWizard = new TrainingCreationWizard(this);
     trainingCreationWizard->hide();
 
     connect(ui->exitAction, SIGNAL(triggered()), this, SLOT(close()));
+    connect(groupsForm, SIGNAL(groupAdded(QUuid)),
+            trainingCreationWizard, SLOT(onGroupAdded(QUuid)));
+    connect(trainingCreationWizard, SIGNAL(groupCreationRequested()),
+            groupsForm, SLOT(createGroup()));
 
     QTimer::singleShot(0, this, SLOT(loadSettings()));
 }

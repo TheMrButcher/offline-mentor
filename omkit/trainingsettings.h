@@ -3,10 +3,18 @@
 
 #include "omkit_global.h"
 #include <QString>
+#include <QUuid>
+#include <QList>
 
 enum class TrainingAnswerType {
     ZipArchive,
     RemoteDir
+};
+
+enum class LoginType {
+    Login,
+    FirstNameAndSurname,
+    OnlyFromGroup
 };
 
 class OMKITSHARED_EXPORT TrainingSettings
@@ -23,6 +31,10 @@ public:
     QString lastLogin;
     QString sectionsPath;
     QString solutionsPath;
+    QString groupsPath;
+    LoginType loginType;
+    bool areAllGroupsAllowed;
+    QList<QUuid> customGroups;
 
 private:
     bool hasRemoteSolutionsDir;

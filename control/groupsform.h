@@ -19,7 +19,12 @@ public:
 
     void load();
 
+public slots:
+    void onGroupsPathChanged();
+    void createGroup();
+
 signals:
+    void groupAdded(const QUuid& id);
     void groupCollectionChanged();
 
 private:

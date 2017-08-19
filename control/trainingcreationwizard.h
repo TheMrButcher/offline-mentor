@@ -17,10 +17,18 @@ public:
 
     void restart();
 
+public slots:
+    void onGroupAdded(const QUuid& id);
+
+signals:
+    void groupCreationRequested();
+
 private slots:
     void on_prevButton_clicked();
     void on_nextButton_clicked();
     void on_choosePathButton_clicked();
+    void on_selectGroupsButton_toggled(bool checked);
+    void on_customLoginsBox_toggled(bool checked);
 
 private:
     void goTo(QWidget* nextPage);

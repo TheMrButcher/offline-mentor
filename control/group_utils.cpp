@@ -27,14 +27,35 @@ void updateAll()
 void saveGroups()
 {
     updateAll();
-    Group::save(groups, "Groups.json");
+    const auto& settings = Settings::instance();
+    Group::save(groups, settings.localGroupsPath());
+    if (!settings.groupsPath.isEmpty())
+        Group::save(groups, settings.groupsPath);
 }
 }
 
 void loadGroups()
 {
-    if (QDir().exists("Groups.json"))
-        groups = Group::load("Groups.json");
+    groups.clear();
+    const auto& settings = Settings::instance();
+    if (!settings.groupsPath.isEmpty()) {
+        QHash<QUuid, Group> allGroupMap;
+        if (QDir().exists(settings.groupsPath)) {
+            QList<Group> remoteGroups = Group::load(settings.groupsPath);
+            for (const auto& group : remoteGroups)
+                allGroupMap[group.id] = group;
+        }
+        if (QFile(settings.localGroupsPath()).exists()) {
+            QList<Group> localGroups = Group::load(settings.localGroupsPath());
+            for (const auto& group : localGroups)
+                allGroupMap[group.id] = group;
+        }
+        groups = allGroupMap.values();
+        saveGroups();
+        return;
+    }
+    if (QFile(settings.localGroupsPath()).exists())
+        groups = Group::load(settings.localGroupsPath());
     updateAll();
 }
 

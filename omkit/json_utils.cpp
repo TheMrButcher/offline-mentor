@@ -4,11 +4,15 @@
 
 bool readJSON(QString fileName, QJsonObject& jsonData)
 {
-    QFile settingsFile(fileName);
-    if (!settingsFile.open(QIODevice::ReadOnly))
+    if (fileName.isEmpty())
+        return false;
+    QFile file(fileName);
+    if (!file.exists())
+        return false;
+    if (!file.open(QIODevice::ReadOnly))
         return false;
     QJsonParseError errors;
-    QJsonDocument json = QJsonDocument::fromJson(settingsFile.readAll(), &errors);
+    QJsonDocument json = QJsonDocument::fromJson(file.readAll(), &errors);
     if (errors.error != QJsonParseError::NoError)
         return false;
     if (!json.isObject())
@@ -20,9 +24,11 @@ bool readJSON(QString fileName, QJsonObject& jsonData)
 
 bool writeJSON(QString fileName, const QJsonObject& jsonData)
 {
-    QFile settingsFile(fileName);
-    if (!settingsFile.open(QIODevice::WriteOnly))
+    if (fileName.isEmpty())
+        return false;
+    QFile file(fileName);
+    if (!file.open(QIODevice::WriteOnly))
         return false;
     QJsonDocument json(jsonData);
-    return settingsFile.write(json.toJson()) != -1;
+    return file.write(json.toJson()) != -1;
 }

@@ -31,11 +31,8 @@ private slots:
     void on_tabWidget_tabCloseRequested(int index);
     void on_trainingCreationWizardAction_triggered();
     void on_aboutAction_triggered();
-
     void on_importSolutionArchiveAction_triggered();
-
     void on_importSectionFolderAction_triggered();
-
     void on_importSectionArchiveAction_triggered();
 
 private:

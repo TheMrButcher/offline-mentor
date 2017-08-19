@@ -27,6 +27,13 @@ void SettingsDialog::initUI()
     const auto& settings = Settings::instance();
     ui->sectionsPathEdit->setText(settings.sectionsPath);
     ui->solutionsPathEdit->setText(settings.solutionsPath);
+
+    if (isInited) {
+        if (ui->groupsPathEdit->text() != settings.groupsPath)
+            emit groupsPathChanged();
+    }
+    ui->groupsPathEdit->setText(settings.groupsPath);
+    isInited = true;
 }
 
 void SettingsDialog::accept()
@@ -48,15 +55,27 @@ void SettingsDialog::accept()
             return;
     }
 
+    auto groupsPath = ui->groupsPathEdit->text();
+    if (!QFileInfo(groupsPath).dir().exists()) {
+        if (!createDirDialog(this, QFileInfo(groupsPath).dir().absolutePath(),
+                             "для файла со списком групп"))
+            return;
+    }
+
     auto settings = Settings::instance();
     settings.sectionsPath = sectionsPath;
     settings.solutionsPath = solutionsPath;
+    settings.groupsPath = groupsPath;
     if (!settings.write()) {
         QMessageBox::warning(this, "Не удалось сохранить настройки",
                              "Не удалось перезаписать файл с настройками.");
         return;
     }
+    bool didGroupsPathChanged =
+            Settings::instance().groupsPath != settings.groupsPath;
     Settings::instance() = settings;
+    if (didGroupsPathChanged)
+        emit groupsPathChanged();
     QDialog::accept();
 }
 
@@ -76,4 +95,13 @@ void SettingsDialog::on_chooseSolutionsPathButton_clicked()
                                               ui->solutionsPathEdit->text());
     if (!solutionsPath.isEmpty())
         ui->solutionsPathEdit->setText(solutionsPath);
+}
+
+void SettingsDialog::on_chooseGroupsPathButton_clicked()
+{
+    QString groupsPath =
+            QFileDialog::getSaveFileName(this, "Путь к файлу со списком групп",
+                                         ui->groupsPathEdit->text(), "JSON-файл (*.json)");
+    if (!groupsPath.isEmpty())
+        ui->groupsPathEdit->setText(groupsPath);
 }
