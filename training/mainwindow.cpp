@@ -4,6 +4,7 @@
 #include "sectionsform.h"
 #include "trainingform.h"
 #include "user_utils.h"
+#include "group_utils.h"
 #include "solution_utils.h"
 #include "settings.h"
 
@@ -56,7 +57,9 @@ void MainWindow::loadSettings()
                              "Не удалось прочесть файл с настройками. "
                              "Возможно, приложение установлено не полностью. "
                              "Приложение может работать некорректно.");
-    loginForm->setUserName(settings.lastLogin);
+
+    loadGroups();
+    loginForm->init();
     sectionsForm->setSections(Section::findAll(settings.sectionsPath));
 }
 

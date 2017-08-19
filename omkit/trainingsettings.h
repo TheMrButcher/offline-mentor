@@ -25,10 +25,13 @@ public:
     bool read();
     bool write() const;
     QString localDataPath() const;
+    QString localGroupsPath() const;
     TrainingAnswerType answerType() const;
 
     QString path;
     QString lastLogin;
+    QString lastFirstName;
+    QString lastSurname;
     QString sectionsPath;
     QString solutionsPath;
     QString groupsPath;

@@ -23,6 +23,8 @@ bool TrainingSettings::read()
     if (!readJSON(path, rootObj))
         return false;
     lastLogin = rootObj["lastLogin"].toString(lastLogin);
+    lastFirstName = rootObj["lastFirstName"].toString(lastFirstName);
+    lastSurname = rootObj["lastSurname"].toString(lastSurname);
     sectionsPath = rootObj["sectionsPath"].toString(sectionsPath);
     solutionsPath = rootObj["solutionsPath"].toString(solutionsPath);
     hasRemoteSolutionsDir =
@@ -47,6 +49,8 @@ bool TrainingSettings::write() const
 {
     QJsonObject rootObj;
     rootObj["lastLogin"] = lastLogin;
+    rootObj["lastFirstName"] = lastFirstName;
+    rootObj["lastSurname"] = lastSurname;
     rootObj["sectionsPath"] = sectionsPath;
     rootObj["solutionsPath"] = solutionsPath;
     rootObj["groupsPath"] = groupsPath;
@@ -68,6 +72,15 @@ QString TrainingSettings::localDataPath() const
         if (!dir.mkdir("localData"))
             return QString();
     return dir.absoluteFilePath("localData");
+}
+
+QString TrainingSettings::localGroupsPath() const
+{
+    QString path = localDataPath();
+    if (path.isEmpty())
+        return QString();
+    QDir dir(path);
+    return dir.absoluteFilePath("Groups.json");
 }
 
 TrainingAnswerType TrainingSettings::answerType() const

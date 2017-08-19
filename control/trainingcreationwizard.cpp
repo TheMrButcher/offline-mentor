@@ -314,15 +314,22 @@ bool TrainingCreationWizard::saveDirectory(QString path)
         }
     }
 
-    if (ui->selectGroupsButton->isChecked()) {
-        trainingSettings.areAllGroupsAllowed = false;
-        for (int i = 0; i < ui->groupsListWidget->count(); ++i) {
-            QListWidgetItem* item = ui->groupsListWidget->item(i);
-            if (item->checkState() == Qt::Checked)
-                trainingSettings.customGroups.append(item->data(Qt::UserRole).toUuid());
+    if (ui->groupsBox->isChecked()) {
+        if (ui->selectGroupsButton->isChecked()) {
+            trainingSettings.areAllGroupsAllowed = false;
+            for (int i = 0; i < ui->groupsListWidget->count(); ++i) {
+                QListWidgetItem* item = ui->groupsListWidget->item(i);
+                if (item->checkState() == Qt::Checked)
+                    trainingSettings.customGroups.append(item->data(Qt::UserRole).toUuid());
+            }
+        } else {
+            trainingSettings.areAllGroupsAllowed = true;
         }
     } else {
-        trainingSettings.areAllGroupsAllowed = true;
+        saveGroupsToPackage = false;
+        trainingSettings.groupsPath = "";
+        trainingSettings.areAllGroupsAllowed = false;
+        trainingSettings.customGroups.clear();
     }
 
     if (ui->customLoginsBox->isChecked()) {
@@ -335,7 +342,13 @@ bool TrainingCreationWizard::saveDirectory(QString path)
     }
 
     if (saveGroupsToPackage) {
-        trainingSettings.groupsPath = "Groups.json";
+        if (!dstDir.mkdir("localData")) {
+            QMessageBox::warning(this, "Ошибка при сохранении",
+                                 "Не удалось записать список групп.");
+            return false;
+        }
+        auto localDataDir = dstDir;
+        localDataDir.cd("localData");
         auto groups = getGroups();
         if (ui->selectGroupsButton->isChecked()) {
             auto groupSet = QSet<QUuid>::fromList(trainingSettings.customGroups);
@@ -346,7 +359,7 @@ bool TrainingCreationWizard::saveDirectory(QString path)
             }
             groups.swap(filteredGroups);
         }
-        if (!Group::save(groups, dstDir.absoluteFilePath("Groups.json"))) {
+        if (!Group::save(groups, localDataDir.absoluteFilePath("Groups.json"))) {
             QMessageBox::warning(this, "Ошибка при сохранении",
                                  "Не удалось записать список групп.");
             return false;

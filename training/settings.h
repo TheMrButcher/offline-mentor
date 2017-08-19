@@ -8,6 +8,9 @@ class Settings : public TrainingSettings
 public:
     static Settings& instance();
 
+    void setLastLogin(QString login);
+    void setLastLogin(QString firstName, QString surname, QString login);
+
 private:
     Settings();
 };

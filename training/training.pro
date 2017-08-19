@@ -28,7 +28,8 @@ SOURCES += main.cpp\
     mentoranswerpage.cpp \
     user_utils.cpp \
     solution_utils.cpp \
-    totalpage.cpp
+    totalpage.cpp \
+    group_utils.cpp
 
 HEADERS  += mainwindow.h \
     loginform.h \
@@ -40,7 +41,8 @@ HEADERS  += mainwindow.h \
     mentoranswerpage.h \
     user_utils.h \
     solution_utils.h \
-    totalpage.h
+    totalpage.h \
+    group_utils.h
 
 FORMS    += mainwindow.ui \
     loginform.ui \
