@@ -188,3 +188,42 @@ void updateUserNamesWithoutGroup()
             userNamesWithoutGroup.append(userName);
     }
 }
+
+bool changeSolutionAuthor(QString userName, const QUuid& sectionId, QString newUserName)
+{
+    SolutionKey key{ userName, sectionId };
+    auto itLocalSolution = localSolutions.find(key);
+    if (itLocalSolution == localSolutions.end())
+        return false;
+    if (getSolution(newUserName, sectionId).isValid())
+        return false;
+
+    const auto& settings = Settings::instance();
+    QString localSolutionsPath = settings.localSolutionsPath();
+    auto localSolution = itLocalSolution.value();
+    localSolution.userName = newUserName;
+    auto newPath = makePath(localSolutionsPath, localSolution);
+    if (!localSolution.moveTo(newPath))
+        return false;
+    if (!localSolution.save())
+        return false;
+
+    if (settings.isNetworkSupported()) {
+        auto remoteSolutions = Solution::findAll(
+                    getUserPath(settings.solutionsPath, userName));
+        for (auto& solution : remoteSolutions) {
+            if (solution.sectionId == sectionId) {
+                solution.userName = newUserName;
+                solution.moveTo(makePath(settings.solutionsPath, solution));
+                solution.save();
+                break;
+            }
+        }
+    }
+
+    localSolutions.erase(itLocalSolution);
+    SolutionKey newKey{ newUserName, sectionId };
+    localSolutions[newKey] = localSolution;
+    updateLists();
+    return true;
+}

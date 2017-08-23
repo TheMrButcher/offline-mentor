@@ -3,6 +3,7 @@
 #include "settings.h"
 #include "group_utils.h"
 #include "user_utils.h"
+#include <omkit/username.h>
 
 #include <QMessageBox>
 #include <QRegExp>
@@ -14,12 +15,9 @@ LoginForm::LoginForm(QWidget *parent) :
 {
     ui->setupUi(this);
 
-    QRegExp validFirstNameOrSurname("[-а-яА-Я ]*");
-    ui->firstNameEdit->setValidator(new QRegExpValidator(validFirstNameOrSurname));
-    ui->surnameEdit->setValidator(new QRegExpValidator(validFirstNameOrSurname));
-
-    QRegExp validUserName("[-а-яА-Я a-zA-Z_0-9]*");
-    ui->userNameEdit->setValidator(new QRegExpValidator(validUserName));
+    ui->firstNameEdit->setValidator(firstNameValidator());
+    ui->surnameEdit->setValidator(surnameValidator());
+    ui->userNameEdit->setValidator(userNameValidator());
 
     ui->customLoginWidget->hide();
 }

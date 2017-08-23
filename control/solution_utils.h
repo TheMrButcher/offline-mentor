@@ -12,5 +12,7 @@ const QStringList& getUserNames();
 bool importSolutionsFromArchive(QString path);
 const QStringList& getUserNamesWithoutGroup();
 void updateUserNamesWithoutGroup();
+bool changeSolutionAuthor(QString userName, const QUuid& sectionId,
+                          QString newUserName);
 
 #endif // SOLUTION_UTILS_H

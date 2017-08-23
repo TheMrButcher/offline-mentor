@@ -93,6 +93,8 @@ void MainWindow::openSolution(const Solution& solution)
 {
     SolutionExplorer* solutionExplorer = new SolutionExplorer(this);
     solutionExplorer->setSolution(solution);
+    connect(solutionExplorer, SIGNAL(authorRenamed()),
+            solutionsForm, SLOT(reload()));
     QString tabTitle = QString("\"%1\" / %2")
             .arg(trim(getSections()[solution.sectionId].name, 15))
             .arg(trim(solution.userName, 10));

@@ -3,6 +3,7 @@
 
 #include <QWidget>
 #include <QHash>
+#include <QUuid>
 
 namespace Ui {
 class SolutionExplorer;
@@ -21,10 +22,14 @@ public:
 
     void setSolution(const Solution& solution);
 
+signals:
+    void authorRenamed();
+
 private slots:
     void selectCase(int caseIndex);
 
     void on_listWidget_itemSelectionChanged();
+    void on_editUserNameButton_clicked();
 
 private:
     Ui::SolutionExplorer *ui;
@@ -35,6 +40,8 @@ private:
     };
 
     QHash<int, Descriptor> caseDescriptors;
+    QUuid sectionId;
+    QString userName;
 };
 
 #endif // SOLUTIONEXPLORER_H

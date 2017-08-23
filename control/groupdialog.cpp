@@ -1,6 +1,7 @@
 #include "groupdialog.h"
 #include "ui_groupdialog.h"
 #include "group_utils.h"
+#include <omkit/username.h>
 #include <QMessageBox>
 
 GroupDialog::GroupDialog(QWidget *parent) :
@@ -8,6 +9,8 @@ GroupDialog::GroupDialog(QWidget *parent) :
     ui(new Ui::GroupDialog)
 {
     ui->setupUi(this);
+
+    ui->userNameEdit->setValidator(userNameValidator());
 }
 
 GroupDialog::~GroupDialog()

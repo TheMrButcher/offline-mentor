@@ -21,6 +21,7 @@ public:
 
     bool open();
     bool save();
+    bool moveTo(QString newDirPath);
     QDir dir() const;
     bool isValid() const;
     bool isEqual(const Solution& other) const;

@@ -2,8 +2,12 @@
 #include "section_utils.h"
 #include "answerpage.h"
 #include "ui_solutionexplorer.h"
+#include "solution_utils.h"
 #include <omkit/solution.h>
 #include <omkit/section.h>
+#include <omkit/username.h>
+#include <QInputDialog>
+#include <QMessageBox>
 
 SolutionExplorer::SolutionExplorer(QWidget *parent) :
     QWidget(parent),
@@ -21,6 +25,9 @@ SolutionExplorer::~SolutionExplorer()
 
 void SolutionExplorer::setSolution(const Solution& solution)
 {
+    sectionId = solution.sectionId;
+    userName = solution.userName;
+
     caseDescriptors.clear();
     ui->listWidget->clear();
     for(int i = ui->stackedWidget->count() - 1; i >= 0; i--)
@@ -33,7 +40,7 @@ void SolutionExplorer::setSolution(const Solution& solution)
     const auto& sections = getSections();
     const auto& section = sections[solution.sectionId];
     ui->titleLabel->setText("Раздел \"" + section.name + "\"");
-    ui->userNameLabel->setText("Отвечал: " + solution.userName);
+    ui->userNameLabel->setText(solution.userName);
     for (int caseIndex = 0; caseIndex < section.cases.size(); ++caseIndex) {
         const auto& caseValue = section.cases[caseIndex];
         AnswerPage* page = new AnswerPage(this);
@@ -70,4 +77,37 @@ void SolutionExplorer::on_listWidget_itemSelectionChanged()
     auto item = selectedItems.front();
     int pageIndex = item->data(Qt::UserRole).toInt();
     ui->stackedWidget->setCurrentIndex(pageIndex);
+}
+
+void SolutionExplorer::on_editUserNameButton_clicked()
+{
+    QString newUserName = QInputDialog::getText(this, "Новое имя автора",
+                                                "Введите новое имя пользователя", QLineEdit::Normal,
+                                                userName);
+    if (newUserName.isEmpty())
+        return;
+
+    if (!isValidUserName(newUserName)) {
+        QMessageBox::warning(this, "Неверные данные", "Имя пользователя может содержать "
+                                                      "только латиницу, кириллицу, цифры, "
+                                                      "пробельные символы, дефисы и знаки "
+                                                      "нижнего подчеркивания.");
+        return;
+    }
+
+    if (getSolution(newUserName, sectionId).isValid()) {
+        QMessageBox::warning(this, "Неверные данные", "Решение с таким именем пользователя и "
+                                                      "названием раздела уже существует.");
+        return;
+    }
+
+    if (!changeSolutionAuthor(userName, sectionId, newUserName)) {
+        QMessageBox::warning(this, "Ошибка при перемещении",
+                             "При перемещении решения произошла ошибка.");
+        return;
+    }
+
+    userName = newUserName;
+    ui->userNameLabel->setText(userName);
+    emit authorRenamed();
 }

@@ -82,6 +82,24 @@ bool Solution::save()
     return writeJSON(path, rootObj);
 }
 
+bool Solution::moveTo(QString newDirPath)
+{
+    auto thisDir = dir();
+    QDir otherDir(newDirPath);
+    if (!otherDir.exists())
+        return false;
+    if (!QFile::rename(thisDir.absoluteFilePath(fileName),
+                       otherDir.absoluteFilePath(fileName)))
+        return false;
+    foreach (const auto& answer, answers) {
+        if (!QFile::rename(thisDir.absoluteFilePath(answer.fileName),
+                           otherDir.absoluteFilePath(answer.fileName)))
+            return false;
+    }
+    dirPath = newDirPath;
+    return true;
+}
+
 QDir Solution::dir() const
 {
     return QDir(dirPath);

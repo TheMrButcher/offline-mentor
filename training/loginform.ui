@@ -314,7 +314,7 @@
              </font>
             </property>
             <property name="text">
-             <string>В фамилии и имени разрешается использовать только кириллицу, пробельные символы и дефис</string>
+             <string>В фамилии и имени разрешается использовать только кириллицу, цифры, пробельные символы и дефис</string>
             </property>
             <property name="wordWrap">
              <bool>true</bool>
