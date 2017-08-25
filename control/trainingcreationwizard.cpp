@@ -45,6 +45,8 @@ void TrainingCreationWizard::restart()
     if (!isNetworkSupported)
         ui->homeOption->setChecked(true);
 
+    ui->groupsBox->setChecked(!getGroups().isEmpty());
+
     updateButtons();
 
     ui->sectionsListWidget->clear();

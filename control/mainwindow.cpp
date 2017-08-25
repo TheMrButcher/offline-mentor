@@ -28,7 +28,7 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->setupUi(this);
 
     showMaximized();
-    setWindowTitle("Offline-наставник. Система контроля v." + getVersion());
+    setWindowTitle("Offline наставник. Система контроля v." + getVersion());
 
     OMKit::instance().init();
 

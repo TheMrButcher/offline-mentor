@@ -23,7 +23,7 @@ MainWindow::MainWindow(QWidget *parent) :
 {
     ui->setupUi(this);
 
-    setWindowTitle("Offline-наставник. Тренажер v." + getVersion());
+    setWindowTitle("Offline наставник. Тренажер v." + getVersion());
 
     OMKit::instance().init();
     qDebug() << "OMKit: v." << OMKit::instance().getVersion();

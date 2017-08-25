@@ -29,7 +29,7 @@ MainWindow::MainWindow(QWidget *parent) :
 {
     ui->setupUi(this);
 
-    setWindowTitle("Offline-наставник. Редактор v." + getVersion());
+    setWindowTitle("Offline наставник. Редактор v." + getVersion());
     showMaximized();
 
     OMKit::instance().init();
