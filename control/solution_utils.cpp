@@ -227,3 +227,14 @@ bool changeSolutionAuthor(QString userName, const QUuid& sectionId, QString newU
     updateLists();
     return true;
 }
+
+bool saveLocalSolutionsToRemoteDir()
+{
+    const auto& settings = Settings::instance();
+    if (!settings.solutionsPath.isEmpty()) {
+        QHash<SolutionKey, Solution> remoteSolutions;
+        loadTo(settings.solutionsPath, remoteSolutions);
+        mergeTo(solutions, remoteSolutions, settings.solutionsPath);
+    }
+    return true;
+}

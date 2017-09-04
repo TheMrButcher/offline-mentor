@@ -12,5 +12,6 @@ const QList<Section>& getSortedSections();
 const QStringList& getSectionNames();
 QStringList importSectionsFromFolder(QString path);
 QStringList importSectionsFromArchive(QString path);
+bool saveSections();
 
 #endif // SECTION_UTILS_H

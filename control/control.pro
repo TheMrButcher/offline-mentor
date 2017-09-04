@@ -65,6 +65,8 @@ FORMS    += mainwindow.ui \
 RESOURCES += \
     resources.qrc
 
+RC_FILE = appicon.rc
+
 win32:CONFIG(release, debug|release): LIBS += -L$$PWD/../omkit-output/release/ -lomkit
 else:win32:CONFIG(debug, debug|release): LIBS += -L$$PWD/../omkit-output/debug/ -lomkit
 

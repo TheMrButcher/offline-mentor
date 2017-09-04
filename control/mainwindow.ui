@@ -18,6 +18,11 @@
   <property name="windowTitle">
    <string>MainWindow</string>
   </property>
+  <property name="windowIcon">
+   <iconset>
+    <normalon>:/icons/appicon64.png</normalon>
+   </iconset>
+  </property>
   <widget class="QWidget" name="centralWidget">
    <layout class="QVBoxLayout" name="verticalLayout">
     <item>
@@ -156,7 +161,7 @@
     <string>Разделы из &amp;папки</string>
    </property>
    <property name="toolTip">
-    <string>Загрузить ответы из папки</string>
+    <string>Загрузить разделы из папки</string>
    </property>
   </action>
   <action name="importSectionArchiveAction">

@@ -11,5 +11,7 @@
         <file>icons/info.png</file>
         <file>translations/qtbase_ru.qm</file>
         <file>icons/archive.png</file>
+        <file>icons/appicon16.png</file>
+        <file>icons/appicon64.png</file>
     </qresource>
 </RCC>

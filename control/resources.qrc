@@ -23,5 +23,7 @@
         <file>icons/edit.png</file>
         <file>icons/remove.png</file>
         <file>icons/group.png</file>
+        <file>icons/appicon16.png</file>
+        <file>icons/appicon64.png</file>
     </qresource>
 </RCC>

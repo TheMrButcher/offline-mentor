@@ -14,5 +14,6 @@ const QStringList& getUserNamesWithoutGroup();
 void updateUserNamesWithoutGroup();
 bool changeSolutionAuthor(QString userName, const QUuid& sectionId,
                           QString newUserName);
+bool saveLocalSolutionsToRemoteDir();
 
 #endif // SOLUTION_UTILS_H

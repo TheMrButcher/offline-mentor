@@ -1,5 +1,7 @@
 #include "settingsdialog.h"
 #include "settings.h"
+#include "section_utils.h"
+#include "solution_utils.h"
 #include "ui_settingsdialog.h"
 #include <omkit/ui_utils.h>
 #include <QFileInfo>
@@ -25,13 +27,16 @@ SettingsDialog::~SettingsDialog()
 void SettingsDialog::initUI()
 {
     const auto& settings = Settings::instance();
-    ui->sectionsPathEdit->setText(settings.sectionsPath);
-    ui->solutionsPathEdit->setText(settings.solutionsPath);
-
     if (isInited) {
+        if (ui->sectionsPathEdit->text() != settings.sectionsPath)
+            saveSections();
+        if (ui->solutionsPathEdit->text() != settings.solutionsPath)
+            saveLocalSolutionsToRemoteDir();
         if (ui->groupsPathEdit->text() != settings.groupsPath)
             emit groupsPathChanged();
     }
+    ui->sectionsPathEdit->setText(settings.sectionsPath);
+    ui->solutionsPathEdit->setText(settings.solutionsPath);
     ui->groupsPathEdit->setText(settings.groupsPath);
     isInited = true;
 }
@@ -71,9 +76,17 @@ void SettingsDialog::accept()
                              "Не удалось перезаписать файл с настройками.");
         return;
     }
+    bool didSectionsPathChanged =
+            Settings::instance().sectionsPath != settings.sectionsPath;
+    bool didSolutionsPathChanged =
+            Settings::instance().solutionsPath != settings.solutionsPath;
     bool didGroupsPathChanged =
             Settings::instance().groupsPath != settings.groupsPath;
     Settings::instance() = settings;
+    if (didSectionsPathChanged)
+        saveSections();
+    if (didSolutionsPathChanged)
+        saveLocalSolutionsToRemoteDir();
     if (didGroupsPathChanged)
         emit groupsPathChanged();
     QDialog::accept();

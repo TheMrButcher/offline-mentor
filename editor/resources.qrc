@@ -35,5 +35,7 @@
         <file>icons/image.png</file>
         <file>icons/lock.png</file>
         <file>icons/unlock.png</file>
+        <file>icons/appicon16.png</file>
+        <file>icons/appicon64.png</file>
     </qresource>
 </RCC>
